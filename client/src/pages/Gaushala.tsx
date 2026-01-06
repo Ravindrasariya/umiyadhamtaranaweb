@@ -6,7 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ChevronLeft, ChevronRight, Heart, Leaf, Sprout } from "lucide-react";
+import { ChevronLeft, ChevronRight, Heart, Leaf, Sprout, Phone, Mail, User } from "lucide-react";
 import type { GaushalaSlider, GaushalaAbout, GaushalaService, GaushalaGallery } from "@shared/schema";
 
 const defaultSlides = [
@@ -360,6 +360,100 @@ function GaushalaGallerySection() {
   );
 }
 
+function GaushalaManagementSection() {
+  const { t } = useLanguage();
+
+  const managementTeam = [
+    {
+      id: "adhyaksha",
+      designationEn: "Adhyaksha",
+      designationHi: "अध्यक्ष",
+      nameEn: "Name",
+      nameHi: "नाम",
+      phone: "",
+      email: "",
+      imageUrl: "",
+    },
+    {
+      id: "sanchalak",
+      designationEn: "Sanchalak",
+      designationHi: "संचालक",
+      nameEn: "Name",
+      nameHi: "नाम",
+      phone: "",
+      email: "",
+      imageUrl: "",
+    },
+  ];
+
+  return (
+    <section className="py-16 bg-muted/30" data-testid="section-gaushala-management">
+      <div className="max-w-5xl mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4" data-testid="text-gaushala-management-title">
+            {t("Gaushala Management", "गौशाला प्रबंधन")}
+          </h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            {t(
+              "Meet our dedicated team managing Gopal Gaushala Kachnariya",
+              "गोपाल गौशाला कचनारिया का प्रबंधन करने वाली हमारी समर्पित टीम से मिलें"
+            )}
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+          {managementTeam.map((member) => (
+            <Card key={member.id} className="text-center overflow-visible" data-testid={`card-gaushala-management-${member.id}`}>
+              <CardContent className="p-6">
+                <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-muted border-4 border-primary/20 flex items-center justify-center overflow-hidden">
+                  {member.imageUrl ? (
+                    <img
+                      src={member.imageUrl}
+                      alt={t(member.nameEn, member.nameHi)}
+                      className="w-full h-full object-cover"
+                      data-testid={`img-gaushala-management-${member.id}`}
+                    />
+                  ) : (
+                    <User className="w-16 h-16 text-muted-foreground" />
+                  )}
+                </div>
+                <h3 className="text-xl font-semibold text-foreground mb-1" data-testid={`text-gaushala-management-name-${member.id}`}>
+                  {t(member.nameEn, member.nameHi)}
+                </h3>
+                <p className="text-primary font-medium mb-3" data-testid={`text-gaushala-management-designation-${member.id}`}>
+                  {t(member.designationEn, member.designationHi)}
+                </p>
+                <div className="space-y-1 text-sm text-muted-foreground">
+                  {member.phone && (
+                    <a
+                      href={`tel:${member.phone.replace(/\s/g, "")}`}
+                      className="flex items-center justify-center gap-2 hover:text-primary transition-colors"
+                      data-testid={`link-gaushala-management-phone-${member.id}`}
+                    >
+                      <Phone className="w-4 h-4" />
+                      {member.phone}
+                    </a>
+                  )}
+                  {member.email && (
+                    <a
+                      href={`mailto:${member.email}`}
+                      className="flex items-center justify-center gap-2 hover:text-primary transition-colors"
+                      data-testid={`link-gaushala-management-email-${member.id}`}
+                    >
+                      <Mail className="w-4 h-4" />
+                      {member.email}
+                    </a>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Gaushala() {
   return (
     <div className="min-h-screen flex flex-col" data-testid="page-gaushala">
@@ -369,6 +463,7 @@ export default function Gaushala() {
         <GaushalaAboutSection />
         <GaushalaServicesSection />
         <GaushalaGallerySection />
+        <GaushalaManagementSection />
       </main>
       <Footer />
     </div>
