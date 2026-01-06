@@ -24,22 +24,17 @@ export function Header() {
             <div className="w-14 h-14 rounded-full bg-white/90 flex items-center justify-center shadow-md overflow-hidden">
               <span className="text-primary font-bold text-lg">ॐ</span>
             </div>
-            <div className="flex flex-col">
-              <span className="text-white font-bold text-xl tracking-wide">
-                {t("Umiya Dham Tarana", "उमिया धाम टाराना")}
-              </span>
-              <span className="text-white/80 text-xs">
-                {t("Shri Umiya Dham Trust", "श्री उमिया धाम ट्रस्ट")}
-              </span>
-            </div>
+            <span className="text-white font-bold text-2xl tracking-wide">
+              {t("Umiya Dham Tarana", "उमिया धाम टाराना")}
+            </span>
           </div>
 
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-2">
             {navItems.map((item) => (
               <Link key={item.path} href={item.path}>
                 <Button
                   variant="ghost"
-                  className={`text-white/90 font-medium px-4 py-2 ${
+                  className={`text-white/90 font-bold text-base px-5 py-2 ${
                     location === item.path
                       ? "bg-white/20 text-white"
                       : ""
@@ -84,7 +79,7 @@ export function Header() {
               <Link key={item.path} href={item.path}>
                 <Button
                   variant="ghost"
-                  className={`w-full justify-start text-white/90 font-medium ${
+                  className={`w-full justify-start text-white/90 font-bold text-base ${
                     location === item.path ? "bg-white/20 text-white" : ""
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
