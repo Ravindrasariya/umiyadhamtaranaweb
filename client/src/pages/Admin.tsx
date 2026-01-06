@@ -11,7 +11,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Trash2, Plus, Save, Image, FileText, Clock, Camera, Building, Phone, Lock, Heart, ScrollText, Home, Users } from "lucide-react";
+import { Trash2, Plus, Save, Image, FileText, Clock, Camera, Building, Phone, Lock, Heart, ScrollText, Home, Users, Upload } from "lucide-react";
+import { ImageUploader } from "@/components/ImageUploader";
 import type { SliderImage, AboutContent, PoojaTiming, Service, GalleryItem, TrustContent, ContactInfo, TermsContent, Donation, GaushalaSlider, GaushalaAbout, GaushalaService, GaushalaGallery, TeamMember } from "@shared/schema";
 
 function LoginForm({ onLogin }: { onLogin: () => void }) {
@@ -137,12 +138,15 @@ function SliderManager() {
             <h4 className="font-medium">{t("Add New Slider", "नया स्लाइडर जोड़ें")}</h4>
           </CardHeader>
           <CardContent className="space-y-3">
-            <Input
-              placeholder={t("Image URL", "इमेज URL")}
-              value={newSlider.imageUrl}
-              onChange={(e) => setNewSlider({ ...newSlider, imageUrl: e.target.value })}
-              data-testid="input-slider-image-url"
-            />
+            <div>
+              <label className="text-sm font-medium mb-2 block">{t("Upload Image", "इमेज अपलोड करें")}</label>
+              <ImageUploader
+                currentImageUrl={newSlider.imageUrl}
+                onImageUploaded={(objectPath) => setNewSlider({ ...newSlider, imageUrl: objectPath })}
+                onImageRemoved={() => setNewSlider({ ...newSlider, imageUrl: "" })}
+                placeholder={t("Click to upload slider image", "स्लाइडर इमेज अपलोड करने के लिए क्लिक करें")}
+              />
+            </div>
             <Input
               placeholder={t("Title (English)", "शीर्षक (अंग्रेज़ी)")}
               value={newSlider.titleEn}
@@ -237,11 +241,12 @@ function AboutManager() {
           />
         </div>
         <div>
-          <label className="text-sm font-medium">{t("Image URL", "इमेज URL")}</label>
-          <Input
-            value={currentData.imageUrl || ""}
-            onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-            data-testid="input-about-image-url"
+          <label className="text-sm font-medium mb-2 block">{t("Upload Image", "इमेज अपलोड करें")}</label>
+          <ImageUploader
+            currentImageUrl={currentData.imageUrl || ""}
+            onImageUploaded={(objectPath) => setFormData({ ...formData, imageUrl: objectPath })}
+            onImageRemoved={() => setFormData({ ...formData, imageUrl: "" })}
+            placeholder={t("Click to upload image", "इमेज अपलोड करने के लिए क्लिक करें")}
           />
         </div>
         <Button
@@ -618,19 +623,34 @@ function GalleryManager() {
               {t("Video", "वीडियो")}
             </Button>
           </div>
-          <Input
-            placeholder={newItem.type === "photo" ? t("Image URL", "इमेज URL") : t("Video Embed URL", "वीडियो एंबेड URL")}
-            value={newItem.url}
-            onChange={(e) => setNewItem({ ...newItem, url: e.target.value })}
-            data-testid="input-gallery-url"
-          />
-          {newItem.type === "video" && (
-            <Input
-              placeholder={t("Thumbnail URL", "थंबनेल URL")}
-              value={newItem.thumbnailUrl}
-              onChange={(e) => setNewItem({ ...newItem, thumbnailUrl: e.target.value })}
-              data-testid="input-gallery-thumbnail"
-            />
+          {newItem.type === "photo" ? (
+            <div>
+              <label className="text-sm font-medium mb-2 block">{t("Upload Photo", "फ़ोटो अपलोड करें")}</label>
+              <ImageUploader
+                currentImageUrl={newItem.url}
+                onImageUploaded={(objectPath) => setNewItem({ ...newItem, url: objectPath })}
+                onImageRemoved={() => setNewItem({ ...newItem, url: "" })}
+                placeholder={t("Click to upload photo", "फ़ोटो अपलोड करने के लिए क्लिक करें")}
+              />
+            </div>
+          ) : (
+            <>
+              <Input
+                placeholder={t("Video Embed URL (YouTube)", "वीडियो एंबेड URL (YouTube)")}
+                value={newItem.url}
+                onChange={(e) => setNewItem({ ...newItem, url: e.target.value })}
+                data-testid="input-gallery-url"
+              />
+              <div>
+                <label className="text-sm font-medium mb-2 block">{t("Upload Thumbnail", "थंबनेल अपलोड करें")}</label>
+                <ImageUploader
+                  currentImageUrl={newItem.thumbnailUrl}
+                  onImageUploaded={(objectPath) => setNewItem({ ...newItem, thumbnailUrl: objectPath })}
+                  onImageRemoved={() => setNewItem({ ...newItem, thumbnailUrl: "" })}
+                  placeholder={t("Click to upload thumbnail", "थंबनेल अपलोड करने के लिए क्लिक करें")}
+                />
+              </div>
+            </>
           )}
           <Input
             placeholder={t("Title (English)", "शीर्षक (अंग्रेज़ी)")}
@@ -880,12 +900,15 @@ function GaushalaSliderManager() {
           <h4 className="font-medium">{t("Add New Slider", "नया स्लाइडर जोड़ें")}</h4>
         </CardHeader>
         <CardContent className="space-y-3">
-          <Input
-            placeholder={t("Image URL", "इमेज URL")}
-            value={newSlider.imageUrl}
-            onChange={(e) => setNewSlider({ ...newSlider, imageUrl: e.target.value })}
-            data-testid="input-gaushala-slider-image-url"
-          />
+          <div>
+            <label className="text-sm font-medium mb-2 block">{t("Upload Image", "इमेज अपलोड करें")}</label>
+            <ImageUploader
+              currentImageUrl={newSlider.imageUrl}
+              onImageUploaded={(objectPath) => setNewSlider({ ...newSlider, imageUrl: objectPath })}
+              onImageRemoved={() => setNewSlider({ ...newSlider, imageUrl: "" })}
+              placeholder={t("Click to upload slider image", "स्लाइडर इमेज अपलोड करने के लिए क्लिक करें")}
+            />
+          </div>
           <Input
             placeholder={t("Title (English)", "शीर्षक (अंग्रेज़ी)")}
             value={newSlider.titleEn}
@@ -979,11 +1002,12 @@ function GaushalaAboutManager() {
           />
         </div>
         <div>
-          <label className="text-sm font-medium">{t("Image URL", "इमेज URL")}</label>
-          <Input
-            value={currentData.imageUrl || ""}
-            onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-            data-testid="input-gaushala-about-image-url"
+          <label className="text-sm font-medium mb-2 block">{t("Upload Image", "इमेज अपलोड करें")}</label>
+          <ImageUploader
+            currentImageUrl={currentData.imageUrl || ""}
+            onImageUploaded={(objectPath) => setFormData({ ...formData, imageUrl: objectPath })}
+            onImageRemoved={() => setFormData({ ...formData, imageUrl: "" })}
+            placeholder={t("Click to upload image", "इमेज अपलोड करने के लिए क्लिक करें")}
           />
         </div>
         <Button
@@ -1090,12 +1114,15 @@ function GaushalaServicesManager() {
             rows={2}
             data-testid="input-gaushala-service-desc-hi"
           />
-          <Input
-            placeholder={t("Image URL", "इमेज URL")}
-            value={newService.imageUrl}
-            onChange={(e) => setNewService({ ...newService, imageUrl: e.target.value })}
-            data-testid="input-gaushala-service-image-url"
-          />
+          <div>
+            <label className="text-sm font-medium mb-2 block">{t("Upload Image", "इमेज अपलोड करें")}</label>
+            <ImageUploader
+              currentImageUrl={newService.imageUrl}
+              onImageUploaded={(objectPath) => setNewService({ ...newService, imageUrl: objectPath })}
+              onImageRemoved={() => setNewService({ ...newService, imageUrl: "" })}
+              placeholder={t("Click to upload image", "इमेज अपलोड करने के लिए क्लिक करें")}
+            />
+          </div>
           <Button
             onClick={() => createMutation.mutate({ ...newService, order: (services?.length || 0) + 1 })}
             disabled={!newService.titleEn || createMutation.isPending}
@@ -1169,12 +1196,15 @@ function GaushalaGalleryManager() {
           <h4 className="font-medium">{t("Add New Photo", "नई फ़ोटो जोड़ें")}</h4>
         </CardHeader>
         <CardContent className="space-y-3">
-          <Input
-            placeholder={t("Image URL", "इमेज URL")}
-            value={newItem.imageUrl}
-            onChange={(e) => setNewItem({ ...newItem, imageUrl: e.target.value })}
-            data-testid="input-gaushala-gallery-url"
-          />
+          <div>
+            <label className="text-sm font-medium mb-2 block">{t("Upload Photo", "फ़ोटो अपलोड करें")}</label>
+            <ImageUploader
+              currentImageUrl={newItem.imageUrl}
+              onImageUploaded={(objectPath) => setNewItem({ ...newItem, imageUrl: objectPath })}
+              onImageRemoved={() => setNewItem({ ...newItem, imageUrl: "" })}
+              placeholder={t("Click to upload photo", "फ़ोटो अपलोड करने के लिए क्लिक करें")}
+            />
+          </div>
           <Input
             placeholder={t("Title (English)", "शीर्षक (अंग्रेज़ी)")}
             value={newItem.titleEn}
@@ -1364,12 +1394,15 @@ function TeamMembersManager() {
               data-testid="input-new-team-email"
             />
           </div>
-          <Input
-            placeholder={t("Photo URL", "फ़ोटो URL")}
-            value={newMember.imageUrl}
-            onChange={(e) => setNewMember({ ...newMember, imageUrl: e.target.value })}
-            data-testid="input-new-team-image"
-          />
+          <div>
+            <label className="text-sm font-medium mb-2 block">{t("Upload Photo", "फ़ोटो अपलोड करें")}</label>
+            <ImageUploader
+              currentImageUrl={newMember.imageUrl}
+              onImageUploaded={(objectPath) => setNewMember({ ...newMember, imageUrl: objectPath })}
+              onImageRemoved={() => setNewMember({ ...newMember, imageUrl: "" })}
+              placeholder={t("Click to upload photo", "फ़ोटो अपलोड करने के लिए क्लिक करें")}
+            />
+          </div>
           <Button
             onClick={() => createMutation.mutate({ ...newMember, order: (members?.length || 0) + 1 })}
             disabled={!newMember.nameEn || !newMember.designationEn || createMutation.isPending}
