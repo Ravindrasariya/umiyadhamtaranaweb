@@ -10,6 +10,10 @@ import {
   insertTrustContentSchema,
   insertContactInfoSchema,
   insertDonationSchema,
+  insertGaushalaSliderSchema,
+  insertGaushalaAboutSchema,
+  insertGaushalaServiceSchema,
+  insertGaushalaGallerySchema,
 } from "@shared/schema";
 
 export async function registerRoutes(
@@ -357,6 +361,161 @@ export async function registerRoutes(
       res.json(donation);
     } catch (error) {
       res.status(400).json({ error: "Invalid donation data" });
+    }
+  });
+
+  // Gaushala Sliders
+  app.get("/api/gaushala/sliders", async (req, res) => {
+    try {
+      const sliders = await storage.getGaushalaSliders();
+      res.json(sliders);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch gaushala sliders" });
+    }
+  });
+
+  app.post("/api/gaushala/sliders", async (req, res) => {
+    try {
+      const data = insertGaushalaSliderSchema.parse(req.body);
+      const slider = await storage.createGaushalaSlider(data);
+      res.json(slider);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid data" });
+    }
+  });
+
+  app.patch("/api/gaushala/sliders/:id", async (req, res) => {
+    try {
+      const slider = await storage.updateGaushalaSlider(req.params.id, req.body);
+      if (!slider) {
+        return res.status(404).json({ error: "Slider not found" });
+      }
+      res.json(slider);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update slider" });
+    }
+  });
+
+  app.delete("/api/gaushala/sliders/:id", async (req, res) => {
+    try {
+      await storage.deleteGaushalaSlider(req.params.id);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(400).json({ error: "Failed to delete slider" });
+    }
+  });
+
+  // Gaushala About
+  app.get("/api/gaushala/about", async (req, res) => {
+    try {
+      const about = await storage.getGaushalaAbout();
+      res.json(about || null);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch gaushala about" });
+    }
+  });
+
+  app.post("/api/gaushala/about", async (req, res) => {
+    try {
+      const data = insertGaushalaAboutSchema.parse(req.body);
+      const about = await storage.createGaushalaAbout(data);
+      res.json(about);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid data" });
+    }
+  });
+
+  app.patch("/api/gaushala/about/:id", async (req, res) => {
+    try {
+      const about = await storage.updateGaushalaAbout(req.params.id, req.body);
+      if (!about) {
+        return res.status(404).json({ error: "About not found" });
+      }
+      res.json(about);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update about" });
+    }
+  });
+
+  // Gaushala Services
+  app.get("/api/gaushala/services", async (req, res) => {
+    try {
+      const services = await storage.getGaushalaServices();
+      res.json(services);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch gaushala services" });
+    }
+  });
+
+  app.post("/api/gaushala/services", async (req, res) => {
+    try {
+      const data = insertGaushalaServiceSchema.parse(req.body);
+      const service = await storage.createGaushalaService(data);
+      res.json(service);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid data" });
+    }
+  });
+
+  app.patch("/api/gaushala/services/:id", async (req, res) => {
+    try {
+      const service = await storage.updateGaushalaService(req.params.id, req.body);
+      if (!service) {
+        return res.status(404).json({ error: "Service not found" });
+      }
+      res.json(service);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update service" });
+    }
+  });
+
+  app.delete("/api/gaushala/services/:id", async (req, res) => {
+    try {
+      await storage.deleteGaushalaService(req.params.id);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(400).json({ error: "Failed to delete service" });
+    }
+  });
+
+  // Gaushala Gallery
+  app.get("/api/gaushala/gallery", async (req, res) => {
+    try {
+      const gallery = await storage.getGaushalaGallery();
+      res.json(gallery);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch gaushala gallery" });
+    }
+  });
+
+  app.post("/api/gaushala/gallery", async (req, res) => {
+    try {
+      const data = insertGaushalaGallerySchema.parse(req.body);
+      const item = await storage.createGaushalaGalleryItem(data);
+      res.json(item);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid data" });
+    }
+  });
+
+  app.patch("/api/gaushala/gallery/:id", async (req, res) => {
+    try {
+      const item = await storage.updateGaushalaGalleryItem(req.params.id, req.body);
+      if (!item) {
+        return res.status(404).json({ error: "Gallery item not found" });
+      }
+      res.json(item);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update gallery item" });
+    }
+  });
+
+  app.delete("/api/gaushala/gallery/:id", async (req, res) => {
+    try {
+      await storage.deleteGaushalaGalleryItem(req.params.id);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(400).json({ error: "Failed to delete gallery item" });
     }
   });
 
