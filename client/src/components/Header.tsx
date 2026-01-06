@@ -3,7 +3,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Globe } from "lucide-react";
 import { useState } from "react";
-import templeLogo from "@assets/Screenshot_2026-01-06_at_11.56.05_AM_1767681641086.png";
+import templeLogo from "@assets/Screenshot_2026-01-06_at_1.38.04_PM_1767686993338.png";
 
 const navItems = [
   { path: "/", labelEn: "Home", labelHi: "होम" },
@@ -23,7 +23,7 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center flex-shrink-0">
+            <div className="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center flex-shrink-0">
               <img src={templeLogo} alt="Umiya Dham Tarana" className="w-full h-full object-contain" />
             </div>
             <span className="text-white font-extrabold text-xl md:text-2xl tracking-wide">
