@@ -92,7 +92,7 @@ export default function Donation() {
   };
 
   const isFormValid = formData.firstName && formData.lastName && formData.phone && 
-    formData.email && formData.state && formData.city && formData.donationType && 
+    formData.state && formData.city && formData.donationType && 
     formData.amount && agreeTerms;
 
   if (showSuccess) {
@@ -195,7 +195,7 @@ export default function Donation() {
                     </div>
                     <div>
                       <label className="text-sm font-medium text-foreground">
-                        {t("Email Address", "ईमेल पता")} <span className="text-destructive">*</span>
+                        {t("Email Address", "ईमेल पता")}
                       </label>
                       <Input
                         type="email"

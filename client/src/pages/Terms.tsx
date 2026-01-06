@@ -94,9 +94,9 @@ export default function Terms() {
             <div className="w-20 h-1 bg-primary mx-auto rounded-full" />
           </div>
 
-          <div className="prose prose-lg max-w-none dark:prose-invert">
-            <div className="bg-card rounded-lg p-6 md:p-8 shadow-sm border">
-              <pre className="whitespace-pre-wrap font-sans text-muted-foreground leading-relaxed text-base" data-testid="text-terms-content">
+          <div className="max-w-none">
+            <div className="bg-background rounded-lg p-6 md:p-8 border">
+              <pre className="whitespace-pre-wrap font-sans text-foreground leading-relaxed text-base" data-testid="text-terms-content">
                 {t(displayTerms.contentEn, displayTerms.contentHi)}
               </pre>
             </div>
