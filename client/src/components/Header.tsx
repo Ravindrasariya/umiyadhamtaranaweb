@@ -24,7 +24,7 @@ export function Header() {
             <div className="w-14 h-14 rounded-full bg-white/90 flex items-center justify-center shadow-md overflow-hidden">
               <span className="text-primary font-bold text-lg">ॐ</span>
             </div>
-            <span className="text-white font-bold text-2xl tracking-wide">
+            <span className="text-white font-bold text-4xl tracking-wide">
               {t("Umiya Dham Tarana", "उमिया धाम टाराना")}
             </span>
           </div>
@@ -34,7 +34,7 @@ export function Header() {
               <Link key={item.path} href={item.path}>
                 <Button
                   variant="ghost"
-                  className={`text-white/90 font-bold text-base px-5 py-2 ${
+                  className={`text-white/90 font-bold text-xl px-5 py-2 ${
                     location === item.path
                       ? "bg-white/20 text-white"
                       : ""
@@ -79,7 +79,7 @@ export function Header() {
               <Link key={item.path} href={item.path}>
                 <Button
                   variant="ghost"
-                  className={`w-full justify-start text-white/90 font-bold text-base ${
+                  className={`w-full justify-start text-white/90 font-bold text-xl ${
                     location === item.path ? "bg-white/20 text-white" : ""
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
