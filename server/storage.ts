@@ -13,6 +13,10 @@ import {
   type InsertGalleryItem,
   type SiteSetting,
   type InsertSiteSetting,
+  type TrustContent,
+  type InsertTrustContent,
+  type ContactInfo,
+  type InsertContactInfo,
   users,
   sliderImages,
   aboutContent,
@@ -20,6 +24,8 @@ import {
   services,
   galleryItems,
   siteSettings,
+  trustContent,
+  contactInfo,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, asc } from "drizzle-orm";
@@ -65,6 +71,16 @@ export interface IStorage {
   getSiteSettings(): Promise<SiteSetting[]>;
   getSiteSetting(key: string): Promise<SiteSetting | undefined>;
   upsertSiteSetting(data: InsertSiteSetting): Promise<SiteSetting>;
+
+  // Trust Content
+  getTrustContent(): Promise<TrustContent | undefined>;
+  updateTrustContent(id: string, data: Partial<InsertTrustContent>): Promise<TrustContent | undefined>;
+  createTrustContent(data: InsertTrustContent): Promise<TrustContent>;
+
+  // Contact Info
+  getContactInfo(): Promise<ContactInfo | undefined>;
+  updateContactInfo(id: string, data: Partial<InsertContactInfo>): Promise<ContactInfo | undefined>;
+  createContactInfo(data: InsertContactInfo): Promise<ContactInfo>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -207,6 +223,38 @@ export class DatabaseStorage implements IStorage {
     }
     const [setting] = await db.insert(siteSettings).values(data).returning();
     return setting;
+  }
+
+  // Trust Content
+  async getTrustContent(): Promise<TrustContent | undefined> {
+    const [content] = await db.select().from(trustContent).limit(1);
+    return content || undefined;
+  }
+
+  async updateTrustContent(id: string, data: Partial<InsertTrustContent>): Promise<TrustContent | undefined> {
+    const [content] = await db.update(trustContent).set(data).where(eq(trustContent.id, id)).returning();
+    return content || undefined;
+  }
+
+  async createTrustContent(data: InsertTrustContent): Promise<TrustContent> {
+    const [content] = await db.insert(trustContent).values(data).returning();
+    return content;
+  }
+
+  // Contact Info
+  async getContactInfo(): Promise<ContactInfo | undefined> {
+    const [info] = await db.select().from(contactInfo).limit(1);
+    return info || undefined;
+  }
+
+  async updateContactInfo(id: string, data: Partial<InsertContactInfo>): Promise<ContactInfo | undefined> {
+    const [info] = await db.update(contactInfo).set(data).where(eq(contactInfo.id, id)).returning();
+    return info || undefined;
+  }
+
+  async createContactInfo(data: InsertContactInfo): Promise<ContactInfo> {
+    const [info] = await db.insert(contactInfo).values(data).returning();
+    return info;
   }
 }
 

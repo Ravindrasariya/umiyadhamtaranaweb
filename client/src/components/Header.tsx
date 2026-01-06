@@ -9,7 +9,6 @@ const navItems = [
   { path: "/about", labelEn: "About Us", labelHi: "हमारे बारे में" },
   { path: "/tourism", labelEn: "Tourism", labelHi: "पर्यटन" },
   { path: "/donation", labelEn: "Donation", labelHi: "दान" },
-  { path: "/admin", labelEn: "Admin", labelHi: "व्यवस्थापक" },
 ];
 
 export function Header() {

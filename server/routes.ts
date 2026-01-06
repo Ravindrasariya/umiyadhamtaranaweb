@@ -7,6 +7,8 @@ import {
   insertPoojaTimingSchema,
   insertServiceSchema,
   insertGalleryItemSchema,
+  insertTrustContentSchema,
+  insertContactInfoSchema,
 } from "@shared/schema";
 
 export async function registerRoutes(
@@ -234,6 +236,84 @@ export async function registerRoutes(
       res.json(setting || null);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch setting" });
+    }
+  });
+
+  // Trust Content
+  app.get("/api/trust", async (req, res) => {
+    try {
+      const trust = await storage.getTrustContent();
+      res.json(trust || null);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch trust content" });
+    }
+  });
+
+  app.post("/api/trust", async (req, res) => {
+    try {
+      const data = insertTrustContentSchema.parse(req.body);
+      const trust = await storage.createTrustContent(data);
+      res.json(trust);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid data" });
+    }
+  });
+
+  app.patch("/api/trust/:id", async (req, res) => {
+    try {
+      const trust = await storage.updateTrustContent(req.params.id, req.body);
+      if (!trust) {
+        return res.status(404).json({ error: "Trust content not found" });
+      }
+      res.json(trust);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update trust content" });
+    }
+  });
+
+  // Contact Info
+  app.get("/api/contact", async (req, res) => {
+    try {
+      const contact = await storage.getContactInfo();
+      res.json(contact || null);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch contact info" });
+    }
+  });
+
+  app.post("/api/contact", async (req, res) => {
+    try {
+      const data = insertContactInfoSchema.parse(req.body);
+      const contact = await storage.createContactInfo(data);
+      res.json(contact);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid data" });
+    }
+  });
+
+  app.patch("/api/contact/:id", async (req, res) => {
+    try {
+      const contact = await storage.updateContactInfo(req.params.id, req.body);
+      if (!contact) {
+        return res.status(404).json({ error: "Contact info not found" });
+      }
+      res.json(contact);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update contact info" });
+    }
+  });
+
+  // Authentication
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      const user = await storage.getUserByUsername(username);
+      if (!user || user.password !== password) {
+        return res.status(401).json({ error: "Invalid credentials" });
+      }
+      res.json({ success: true, userId: user.id });
+    } catch (error) {
+      res.status(500).json({ error: "Login failed" });
     }
   });
 

@@ -11,8 +11,75 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Trash2, Plus, Save, Image, FileText, Clock, Sparkles, Camera } from "lucide-react";
-import type { SliderImage, AboutContent, PoojaTiming, Service, GalleryItem } from "@shared/schema";
+import { Trash2, Plus, Save, Image, FileText, Clock, Camera, Building, Phone, Lock } from "lucide-react";
+import type { SliderImage, AboutContent, PoojaTiming, Service, GalleryItem, TrustContent, ContactInfo } from "@shared/schema";
+
+function LoginForm({ onLogin }: { onLogin: () => void }) {
+  const { t } = useLanguage();
+  const { toast } = useToast();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const response = await apiRequest("POST", "/api/auth/login", { username, password });
+      const data = await response.json();
+      if (data.success) {
+        sessionStorage.setItem("adminAuth", "true");
+        onLogin();
+        toast({ title: t("Login successful", "लॉगिन सफल") });
+      }
+    } catch (error) {
+      toast({ title: t("Invalid credentials", "अमान्य क्रेडेंशियल"), variant: "destructive" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-muted/30" data-testid="admin-login">
+      <Card className="w-full max-w-md mx-4">
+        <CardHeader className="text-center">
+          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+            <Lock className="w-8 h-8 text-primary" />
+          </div>
+          <h1 className="text-2xl font-bold">{t("Admin Login", "व्यवस्थापक लॉगिन")}</h1>
+          <p className="text-sm text-muted-foreground">{t("Enter your credentials to access the admin panel", "व्यवस्थापक पैनल तक पहुंचने के लिए अपना क्रेडेंशियल दर्ज करें")}</p>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="text-sm font-medium">{t("Username", "उपयोगकर्ता नाम")}</label>
+              <Input
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder={t("Enter username", "उपयोगकर्ता नाम दर्ज करें")}
+                data-testid="input-admin-username"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">{t("Password", "पासवर्ड")}</label>
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder={t("Enter password", "पासवर्ड दर्ज करें")}
+                data-testid="input-admin-password"
+              />
+            </div>
+            <Button type="submit" className="w-full" disabled={isLoading} data-testid="button-admin-login">
+              {isLoading ? t("Logging in...", "लॉग इन हो रहा है...") : t("Login", "लॉगिन")}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
 
 function SliderManager() {
   const { t } = useLanguage();
@@ -200,6 +267,196 @@ function AboutManager() {
   );
 }
 
+function TrustManager() {
+  const { t } = useLanguage();
+  const { toast } = useToast();
+
+  const { data: trust, isLoading } = useQuery<TrustContent>({
+    queryKey: ["/api/trust"],
+  });
+
+  const [formData, setFormData] = useState<Partial<TrustContent>>({});
+
+  const updateMutation = useMutation({
+    mutationFn: async (data: Partial<TrustContent>) => {
+      if (trust?.id) {
+        return apiRequest("PATCH", `/api/trust/${trust.id}`, data);
+      }
+      return apiRequest("POST", "/api/trust", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/trust"] });
+      toast({ title: t("Trust content updated", "ट्रस्ट सामग्री अपडेट हुई") });
+    },
+  });
+
+  if (isLoading) return <Skeleton className="h-64" />;
+
+  const currentData = { ...trust, ...formData };
+
+  return (
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold">{t("Trust Content (About Us Page)", "ट्रस्ट सामग्री (हमारे बारे में पेज)")}</h3>
+
+      <div className="space-y-3">
+        <div>
+          <label className="text-sm font-medium">{t("Title (English)", "शीर्षक (अंग्रेज़ी)")}</label>
+          <Input
+            value={currentData.titleEn || ""}
+            onChange={(e) => setFormData({ ...formData, titleEn: e.target.value })}
+            data-testid="input-trust-title-en"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium">{t("Title (Hindi)", "शीर्षक (हिंदी)")}</label>
+          <Input
+            value={currentData.titleHi || ""}
+            onChange={(e) => setFormData({ ...formData, titleHi: e.target.value })}
+            data-testid="input-trust-title-hi"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium">{t("Subtitle (English)", "उपशीर्षक (अंग्रेज़ी)")}</label>
+          <Input
+            value={currentData.subtitleEn || ""}
+            onChange={(e) => setFormData({ ...formData, subtitleEn: e.target.value })}
+            data-testid="input-trust-subtitle-en"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium">{t("Subtitle (Hindi)", "उपशीर्षक (हिंदी)")}</label>
+          <Input
+            value={currentData.subtitleHi || ""}
+            onChange={(e) => setFormData({ ...formData, subtitleHi: e.target.value })}
+            data-testid="input-trust-subtitle-hi"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium">{t("Content (English)", "सामग्री (अंग्रेज़ी)")}</label>
+          <Textarea
+            value={currentData.contentEn || ""}
+            onChange={(e) => setFormData({ ...formData, contentEn: e.target.value })}
+            rows={6}
+            data-testid="input-trust-content-en"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium">{t("Content (Hindi)", "सामग्री (हिंदी)")}</label>
+          <Textarea
+            value={currentData.contentHi || ""}
+            onChange={(e) => setFormData({ ...formData, contentHi: e.target.value })}
+            rows={6}
+            data-testid="input-trust-content-hi"
+          />
+        </div>
+        <Button
+          onClick={() => updateMutation.mutate(formData)}
+          disabled={updateMutation.isPending}
+          data-testid="button-save-trust"
+        >
+          <Save className="w-4 h-4 mr-2" />
+          {t("Save Changes", "परिवर्तन सहेजें")}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function ContactManager() {
+  const { t } = useLanguage();
+  const { toast } = useToast();
+
+  const { data: contact, isLoading } = useQuery<ContactInfo>({
+    queryKey: ["/api/contact"],
+  });
+
+  const [formData, setFormData] = useState<Partial<ContactInfo>>({});
+
+  const updateMutation = useMutation({
+    mutationFn: async (data: Partial<ContactInfo>) => {
+      if (contact?.id) {
+        return apiRequest("PATCH", `/api/contact/${contact.id}`, data);
+      }
+      return apiRequest("POST", "/api/contact", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/contact"] });
+      toast({ title: t("Contact info updated", "संपर्क जानकारी अपडेट हुई") });
+    },
+  });
+
+  if (isLoading) return <Skeleton className="h-64" />;
+
+  const currentData = { ...contact, ...formData };
+
+  return (
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold">{t("Contact Information", "संपर्क जानकारी")}</h3>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <div>
+          <label className="text-sm font-medium">{t("Phone 1", "फ़ोन 1")}</label>
+          <Input
+            value={currentData.phone1 || ""}
+            onChange={(e) => setFormData({ ...formData, phone1: e.target.value })}
+            data-testid="input-contact-phone1"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium">{t("Phone 2", "फ़ोन 2")}</label>
+          <Input
+            value={currentData.phone2 || ""}
+            onChange={(e) => setFormData({ ...formData, phone2: e.target.value })}
+            data-testid="input-contact-phone2"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium">{t("Email 1", "ईमेल 1")}</label>
+          <Input
+            value={currentData.email1 || ""}
+            onChange={(e) => setFormData({ ...formData, email1: e.target.value })}
+            data-testid="input-contact-email1"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium">{t("Email 2", "ईमेल 2")}</label>
+          <Input
+            value={currentData.email2 || ""}
+            onChange={(e) => setFormData({ ...formData, email2: e.target.value })}
+            data-testid="input-contact-email2"
+          />
+        </div>
+        <div className="md:col-span-2">
+          <label className="text-sm font-medium">{t("Address (English)", "पता (अंग्रेज़ी)")}</label>
+          <Textarea
+            value={currentData.addressEn || ""}
+            onChange={(e) => setFormData({ ...formData, addressEn: e.target.value })}
+            rows={2}
+            data-testid="input-contact-address-en"
+          />
+        </div>
+        <div className="md:col-span-2">
+          <label className="text-sm font-medium">{t("Address (Hindi)", "पता (हिंदी)")}</label>
+          <Textarea
+            value={currentData.addressHi || ""}
+            onChange={(e) => setFormData({ ...formData, addressHi: e.target.value })}
+            rows={2}
+            data-testid="input-contact-address-hi"
+          />
+        </div>
+      </div>
+      <Button
+        onClick={() => updateMutation.mutate(formData)}
+        disabled={updateMutation.isPending}
+        data-testid="button-save-contact"
+      >
+        <Save className="w-4 h-4 mr-2" />
+        {t("Save Changes", "परिवर्तन सहेजें")}
+      </Button>
+    </div>
+  );
+}
+
 function TimingsManager() {
   const { t } = useLanguage();
   const { toast } = useToast();
@@ -334,7 +591,7 @@ function GalleryManager() {
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {videos.map((item) => (
             <Card key={item.id} data-testid={`admin-gallery-${item.id}`}>
-              <CardContent className="p-3 flex items-center justify-between">
+              <CardContent className="p-3 flex items-center justify-between gap-2">
                 <span className="text-sm truncate flex-1">{item.titleEn}</span>
                 <Button
                   variant="destructive"
@@ -411,7 +668,7 @@ function GalleryManager() {
   );
 }
 
-export default function Admin() {
+function AdminPanel({ onLogout }: { onLogout: () => void }) {
   const { t } = useLanguage();
 
   return (
@@ -419,28 +676,43 @@ export default function Admin() {
       <Header />
       <main className="flex-1 bg-muted/30">
         <div className="max-w-4xl mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">
-            {t("Admin Panel", "व्यवस्थापक पैनल")}
-          </h1>
-          <p className="text-muted-foreground mb-8">
-            {t("Manage your temple website content", "अपनी मंदिर वेबसाइट सामग्री प्रबंधित करें")}
-          </p>
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground mb-2">
+                {t("Admin Panel", "व्यवस्थापक पैनल")}
+              </h1>
+              <p className="text-muted-foreground">
+                {t("Manage your temple website content", "अपनी मंदिर वेबसाइट सामग्री प्रबंधित करें")}
+              </p>
+            </div>
+            <Button variant="outline" onClick={onLogout} data-testid="button-admin-logout">
+              {t("Logout", "लॉगआउट")}
+            </Button>
+          </div>
 
           <Tabs defaultValue="sliders" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-6">
-              <TabsTrigger value="sliders" className="gap-2" data-testid="tab-admin-sliders">
+            <TabsList className="grid w-full grid-cols-6 mb-6">
+              <TabsTrigger value="sliders" className="gap-1" data-testid="tab-admin-sliders">
                 <Image className="w-4 h-4" />
                 <span className="hidden sm:inline">{t("Sliders", "स्लाइडर")}</span>
               </TabsTrigger>
-              <TabsTrigger value="about" className="gap-2" data-testid="tab-admin-about">
+              <TabsTrigger value="about" className="gap-1" data-testid="tab-admin-about">
                 <FileText className="w-4 h-4" />
                 <span className="hidden sm:inline">{t("About", "परिचय")}</span>
               </TabsTrigger>
-              <TabsTrigger value="timings" className="gap-2" data-testid="tab-admin-timings">
+              <TabsTrigger value="trust" className="gap-1" data-testid="tab-admin-trust">
+                <Building className="w-4 h-4" />
+                <span className="hidden sm:inline">{t("Trust", "ट्रस्ट")}</span>
+              </TabsTrigger>
+              <TabsTrigger value="contact" className="gap-1" data-testid="tab-admin-contact">
+                <Phone className="w-4 h-4" />
+                <span className="hidden sm:inline">{t("Contact", "संपर्क")}</span>
+              </TabsTrigger>
+              <TabsTrigger value="timings" className="gap-1" data-testid="tab-admin-timings">
                 <Clock className="w-4 h-4" />
                 <span className="hidden sm:inline">{t("Timings", "समय")}</span>
               </TabsTrigger>
-              <TabsTrigger value="gallery" className="gap-2" data-testid="tab-admin-gallery">
+              <TabsTrigger value="gallery" className="gap-1" data-testid="tab-admin-gallery">
                 <Camera className="w-4 h-4" />
                 <span className="hidden sm:inline">{t("Gallery", "गैलरी")}</span>
               </TabsTrigger>
@@ -458,6 +730,22 @@ export default function Admin() {
               <Card>
                 <CardContent className="pt-6">
                   <AboutManager />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="trust">
+              <Card>
+                <CardContent className="pt-6">
+                  <TrustManager />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="contact">
+              <Card>
+                <CardContent className="pt-6">
+                  <ContactManager />
                 </CardContent>
               </Card>
             </TabsContent>
@@ -483,4 +771,25 @@ export default function Admin() {
       <Footer />
     </div>
   );
+}
+
+export default function Admin() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return sessionStorage.getItem("adminAuth") === "true";
+  });
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("adminAuth");
+    setIsAuthenticated(false);
+  };
+
+  if (!isAuthenticated) {
+    return <LoginForm onLogin={handleLogin} />;
+  }
+
+  return <AdminPanel onLogout={handleLogout} />;
 }

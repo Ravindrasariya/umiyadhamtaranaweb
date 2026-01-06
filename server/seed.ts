@@ -5,6 +5,9 @@ import {
   poojaTimings,
   services,
   galleryItems,
+  trustContent,
+  contactInfo,
+  users,
 } from "@shared/schema";
 import { sql } from "drizzle-orm";
 
@@ -99,6 +102,29 @@ export async function seedDatabase() {
       { type: "video", url: "https://www.youtube.com/embed/dQw4w9WgXcQ", thumbnailUrl: "https://images.unsplash.com/photo-1564804955013-e02e72e02ec8?w=400&h=300&fit=crop", titleEn: "Temple Tour", titleHi: "मंदिर यात्रा", order: 1, isActive: true },
       { type: "video", url: "https://www.youtube.com/embed/dQw4w9WgXcQ", thumbnailUrl: "https://images.unsplash.com/photo-1609766934622-2a8e7f159a2e?w=400&h=300&fit=crop", titleEn: "Aarti Ceremony", titleHi: "आरती समारोह", order: 2, isActive: true },
     ]);
+
+    await db.insert(trustContent).values({
+      titleEn: "Shree Umiya Mataji Temple Trust",
+      titleHi: "श्री उमिया माताजी मंदिर ट्रस्ट",
+      subtitleEn: "Learn about the organization that maintains and preserves the sacred Umiya Mataji Temple",
+      subtitleHi: "उस संगठन के बारे में जानें जो पवित्र उमिया माताजी मंदिर का रखरखाव और संरक्षण करता है",
+      contentEn: "The Shree Umiya Mataji Temple Trust was established in 2018 with the sacred mission of preserving and promoting the spiritual heritage of the Umiya Mataji Temple in Tarana, Ujjain, Madhya Pradesh. Our trust is dedicated to maintaining the temple's sanctity while serving the spiritual needs of devotees worldwide.\n\nRegistered under the Madhya Pradesh Public Trusts Act, our trust comprises devoted members who work tirelessly to ensure the temple's operations, rituals, and community services are carried out with utmost devotion and transparency.\n\nOver the years, the trust has objective to expanded its activities beyond temple maintenance to include educational initiatives, community welfare programs, and preservation of cultural heritage.",
+      contentHi: "श्री उमिया माताजी मंदिर ट्रस्ट की स्थापना 2018 में टाराना, उज्जैन, मध्य प्रदेश में उमिया माताजी मंदिर की आध्यात्मिक विरासत को संरक्षित और बढ़ावा देने के पवित्र मिशन के साथ की गई थी। हमारा ट्रस्ट दुनिया भर के भक्तों की आध्यात्मिक जरूरतों को पूरा करते हुए मंदिर की पवित्रता को बनाए रखने के लिए समर्पित है।\n\nमध्य प्रदेश पब्लिक ट्रस्ट अधिनियम के तहत पंजीकृत, हमारे ट्रस्ट में समर्पित सदस्य शामिल हैं जो यह सुनिश्चित करने के लिए अथक प्रयास करते हैं कि मंदिर के संचालन, अनुष्ठान और सामुदायिक सेवाएं अत्यंत भक्ति और पारदर्शिता के साथ की जाएं।\n\nवर्षों से, ट्रस्ट ने मंदिर के रखरखाव से परे शैक्षिक पहल, सामुदायिक कल्याण कार्यक्रम और सांस्कृतिक विरासत के संरक्षण को शामिल करने के लिए अपनी गतिविधियों का विस्तार करने का उद्देश्य रखा है।",
+    });
+
+    await db.insert(contactInfo).values({
+      phone1: "+91 98765 43210",
+      phone2: "+91 12345 67890",
+      email1: "info@umiyadhamtarana.org",
+      email2: "contact@umiyadhamtarana.org",
+      addressEn: "Umiya Dham Tarana, Ujjain, Madhya Pradesh, India",
+      addressHi: "उमिया धाम टाराना, उज्जैन, मध्य प्रदेश, भारत",
+    });
+
+    await db.insert(users).values({
+      username: "admin",
+      password: "admin123",
+    });
 
     console.log("Database seeded successfully");
   } catch (error) {

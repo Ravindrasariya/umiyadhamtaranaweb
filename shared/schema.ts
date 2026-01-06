@@ -108,3 +108,33 @@ export const siteSettings = pgTable("site_settings", {
 export const insertSiteSettingSchema = createInsertSchema(siteSettings).omit({ id: true });
 export type InsertSiteSetting = z.infer<typeof insertSiteSettingSchema>;
 export type SiteSetting = typeof siteSettings.$inferSelect;
+
+// Trust Content (About the Trust page)
+export const trustContent = pgTable("trust_content", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  titleEn: text("title_en").notNull(),
+  titleHi: text("title_hi").notNull(),
+  subtitleEn: text("subtitle_en"),
+  subtitleHi: text("subtitle_hi"),
+  contentEn: text("content_en").notNull(),
+  contentHi: text("content_hi").notNull(),
+});
+
+export const insertTrustContentSchema = createInsertSchema(trustContent).omit({ id: true });
+export type InsertTrustContent = z.infer<typeof insertTrustContentSchema>;
+export type TrustContent = typeof trustContent.$inferSelect;
+
+// Contact Info
+export const contactInfo = pgTable("contact_info", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  phone1: text("phone1"),
+  phone2: text("phone2"),
+  email1: text("email1"),
+  email2: text("email2"),
+  addressEn: text("address_en"),
+  addressHi: text("address_hi"),
+});
+
+export const insertContactInfoSchema = createInsertSchema(contactInfo).omit({ id: true });
+export type InsertContactInfo = z.infer<typeof insertContactInfoSchema>;
+export type ContactInfo = typeof contactInfo.$inferSelect;
