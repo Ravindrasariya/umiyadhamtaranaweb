@@ -135,10 +135,11 @@ export function Footer() {
                 href="https://krashuved.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary hover:underline font-medium"
+                className="hover:underline font-medium"
                 data-testid="link-powered-by"
               >
-                KrashuVed Pvt. Ltd.
+                <span className="text-green-400">Krashu</span>
+                <span className="text-white">Ved Pvt. Ltd.</span>
               </a>
             </p>
           </div>
