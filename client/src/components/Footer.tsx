@@ -139,7 +139,8 @@ export function Footer() {
                 data-testid="link-powered-by"
               >
                 <span className="text-green-400">Krashu</span>
-                <span className="text-white">Ved Pvt. Ltd.</span>
+                <span className="text-primary">Ved</span>
+                <span className="text-white"> Pvt. Ltd.</span>
               </a>
             </p>
           </div>
