@@ -49,6 +49,15 @@ const nearbyTemples = [
     descriptionHi: "12 ज्योतिर्लिंगों में से एक, महाकालेश्वर मंदिर भगवान शिव को समर्पित है। यह मंदिर अपनी दक्षिण मुखी मूर्ति और श्मशान भूमि की पवित्र राख से की जाने वाली प्रसिद्ध भस्म आरती के लिए जाना जाता है।",
   },
   {
+    nameEn: "Gopal Gaushala Kachnariya",
+    nameHi: "गोपाल गौशाला कचनारिया",
+    distanceEn: "10 KM",
+    distanceHi: "10 किमी",
+    imageUrl: "https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?w=600&h=400&fit=crop",
+    descriptionEn: "Gopal Gaushala Kachnariya is a sacred cow shelter dedicated to the protection and care of cows. The gaushala provides shelter, food, and medical care to cows and promotes the ancient tradition of cow worship.",
+    descriptionHi: "गोपाल गौशाला कचनारिया गायों की सुरक्षा और देखभाल के लिए समर्पित एक पवित्र गौशाला है। गौशाला गायों को आश्रय, भोजन और चिकित्सा देखभाल प्रदान करती है और गौ पूजा की प्राचीन परंपरा को बढ़ावा देती है।",
+  },
+  {
     nameEn: "Harsiddhi Mata Temple",
     nameHi: "हरसिद्धि माता मंदिर",
     imageUrl: "https://images.unsplash.com/photo-1609766934622-2a8e7f159a2e?w=600&h=400&fit=crop",
@@ -163,9 +172,16 @@ export default function Tourism() {
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <h3 className="absolute bottom-4 left-4 right-4 text-white font-bold text-lg">
-                      {t(temple.nameEn, temple.nameHi)}
-                    </h3>
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <h3 className="text-white font-bold text-lg">
+                        {t(temple.nameEn, temple.nameHi)}
+                      </h3>
+                      {temple.distanceEn && (
+                        <p className="text-white/80 text-sm mt-1">
+                          {t(temple.distanceEn, temple.distanceHi)} {t("away", "दूर")}
+                        </p>
+                      )}
+                    </div>
                   </div>
                   <CardContent className="p-4">
                     <p className="text-sm text-muted-foreground leading-relaxed">
