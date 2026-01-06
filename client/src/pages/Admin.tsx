@@ -11,8 +11,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Trash2, Plus, Save, Image, FileText, Clock, Camera, Building, Phone, Lock, Heart, ScrollText, Home } from "lucide-react";
-import type { SliderImage, AboutContent, PoojaTiming, Service, GalleryItem, TrustContent, ContactInfo, TermsContent, Donation, GaushalaSlider, GaushalaAbout, GaushalaService, GaushalaGallery } from "@shared/schema";
+import { Trash2, Plus, Save, Image, FileText, Clock, Camera, Building, Phone, Lock, Heart, ScrollText, Home, Users } from "lucide-react";
+import type { SliderImage, AboutContent, PoojaTiming, Service, GalleryItem, TrustContent, ContactInfo, TermsContent, Donation, GaushalaSlider, GaushalaAbout, GaushalaService, GaushalaGallery, TeamMember } from "@shared/schema";
 
 function LoginForm({ onLogin }: { onLogin: () => void }) {
   const { t } = useLanguage();
@@ -1201,6 +1201,189 @@ function GaushalaGalleryManager() {
   );
 }
 
+function TeamMembersManager() {
+  const { t } = useLanguage();
+  const { toast } = useToast();
+  const [newMember, setNewMember] = useState({
+    nameEn: "",
+    nameHi: "",
+    designationEn: "",
+    designationHi: "",
+    phone: "",
+    email: "",
+    imageUrl: "",
+  });
+
+  const { data: members, isLoading } = useQuery<TeamMember[]>({
+    queryKey: ["/api/team-members"],
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (data: Partial<TeamMember>) => {
+      return apiRequest("POST", "/api/team-members", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/team-members"] });
+      setNewMember({ nameEn: "", nameHi: "", designationEn: "", designationHi: "", phone: "", email: "", imageUrl: "" });
+      toast({ title: t("Team member added", "टीम सदस्य जोड़ा गया") });
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<TeamMember> }) => {
+      return apiRequest("PATCH", `/api/team-members/${id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/team-members"] });
+      toast({ title: t("Team member updated", "टीम सदस्य अपडेट किया गया") });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return apiRequest("DELETE", `/api/team-members/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/team-members"] });
+      toast({ title: t("Team member deleted", "टीम सदस्य हटाया गया") });
+    },
+  });
+
+  if (isLoading) return <Skeleton className="h-48" />;
+
+  return (
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold">{t("Team Members", "टीम सदस्य")}</h3>
+      <p className="text-sm text-muted-foreground">{t("Manage Chairman, Secretary and Treasurer details", "अध्यक्ष, सचिव और कोषाध्यक्ष का विवरण प्रबंधित करें")}</p>
+
+      <div className="space-y-4">
+        {members?.map((member) => (
+          <Card key={member.id} data-testid={`admin-team-${member.id}`}>
+            <CardContent className="pt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <Input
+                  placeholder={t("Name (English)", "नाम (अंग्रेज़ी)")}
+                  defaultValue={member.nameEn}
+                  onBlur={(e) => updateMutation.mutate({ id: member.id, data: { nameEn: e.target.value } })}
+                  data-testid={`input-team-name-en-${member.id}`}
+                />
+                <Input
+                  placeholder={t("Name (Hindi)", "नाम (हिंदी)")}
+                  defaultValue={member.nameHi}
+                  onBlur={(e) => updateMutation.mutate({ id: member.id, data: { nameHi: e.target.value } })}
+                  data-testid={`input-team-name-hi-${member.id}`}
+                />
+                <Input
+                  placeholder={t("Designation (English)", "पद (अंग्रेज़ी)")}
+                  defaultValue={member.designationEn}
+                  onBlur={(e) => updateMutation.mutate({ id: member.id, data: { designationEn: e.target.value } })}
+                  data-testid={`input-team-designation-en-${member.id}`}
+                />
+                <Input
+                  placeholder={t("Designation (Hindi)", "पद (हिंदी)")}
+                  defaultValue={member.designationHi}
+                  onBlur={(e) => updateMutation.mutate({ id: member.id, data: { designationHi: e.target.value } })}
+                  data-testid={`input-team-designation-hi-${member.id}`}
+                />
+                <Input
+                  placeholder={t("Phone", "फ़ोन")}
+                  defaultValue={member.phone || ""}
+                  onBlur={(e) => updateMutation.mutate({ id: member.id, data: { phone: e.target.value } })}
+                  data-testid={`input-team-phone-${member.id}`}
+                />
+                <Input
+                  placeholder={t("Email", "ईमेल")}
+                  defaultValue={member.email || ""}
+                  onBlur={(e) => updateMutation.mutate({ id: member.id, data: { email: e.target.value } })}
+                  data-testid={`input-team-email-${member.id}`}
+                />
+                <Input
+                  placeholder={t("Photo URL", "फ़ोटो URL")}
+                  defaultValue={member.imageUrl || ""}
+                  onBlur={(e) => updateMutation.mutate({ id: member.id, data: { imageUrl: e.target.value } })}
+                  className="md:col-span-2"
+                  data-testid={`input-team-image-${member.id}`}
+                />
+              </div>
+              <div className="flex justify-end mt-3">
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => deleteMutation.mutate(member.id)}
+                  data-testid={`button-delete-team-${member.id}`}
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  {t("Delete", "हटाएं")}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <Card>
+        <CardHeader className="pb-2">
+          <h4 className="font-medium">{t("Add New Member", "नया सदस्य जोड़ें")}</h4>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Input
+              placeholder={t("Name (English)", "नाम (अंग्रेज़ी)")}
+              value={newMember.nameEn}
+              onChange={(e) => setNewMember({ ...newMember, nameEn: e.target.value })}
+              data-testid="input-new-team-name-en"
+            />
+            <Input
+              placeholder={t("Name (Hindi)", "नाम (हिंदी)")}
+              value={newMember.nameHi}
+              onChange={(e) => setNewMember({ ...newMember, nameHi: e.target.value })}
+              data-testid="input-new-team-name-hi"
+            />
+            <Input
+              placeholder={t("Designation (English) - e.g. Chairman", "पद (अंग्रेज़ी) - जैसे Chairman")}
+              value={newMember.designationEn}
+              onChange={(e) => setNewMember({ ...newMember, designationEn: e.target.value })}
+              data-testid="input-new-team-designation-en"
+            />
+            <Input
+              placeholder={t("Designation (Hindi) - e.g. अध्यक्ष", "पद (हिंदी) - जैसे अध्यक्ष")}
+              value={newMember.designationHi}
+              onChange={(e) => setNewMember({ ...newMember, designationHi: e.target.value })}
+              data-testid="input-new-team-designation-hi"
+            />
+            <Input
+              placeholder={t("Phone", "फ़ोन")}
+              value={newMember.phone}
+              onChange={(e) => setNewMember({ ...newMember, phone: e.target.value })}
+              data-testid="input-new-team-phone"
+            />
+            <Input
+              placeholder={t("Email", "ईमेल")}
+              value={newMember.email}
+              onChange={(e) => setNewMember({ ...newMember, email: e.target.value })}
+              data-testid="input-new-team-email"
+            />
+          </div>
+          <Input
+            placeholder={t("Photo URL", "फ़ोटो URL")}
+            value={newMember.imageUrl}
+            onChange={(e) => setNewMember({ ...newMember, imageUrl: e.target.value })}
+            data-testid="input-new-team-image"
+          />
+          <Button
+            onClick={() => createMutation.mutate({ ...newMember, order: (members?.length || 0) + 1 })}
+            disabled={!newMember.nameEn || !newMember.designationEn || createMutation.isPending}
+            data-testid="button-add-team-member"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            {t("Add Member", "सदस्य जोड़ें")}
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 function AdminPanel({ onLogout }: { onLogout: () => void }) {
   const { t } = useLanguage();
 
@@ -1274,6 +1457,11 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
               <TabsTrigger value="gaushala-gallery" className="gap-1" data-testid="tab-admin-gaushala-gallery">
                 <Camera className="w-4 h-4" />
                 <span className="hidden sm:inline">{t("G-Gallery", "गैलरी")}</span>
+              </TabsTrigger>
+              <div className="w-full mt-3 mb-2 pt-2 border-t text-xs font-medium text-muted-foreground">{t("Team", "टीम")}</div>
+              <TabsTrigger value="team" className="gap-1" data-testid="tab-admin-team">
+                <Users className="w-4 h-4" />
+                <span className="hidden sm:inline">{t("Team", "टीम")}</span>
               </TabsTrigger>
             </TabsList>
 
@@ -1369,6 +1557,14 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
               <Card>
                 <CardContent className="pt-6">
                   <GaushalaGalleryManager />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="team">
+              <Card>
+                <CardContent className="pt-6">
+                  <TeamMembersManager />
                 </CardContent>
               </Card>
             </TabsContent>

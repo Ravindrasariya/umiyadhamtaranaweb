@@ -228,3 +228,20 @@ export const gaushalaGallery = pgTable("gaushala_gallery", {
 export const insertGaushalaGallerySchema = createInsertSchema(gaushalaGallery).omit({ id: true });
 export type InsertGaushalaGallery = z.infer<typeof insertGaushalaGallerySchema>;
 export type GaushalaGallery = typeof gaushalaGallery.$inferSelect;
+
+// Team Members (Chairman, Secretary, Treasurer)
+export const teamMembers = pgTable("team_members", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  nameEn: text("name_en").notNull(),
+  nameHi: text("name_hi").notNull(),
+  designationEn: text("designation_en").notNull(),
+  designationHi: text("designation_hi").notNull(),
+  phone: text("phone"),
+  email: text("email"),
+  imageUrl: text("image_url"),
+  order: integer("order").notNull().default(0),
+});
+
+export const insertTeamMemberSchema = createInsertSchema(teamMembers).omit({ id: true });
+export type InsertTeamMember = z.infer<typeof insertTeamMemberSchema>;
+export type TeamMember = typeof teamMembers.$inferSelect;

@@ -14,6 +14,7 @@ import {
   insertGaushalaAboutSchema,
   insertGaushalaServiceSchema,
   insertGaushalaGallerySchema,
+  insertTeamMemberSchema,
 } from "@shared/schema";
 
 export async function registerRoutes(
@@ -516,6 +517,47 @@ export async function registerRoutes(
       res.json({ success: true });
     } catch (error) {
       res.status(400).json({ error: "Failed to delete gallery item" });
+    }
+  });
+
+  // Team Members
+  app.get("/api/team-members", async (req, res) => {
+    try {
+      const members = await storage.getTeamMembers();
+      res.json(members);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch team members" });
+    }
+  });
+
+  app.post("/api/team-members", async (req, res) => {
+    try {
+      const data = insertTeamMemberSchema.parse(req.body);
+      const member = await storage.createTeamMember(data);
+      res.json(member);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid data" });
+    }
+  });
+
+  app.patch("/api/team-members/:id", async (req, res) => {
+    try {
+      const member = await storage.updateTeamMember(req.params.id, req.body);
+      if (!member) {
+        return res.status(404).json({ error: "Team member not found" });
+      }
+      res.json(member);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update team member" });
+    }
+  });
+
+  app.delete("/api/team-members/:id", async (req, res) => {
+    try {
+      await storage.deleteTeamMember(req.params.id);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(400).json({ error: "Failed to delete team member" });
     }
   });
 

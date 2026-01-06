@@ -29,6 +29,8 @@ import {
   type InsertGaushalaService,
   type GaushalaGallery,
   type InsertGaushalaGallery,
+  type TeamMember,
+  type InsertTeamMember,
   users,
   sliderImages,
   aboutContent,
@@ -44,6 +46,7 @@ import {
   gaushalaAbout,
   gaushalaServices,
   gaushalaGallery,
+  teamMembers,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, asc, desc } from "drizzle-orm";
@@ -131,6 +134,12 @@ export interface IStorage {
   createGaushalaGalleryItem(data: InsertGaushalaGallery): Promise<GaushalaGallery>;
   updateGaushalaGalleryItem(id: string, data: Partial<InsertGaushalaGallery>): Promise<GaushalaGallery | undefined>;
   deleteGaushalaGalleryItem(id: string): Promise<boolean>;
+
+  // Team Members
+  getTeamMembers(): Promise<TeamMember[]>;
+  createTeamMember(data: InsertTeamMember): Promise<TeamMember>;
+  updateTeamMember(id: string, data: Partial<InsertTeamMember>): Promise<TeamMember | undefined>;
+  deleteTeamMember(id: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -406,6 +415,26 @@ export class DatabaseStorage implements IStorage {
 
   async deleteGaushalaGalleryItem(id: string): Promise<boolean> {
     await db.delete(gaushalaGallery).where(eq(gaushalaGallery.id, id));
+    return true;
+  }
+
+  // Team Members
+  async getTeamMembers(): Promise<TeamMember[]> {
+    return db.select().from(teamMembers).orderBy(asc(teamMembers.order));
+  }
+
+  async createTeamMember(data: InsertTeamMember): Promise<TeamMember> {
+    const [member] = await db.insert(teamMembers).values(data).returning();
+    return member;
+  }
+
+  async updateTeamMember(id: string, data: Partial<InsertTeamMember>): Promise<TeamMember | undefined> {
+    const [member] = await db.update(teamMembers).set(data).where(eq(teamMembers.id, id)).returning();
+    return member || undefined;
+  }
+
+  async deleteTeamMember(id: string): Promise<boolean> {
+    await db.delete(teamMembers).where(eq(teamMembers.id, id));
     return true;
   }
 }

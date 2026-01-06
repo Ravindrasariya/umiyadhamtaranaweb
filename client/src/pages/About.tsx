@@ -4,8 +4,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Phone, Mail, MapPin } from "lucide-react";
-import type { TrustContent, ContactInfo } from "@shared/schema";
+import { Phone, Mail, MapPin, User } from "lucide-react";
+import type { TrustContent, ContactInfo, TeamMember } from "@shared/schema";
 
 function TrustSection() {
   const { t } = useLanguage();
@@ -53,6 +53,96 @@ function TrustSection() {
             </div>
           </CardContent>
         </Card>
+      </div>
+    </section>
+  );
+}
+
+function TeamSection() {
+  const { t } = useLanguage();
+
+  const { data: members, isLoading } = useQuery<TeamMember[]>({
+    queryKey: ["/api/team-members"],
+  });
+
+  if (isLoading) {
+    return (
+      <section className="py-16 bg-muted/30" data-testid="section-team-loading">
+        <div className="max-w-5xl mx-auto px-4">
+          <Skeleton className="h-10 w-64 mx-auto mb-8" />
+          <div className="grid md:grid-cols-3 gap-8">
+            <Skeleton className="h-72" />
+            <Skeleton className="h-72" />
+            <Skeleton className="h-72" />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const defaultMembers = [
+    { id: "1", nameEn: "Name", nameHi: "नाम", designationEn: "Chairman", designationHi: "अध्यक्ष", phone: "", email: "", imageUrl: "", order: 0 },
+    { id: "2", nameEn: "Name", nameHi: "नाम", designationEn: "Secretary", designationHi: "सचिव", phone: "", email: "", imageUrl: "", order: 1 },
+    { id: "3", nameEn: "Name", nameHi: "नाम", designationEn: "Treasurer", designationHi: "कोषाध्यक्ष", phone: "", email: "", imageUrl: "", order: 2 },
+  ];
+
+  const displayMembers = members && members.length > 0 ? members : defaultMembers;
+
+  return (
+    <section className="py-16 bg-muted/30" data-testid="section-team">
+      <div className="max-w-5xl mx-auto px-4">
+        <h2 className="text-2xl md:text-3xl font-bold text-foreground text-center mb-12" data-testid="text-team-title">
+          {t("Our Management", "हमारा प्रबंधन")}
+        </h2>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {displayMembers.map((member) => (
+            <Card key={member.id} className="text-center overflow-visible" data-testid={`card-team-${member.id}`}>
+              <CardContent className="p-6">
+                <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-muted border-4 border-primary/20 flex items-center justify-center overflow-hidden">
+                  {member.imageUrl ? (
+                    <img
+                      src={member.imageUrl}
+                      alt={t(member.nameEn, member.nameHi)}
+                      className="w-full h-full object-cover"
+                      data-testid={`img-team-${member.id}`}
+                    />
+                  ) : (
+                    <User className="w-16 h-16 text-muted-foreground" />
+                  )}
+                </div>
+                <h3 className="text-xl font-semibold text-foreground mb-1" data-testid={`text-team-name-${member.id}`}>
+                  {t(member.nameEn, member.nameHi)}
+                </h3>
+                <p className="text-primary font-medium mb-3" data-testid={`text-team-designation-${member.id}`}>
+                  {t(member.designationEn, member.designationHi)}
+                </p>
+                <div className="space-y-1 text-sm text-muted-foreground">
+                  {member.phone && (
+                    <a
+                      href={`tel:${member.phone.replace(/\s/g, "")}`}
+                      className="flex items-center justify-center gap-2 hover:text-primary transition-colors"
+                      data-testid={`link-team-phone-${member.id}`}
+                    >
+                      <Phone className="w-4 h-4" />
+                      {member.phone}
+                    </a>
+                  )}
+                  {member.email && (
+                    <a
+                      href={`mailto:${member.email}`}
+                      className="flex items-center justify-center gap-2 hover:text-primary transition-colors"
+                      data-testid={`link-team-email-${member.id}`}
+                    >
+                      <Mail className="w-4 h-4" />
+                      {member.email}
+                    </a>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -180,6 +270,7 @@ export default function About() {
       <Header />
       <main className="flex-1">
         <TrustSection />
+        <TeamSection />
         <ContactSection />
       </main>
       <Footer />
