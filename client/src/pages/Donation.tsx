@@ -27,7 +27,7 @@ const donationTypes = [
   { valueEn: "General Donation", valueHi: "सामान्य दान" },
   { valueEn: "Temple Construction", valueHi: "मंदिर निर्माण" },
   { valueEn: "Annadaan (Food Donation)", valueHi: "अन्नदान" },
-  { valueEn: "Gaushala (Cow Shelter)", valueHi: "गौशाला" },
+  { valueEn: "Gopal Gaushala Kachnariya", valueHi: "गोपाल गौशाला कचनारिया" },
   { valueEn: "Education Fund", valueHi: "शिक्षा निधि" },
   { valueEn: "Festival Celebration", valueHi: "त्योहार उत्सव" },
 ];
