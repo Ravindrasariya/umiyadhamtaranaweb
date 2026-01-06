@@ -74,7 +74,7 @@ export function HeroSlider() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-8 md:p-16 text-center">
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white drop-shadow-lg mb-4">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white drop-shadow-lg mb-4">
               {t(slide.titleEn || "", slide.titleHi || "")}
             </h1>
           </div>
