@@ -1,8 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Link } from "wouter";
 import type { AboutContent } from "@shared/schema";
 
 const defaultAbout = {
@@ -66,11 +64,6 @@ export function AboutSection() {
             <p className="text-muted-foreground leading-relaxed text-lg">
               {t(displayAbout.contentEn, displayAbout.contentHi)}
             </p>
-            <Link href="/about">
-              <Button variant="outline" className="border-primary text-primary" data-testid="button-read-more">
-                {t("Read More", "और पढ़ें")}
-              </Button>
-            </Link>
           </div>
         </div>
       </div>
