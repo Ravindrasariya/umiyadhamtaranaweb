@@ -171,3 +171,60 @@ export const donations = pgTable("donations", {
 export const insertDonationSchema = createInsertSchema(donations).omit({ id: true, createdAt: true });
 export type InsertDonation = z.infer<typeof insertDonationSchema>;
 export type Donation = typeof donations.$inferSelect;
+
+// Gaushala Slider Images
+export const gaushalaSliders = pgTable("gaushala_sliders", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  imageUrl: text("image_url").notNull(),
+  titleEn: text("title_en"),
+  titleHi: text("title_hi"),
+  order: integer("order").notNull().default(0),
+  isActive: boolean("is_active").notNull().default(true),
+});
+
+export const insertGaushalaSliderSchema = createInsertSchema(gaushalaSliders).omit({ id: true });
+export type InsertGaushalaSlider = z.infer<typeof insertGaushalaSliderSchema>;
+export type GaushalaSlider = typeof gaushalaSliders.$inferSelect;
+
+// Gaushala About Content
+export const gaushalaAbout = pgTable("gaushala_about", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  titleEn: text("title_en").notNull(),
+  titleHi: text("title_hi").notNull(),
+  contentEn: text("content_en").notNull(),
+  contentHi: text("content_hi").notNull(),
+  imageUrl: text("image_url"),
+});
+
+export const insertGaushalaAboutSchema = createInsertSchema(gaushalaAbout).omit({ id: true });
+export type InsertGaushalaAbout = z.infer<typeof insertGaushalaAboutSchema>;
+export type GaushalaAbout = typeof gaushalaAbout.$inferSelect;
+
+// Gaushala Services
+export const gaushalaServices = pgTable("gaushala_services", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  titleEn: text("title_en").notNull(),
+  titleHi: text("title_hi").notNull(),
+  descriptionEn: text("description_en").notNull(),
+  descriptionHi: text("description_hi").notNull(),
+  imageUrl: text("image_url"),
+  order: integer("order").notNull().default(0),
+});
+
+export const insertGaushalaServiceSchema = createInsertSchema(gaushalaServices).omit({ id: true });
+export type InsertGaushalaService = z.infer<typeof insertGaushalaServiceSchema>;
+export type GaushalaService = typeof gaushalaServices.$inferSelect;
+
+// Gaushala Gallery
+export const gaushalaGallery = pgTable("gaushala_gallery", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  imageUrl: text("image_url").notNull(),
+  titleEn: text("title_en"),
+  titleHi: text("title_hi"),
+  order: integer("order").notNull().default(0),
+  isActive: boolean("is_active").notNull().default(true),
+});
+
+export const insertGaushalaGallerySchema = createInsertSchema(gaushalaGallery).omit({ id: true });
+export type InsertGaushalaGallery = z.infer<typeof insertGaushalaGallerySchema>;
+export type GaushalaGallery = typeof gaushalaGallery.$inferSelect;
