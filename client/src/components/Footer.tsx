@@ -43,7 +43,7 @@ export function Footer() {
             <p className="text-gray-300 leading-relaxed mb-6">
               {t(
                 "Umiya Dham Tarana is a sacred temple dedicated to Goddess Umiya, the kuldevi of Kadva Patidar community. We welcome devotees from all over the world.",
-                "उमिया धाम टाराना देवी उमिया को समर्पित एक पवित्र मंदिर है, जो कड़वा पाटीदार समुदाय की कुलदेवी हैं। हम दुनिया भर के भक्तों का स्वागत करते हैं।"
+                "उमिया धाम तराना देवी उमिया को समर्पित एक पवित्र मंदिर है, जो कड़वा पाटीदार समुदाय की कुलदेवी हैं। हम दुनिया भर के भक्तों का स्वागत करते हैं।"
               )}
             </p>
             <div className="flex gap-3">
@@ -103,7 +103,7 @@ export function Footer() {
                 <span className="text-gray-300">
                   {t(
                     "Temple Office, Umiya Dham Tarana, Dist. Ujjain, Madhya Pradesh, India",
-                    "मंदिर कार्यालय, उमिया धाम टाराना, जिला उज्जैन, मध्य प्रदेश, भारत"
+                    "मंदिर कार्यालय, उमिया धाम तराना, जिला उज्जैन, मध्य प्रदेश, भारत"
                   )}
                 </span>
               </div>

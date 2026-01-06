@@ -307,12 +307,12 @@ export async function registerRoutes(
   // Authentication
   app.post("/api/auth/login", async (req, res) => {
     try {
-      const { username, password } = req.body;
-      const user = await storage.getUserByUsername(username);
-      if (!user || user.password !== password) {
-        return res.status(401).json({ error: "Invalid credentials" });
+      const { password } = req.body;
+      const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
+      if (password !== adminPassword) {
+        return res.status(401).json({ error: "Invalid password" });
       }
-      res.json({ success: true, userId: user.id });
+      res.json({ success: true });
     } catch (error) {
       res.status(500).json({ error: "Login failed" });
     }

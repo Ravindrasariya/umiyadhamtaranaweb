@@ -11,7 +11,7 @@ const defaultSlides = [
     id: "1",
     imageUrl: "https://images.unsplash.com/photo-1564804955013-e02e72e02ec8?w=1600&h=900&fit=crop",
     titleEn: "Welcome to Umiya Dham Tarana",
-    titleHi: "उमिया धाम टाराना में आपका स्वागत है",
+    titleHi: "उमिया धाम तराना में आपका स्वागत है",
   },
   {
     id: "2",

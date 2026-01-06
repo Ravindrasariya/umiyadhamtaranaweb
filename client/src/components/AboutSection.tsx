@@ -9,7 +9,7 @@ const defaultAbout = {
   titleEn: "About Temple",
   titleHi: "मंदिर के बारे में",
   contentEn: "Umiya Dham Tarana is a sacred temple dedicated to Goddess Umiya, the kuldevi (clan deity) of the Kadva Patidar community. The temple stands as a beacon of spiritual devotion and cultural heritage, welcoming devotees from all over the world. With its magnificent architecture and serene atmosphere, the temple offers a divine experience to all who visit. The temple complex houses beautiful idols and provides various religious services throughout the year.",
-  contentHi: "उमिया धाम टाराना देवी उमिया को समर्पित एक पवित्र मंदिर है, जो कड़वा पाटीदार समुदाय की कुलदेवी हैं। यह मंदिर आध्यात्मिक भक्ति और सांस्कृतिक विरासत के प्रतीक के रूप में खड़ा है, जो दुनिया भर के भक्तों का स्वागत करता है। अपनी भव्य वास्तुकला और शांत वातावरण के साथ, मंदिर सभी आगंतुकों को एक दिव्य अनुभव प्रदान करता है। मंदिर परिसर में सुंदर मूर्तियाँ हैं और पूरे वर्ष विभिन्न धार्मिक सेवाएं प्रदान करता है।",
+  contentHi: "उमिया धाम तराना देवी उमिया को समर्पित एक पवित्र मंदिर है, जो कड़वा पाटीदार समुदाय की कुलदेवी हैं। यह मंदिर आध्यात्मिक भक्ति और सांस्कृतिक विरासत के प्रतीक के रूप में खड़ा है, जो दुनिया भर के भक्तों का स्वागत करता है। अपनी भव्य वास्तुकला और शांत वातावरण के साथ, मंदिर सभी आगंतुकों को एक दिव्य अनुभव प्रदान करता है। मंदिर परिसर में सुंदर मूर्तियाँ हैं और पूरे वर्ष विभिन्न धार्मिक सेवाएं प्रदान करता है।",
   imageUrl: "https://images.unsplash.com/photo-1609766934622-2a8e7f159a2e?w=600&h=400&fit=crop",
 };
 

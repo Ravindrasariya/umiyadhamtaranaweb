@@ -25,7 +25,7 @@ export function Header() {
               <span className="text-primary font-bold text-lg">ॐ</span>
             </div>
             <span className="text-white font-bold text-xl md:text-2xl tracking-wide">
-              {t("Umiya Dham Tarana", "उमिया धाम टाराना")}
+              {t("Umiya Dham Tarana", "उमिया धाम तराना")}
             </span>
           </div>
 

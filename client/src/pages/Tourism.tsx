@@ -101,7 +101,7 @@ export default function Tourism() {
               <p className="text-muted-foreground max-w-2xl mx-auto">
                 {t(
                   "Plan your sacred journey to Umiya Dham Tarana with our travel guide",
-                  "हमारी यात्रा गाइड के साथ उमिया धाम टाराना की अपनी पवित्र यात्रा की योजना बनाएं"
+                  "हमारी यात्रा गाइड के साथ उमिया धाम तराना की अपनी पवित्र यात्रा की योजना बनाएं"
                 )}
               </p>
             </div>

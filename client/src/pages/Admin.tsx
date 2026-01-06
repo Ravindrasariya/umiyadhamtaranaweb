@@ -17,7 +17,6 @@ import type { SliderImage, AboutContent, PoojaTiming, Service, GalleryItem, Trus
 function LoginForm({ onLogin }: { onLogin: () => void }) {
   const { t } = useLanguage();
   const { toast } = useToast();
-  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -26,7 +25,7 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
     setIsLoading(true);
 
     try {
-      const response = await apiRequest("POST", "/api/auth/login", { username, password });
+      const response = await apiRequest("POST", "/api/auth/login", { password });
       const data = await response.json();
       if (data.success) {
         sessionStorage.setItem("adminAuth", "true");
@@ -34,7 +33,7 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
         toast({ title: t("Login successful", "लॉगिन सफल") });
       }
     } catch (error) {
-      toast({ title: t("Invalid credentials", "अमान्य क्रेडेंशियल"), variant: "destructive" });
+      toast({ title: t("Invalid password", "अमान्य पासवर्ड"), variant: "destructive" });
     } finally {
       setIsLoading(false);
     }
@@ -48,19 +47,10 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
             <Lock className="w-8 h-8 text-primary" />
           </div>
           <h1 className="text-2xl font-bold">{t("Admin Login", "व्यवस्थापक लॉगिन")}</h1>
-          <p className="text-sm text-muted-foreground">{t("Enter your credentials to access the admin panel", "व्यवस्थापक पैनल तक पहुंचने के लिए अपना क्रेडेंशियल दर्ज करें")}</p>
+          <p className="text-sm text-muted-foreground">{t("Enter password to access the admin panel", "व्यवस्थापक पैनल तक पहुंचने के लिए पासवर्ड दर्ज करें")}</p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="text-sm font-medium">{t("Username", "उपयोगकर्ता नाम")}</label>
-              <Input
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder={t("Enter username", "उपयोगकर्ता नाम दर्ज करें")}
-                data-testid="input-admin-username"
-              />
-            </div>
             <div>
               <label className="text-sm font-medium">{t("Password", "पासवर्ड")}</label>
               <Input
@@ -71,7 +61,7 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
                 data-testid="input-admin-password"
               />
             </div>
-            <Button type="submit" className="w-full" disabled={isLoading} data-testid="button-admin-login">
+            <Button type="submit" className="w-full" disabled={isLoading || !password} data-testid="button-admin-login">
               {isLoading ? t("Logging in...", "लॉग इन हो रहा है...") : t("Login", "लॉगिन")}
             </Button>
           </form>
