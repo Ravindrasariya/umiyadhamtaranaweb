@@ -7,6 +7,7 @@ import { useState } from "react";
 const navItems = [
   { path: "/", labelEn: "Home", labelHi: "होम" },
   { path: "/about", labelEn: "About Us", labelHi: "हमारे बारे में" },
+  { path: "/gaushala", labelEn: "Gopal Gaushala", labelHi: "गोपाल गौशाला" },
   { path: "/tourism", labelEn: "Tourism", labelHi: "पर्यटन" },
   { path: "/donation", labelEn: "Donation", labelHi: "दान" },
 ];
