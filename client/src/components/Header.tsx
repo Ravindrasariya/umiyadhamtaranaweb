@@ -24,8 +24,12 @@ export function Header() {
             <div className="w-14 h-14 rounded-full bg-white/90 flex items-center justify-center shadow-md overflow-hidden">
               <span className="text-primary font-bold text-lg">ॐ</span>
             </div>
-            <span className="text-white font-bold text-xl md:text-2xl tracking-wide">
-              {t("Umiya Dham Tarana", "उमिया धाम तराना")}
+            <span className="text-white font-extrabold text-xl md:text-2xl tracking-wide">
+              {language === "hi" ? (
+                <span className="text-2xl md:text-3xl">उमिया धाम तराना</span>
+              ) : (
+                "Umiya Dham Tarana"
+              )}
             </span>
           </div>
 
