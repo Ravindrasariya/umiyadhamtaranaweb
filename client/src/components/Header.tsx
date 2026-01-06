@@ -38,14 +38,18 @@ export function Header() {
               <Link key={item.path} href={item.path}>
                 <Button
                   variant="ghost"
-                  className={`text-white/90 font-bold text-base px-5 py-2 ${
+                  className={`text-white/90 font-extrabold text-lg px-5 py-2 ${
                     location === item.path
                       ? "bg-white/20 text-white"
                       : ""
                   }`}
                   data-testid={`nav-${item.labelEn.toLowerCase().replace(/\s/g, "-")}`}
                 >
-                  {t(item.labelEn, item.labelHi)}
+                  {language === "hi" ? (
+                    <span className="text-xl">{item.labelHi}</span>
+                  ) : (
+                    item.labelEn
+                  )}
                 </Button>
               </Link>
             ))}
