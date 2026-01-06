@@ -11,8 +11,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Trash2, Plus, Save, Image, FileText, Clock, Camera, Building, Phone, Lock } from "lucide-react";
-import type { SliderImage, AboutContent, PoojaTiming, Service, GalleryItem, TrustContent, ContactInfo } from "@shared/schema";
+import { Trash2, Plus, Save, Image, FileText, Clock, Camera, Building, Phone, Lock, Heart } from "lucide-react";
+import type { SliderImage, AboutContent, PoojaTiming, Service, GalleryItem, TrustContent, ContactInfo, Donation } from "@shared/schema";
 
 function LoginForm({ onLogin }: { onLogin: () => void }) {
   const { t } = useLanguage();
@@ -668,6 +668,67 @@ function GalleryManager() {
   );
 }
 
+function DonationsManager() {
+  const { t } = useLanguage();
+
+  const { data: donations, isLoading } = useQuery<Donation[]>({
+    queryKey: ["/api/donations"],
+  });
+
+  if (isLoading) return <Skeleton className="h-48" />;
+
+  return (
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold">{t("Donation Requests", "दान अनुरोध")}</h3>
+      <p className="text-sm text-muted-foreground">
+        {t("View all donation requests submitted by devotees", "भक्तों द्वारा जमा किए गए सभी दान अनुरोध देखें")}
+      </p>
+
+      {donations?.length === 0 ? (
+        <Card>
+          <CardContent className="py-8 text-center text-muted-foreground">
+            {t("No donation requests yet", "अभी तक कोई दान अनुरोध नहीं")}
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-3">
+          {donations?.map((donation) => (
+            <Card key={donation.id} data-testid={`admin-donation-${donation.id}`}>
+              <CardContent className="p-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="font-semibold text-foreground">
+                      {donation.firstName} {donation.lastName}
+                    </p>
+                    <p className="text-sm text-muted-foreground">{donation.phone}</p>
+                    <p className="text-sm text-muted-foreground">{donation.email}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm">
+                      <span className="font-medium">{t("Type:", "प्रकार:")}</span> {donation.donationType}
+                    </p>
+                    <p className="text-lg font-bold text-primary">
+                      Rs. {donation.amount}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {donation.city}, {donation.state}
+                    </p>
+                  </div>
+                </div>
+                {donation.address && (
+                  <p className="text-sm text-muted-foreground mt-2 pt-2 border-t">
+                    {t("Address:", "पता:")} {donation.address}
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function AdminPanel({ onLogout }: { onLogout: () => void }) {
   const { t } = useLanguage();
 
@@ -691,7 +752,7 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
           </div>
 
           <Tabs defaultValue="sliders" className="w-full">
-            <TabsList className="grid w-full grid-cols-6 mb-6">
+            <TabsList className="grid w-full grid-cols-7 mb-6">
               <TabsTrigger value="sliders" className="gap-1" data-testid="tab-admin-sliders">
                 <Image className="w-4 h-4" />
                 <span className="hidden sm:inline">{t("Sliders", "स्लाइडर")}</span>
@@ -715,6 +776,10 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
               <TabsTrigger value="gallery" className="gap-1" data-testid="tab-admin-gallery">
                 <Camera className="w-4 h-4" />
                 <span className="hidden sm:inline">{t("Gallery", "गैलरी")}</span>
+              </TabsTrigger>
+              <TabsTrigger value="donations" className="gap-1" data-testid="tab-admin-donations">
+                <Heart className="w-4 h-4" />
+                <span className="hidden sm:inline">{t("Donations", "दान")}</span>
               </TabsTrigger>
             </TabsList>
 
@@ -762,6 +827,14 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
               <Card>
                 <CardContent className="pt-6">
                   <GalleryManager />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="donations">
+              <Card>
+                <CardContent className="pt-6">
+                  <DonationsManager />
                 </CardContent>
               </Card>
             </TabsContent>

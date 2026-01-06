@@ -17,6 +17,8 @@ import {
   type InsertTrustContent,
   type ContactInfo,
   type InsertContactInfo,
+  type Donation,
+  type InsertDonation,
   users,
   sliderImages,
   aboutContent,
@@ -26,9 +28,10 @@ import {
   siteSettings,
   trustContent,
   contactInfo,
+  donations,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, asc } from "drizzle-orm";
+import { eq, asc, desc } from "drizzle-orm";
 
 export interface IStorage {
   // Users
@@ -81,6 +84,10 @@ export interface IStorage {
   getContactInfo(): Promise<ContactInfo | undefined>;
   updateContactInfo(id: string, data: Partial<InsertContactInfo>): Promise<ContactInfo | undefined>;
   createContactInfo(data: InsertContactInfo): Promise<ContactInfo>;
+
+  // Donations
+  getDonations(): Promise<Donation[]>;
+  createDonation(data: InsertDonation): Promise<Donation>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -255,6 +262,16 @@ export class DatabaseStorage implements IStorage {
   async createContactInfo(data: InsertContactInfo): Promise<ContactInfo> {
     const [info] = await db.insert(contactInfo).values(data).returning();
     return info;
+  }
+
+  // Donations
+  async getDonations(): Promise<Donation[]> {
+    return db.select().from(donations).orderBy(desc(donations.createdAt));
+  }
+
+  async createDonation(data: InsertDonation): Promise<Donation> {
+    const [donation] = await db.insert(donations).values(data).returning();
+    return donation;
   }
 }
 

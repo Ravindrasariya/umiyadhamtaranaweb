@@ -9,6 +9,7 @@ import {
   insertGalleryItemSchema,
   insertTrustContentSchema,
   insertContactInfoSchema,
+  insertDonationSchema,
 } from "@shared/schema";
 
 export async function registerRoutes(
@@ -314,6 +315,26 @@ export async function registerRoutes(
       res.json({ success: true, userId: user.id });
     } catch (error) {
       res.status(500).json({ error: "Login failed" });
+    }
+  });
+
+  // Donations
+  app.get("/api/donations", async (req, res) => {
+    try {
+      const donations = await storage.getDonations();
+      res.json(donations);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch donations" });
+    }
+  });
+
+  app.post("/api/donations", async (req, res) => {
+    try {
+      const data = insertDonationSchema.parse(req.body);
+      const donation = await storage.createDonation(data);
+      res.json(donation);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid donation data" });
     }
   });
 

@@ -138,3 +138,23 @@ export const contactInfo = pgTable("contact_info", {
 export const insertContactInfoSchema = createInsertSchema(contactInfo).omit({ id: true });
 export type InsertContactInfo = z.infer<typeof insertContactInfoSchema>;
 export type ContactInfo = typeof contactInfo.$inferSelect;
+
+// Donations
+export const donations = pgTable("donations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  phone: text("phone").notNull(),
+  email: text("email").notNull(),
+  state: text("state").notNull(),
+  city: text("city").notNull(),
+  pincode: text("pincode"),
+  address: text("address"),
+  donationType: text("donation_type").notNull(),
+  amount: text("amount").notNull(),
+  createdAt: text("created_at").notNull().default(sql`NOW()`),
+});
+
+export const insertDonationSchema = createInsertSchema(donations).omit({ id: true, createdAt: true });
+export type InsertDonation = z.infer<typeof insertDonationSchema>;
+export type Donation = typeof donations.$inferSelect;

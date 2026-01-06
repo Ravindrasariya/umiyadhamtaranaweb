@@ -7,6 +7,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import Home from "@/pages/Home";
 import About from "@/pages/About";
 import Tourism from "@/pages/Tourism";
+import Donation from "@/pages/Donation";
 import Admin from "@/pages/Admin";
 import NotFound from "@/pages/not-found";
 
@@ -16,6 +17,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/about" component={About} />
       <Route path="/tourism" component={Tourism} />
+      <Route path="/donation" component={Donation} />
       <Route path="/admin" component={Admin} />
       <Route component={NotFound} />
     </Switch>
