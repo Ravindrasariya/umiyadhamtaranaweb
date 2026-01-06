@@ -50,13 +50,12 @@ export function Header() {
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
-              size="sm"
               onClick={() => setLanguage(language === "en" ? "hi" : "en")}
               className="bg-white/10 border-white/30 text-white gap-2"
               data-testid="button-language-toggle"
             >
-              <Globe className="w-4 h-4" />
-              <span className="font-medium">{language === "en" ? "हिंदी" : "EN"}</span>
+              <Globe className="w-5 h-5" />
+              <span className="font-bold text-base">{language === "en" ? "हिंदी" : "EN"}</span>
             </Button>
 
             <Button
