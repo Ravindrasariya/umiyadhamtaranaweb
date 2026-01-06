@@ -11,8 +11,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Trash2, Plus, Save, Image, FileText, Clock, Camera, Building, Phone, Lock, Heart, ScrollText } from "lucide-react";
-import type { SliderImage, AboutContent, PoojaTiming, Service, GalleryItem, TrustContent, ContactInfo, TermsContent, Donation } from "@shared/schema";
+import { Trash2, Plus, Save, Image, FileText, Clock, Camera, Building, Phone, Lock, Heart, ScrollText, Home } from "lucide-react";
+import type { SliderImage, AboutContent, PoojaTiming, Service, GalleryItem, TrustContent, ContactInfo, TermsContent, Donation, GaushalaSlider, GaushalaAbout, GaushalaService, GaushalaGallery } from "@shared/schema";
 
 function LoginForm({ onLogin }: { onLogin: () => void }) {
   const { t } = useLanguage();
@@ -815,6 +815,392 @@ function DonationsManager() {
   );
 }
 
+function GaushalaSliderManager() {
+  const { t } = useLanguage();
+  const { toast } = useToast();
+  const [newSlider, setNewSlider] = useState({ imageUrl: "", titleEn: "", titleHi: "" });
+
+  const { data: sliders, isLoading } = useQuery<GaushalaSlider[]>({
+    queryKey: ["/api/gaushala/sliders"],
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (data: Partial<GaushalaSlider>) => {
+      return apiRequest("POST", "/api/gaushala/sliders", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/gaushala/sliders"] });
+      setNewSlider({ imageUrl: "", titleEn: "", titleHi: "" });
+      toast({ title: t("Slider added successfully", "स्लाइडर सफलतापूर्वक जोड़ा गया") });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return apiRequest("DELETE", `/api/gaushala/sliders/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/gaushala/sliders"] });
+      toast({ title: t("Slider deleted", "स्लाइडर हटाया गया") });
+    },
+  });
+
+  if (isLoading) return <Skeleton className="h-48" />;
+
+  return (
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold">{t("Gaushala Slider Images", "गौशाला स्लाइडर इमेज")}</h3>
+      <p className="text-sm text-muted-foreground">{t("Manage images for Gopal Gaushala hero slider", "गोपाल गौशाला हीरो स्लाइडर के लिए इमेज प्रबंधित करें")}</p>
+
+      <div className="grid gap-4">
+        {sliders?.map((slider) => (
+          <Card key={slider.id} data-testid={`admin-gaushala-slider-${slider.id}`}>
+            <CardContent className="flex items-center gap-4 p-4">
+              <img src={slider.imageUrl} alt="" className="w-24 h-16 object-cover rounded" />
+              <div className="flex-1">
+                <p className="font-medium">{slider.titleEn}</p>
+                <p className="text-sm text-muted-foreground">{slider.titleHi}</p>
+              </div>
+              <Button
+                variant="destructive"
+                size="icon"
+                onClick={() => deleteMutation.mutate(slider.id)}
+                disabled={deleteMutation.isPending}
+                data-testid={`button-delete-gaushala-slider-${slider.id}`}
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <Card>
+        <CardHeader className="pb-2">
+          <h4 className="font-medium">{t("Add New Slider", "नया स्लाइडर जोड़ें")}</h4>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <Input
+            placeholder={t("Image URL", "इमेज URL")}
+            value={newSlider.imageUrl}
+            onChange={(e) => setNewSlider({ ...newSlider, imageUrl: e.target.value })}
+            data-testid="input-gaushala-slider-image-url"
+          />
+          <Input
+            placeholder={t("Title (English)", "शीर्षक (अंग्रेज़ी)")}
+            value={newSlider.titleEn}
+            onChange={(e) => setNewSlider({ ...newSlider, titleEn: e.target.value })}
+            data-testid="input-gaushala-slider-title-en"
+          />
+          <Input
+            placeholder={t("Title (Hindi)", "शीर्षक (हिंदी)")}
+            value={newSlider.titleHi}
+            onChange={(e) => setNewSlider({ ...newSlider, titleHi: e.target.value })}
+            data-testid="input-gaushala-slider-title-hi"
+          />
+          <Button
+            onClick={() => createMutation.mutate({ ...newSlider, order: (sliders?.length || 0) + 1, isActive: true })}
+            disabled={!newSlider.imageUrl || createMutation.isPending}
+            data-testid="button-add-gaushala-slider"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            {t("Add Slider", "स्लाइडर जोड़ें")}
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function GaushalaAboutManager() {
+  const { t } = useLanguage();
+  const { toast } = useToast();
+
+  const { data: about, isLoading } = useQuery<GaushalaAbout>({
+    queryKey: ["/api/gaushala/about"],
+  });
+
+  const [formData, setFormData] = useState<Partial<GaushalaAbout>>({});
+
+  const updateMutation = useMutation({
+    mutationFn: async (data: Partial<GaushalaAbout>) => {
+      if (about?.id) {
+        return apiRequest("PATCH", `/api/gaushala/about/${about.id}`, data);
+      }
+      return apiRequest("POST", "/api/gaushala/about", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/gaushala/about"] });
+      toast({ title: t("Gaushala about content updated", "गौशाला सामग्री अपडेट हुई") });
+    },
+  });
+
+  if (isLoading) return <Skeleton className="h-64" />;
+
+  const currentData = { ...about, ...formData };
+
+  return (
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold">{t("Gaushala About Content", "गौशाला के बारे में सामग्री")}</h3>
+
+      <div className="space-y-3">
+        <div>
+          <label className="text-sm font-medium">{t("Title (English)", "शीर्षक (अंग्रेज़ी)")}</label>
+          <Input
+            value={currentData.titleEn || ""}
+            onChange={(e) => setFormData({ ...formData, titleEn: e.target.value })}
+            data-testid="input-gaushala-about-title-en"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium">{t("Title (Hindi)", "शीर्षक (हिंदी)")}</label>
+          <Input
+            value={currentData.titleHi || ""}
+            onChange={(e) => setFormData({ ...formData, titleHi: e.target.value })}
+            data-testid="input-gaushala-about-title-hi"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium">{t("Content (English)", "सामग्री (अंग्रेज़ी)")}</label>
+          <Textarea
+            value={currentData.contentEn || ""}
+            onChange={(e) => setFormData({ ...formData, contentEn: e.target.value })}
+            rows={4}
+            data-testid="input-gaushala-about-content-en"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium">{t("Content (Hindi)", "सामग्री (हिंदी)")}</label>
+          <Textarea
+            value={currentData.contentHi || ""}
+            onChange={(e) => setFormData({ ...formData, contentHi: e.target.value })}
+            rows={4}
+            data-testid="input-gaushala-about-content-hi"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium">{t("Image URL", "इमेज URL")}</label>
+          <Input
+            value={currentData.imageUrl || ""}
+            onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+            data-testid="input-gaushala-about-image-url"
+          />
+        </div>
+        <Button
+          onClick={() => updateMutation.mutate(formData)}
+          disabled={updateMutation.isPending}
+          data-testid="button-save-gaushala-about"
+        >
+          <Save className="w-4 h-4 mr-2" />
+          {t("Save Changes", "परिवर्तन सहेजें")}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function GaushalaServicesManager() {
+  const { t } = useLanguage();
+  const { toast } = useToast();
+  const [newService, setNewService] = useState({ titleEn: "", titleHi: "", descriptionEn: "", descriptionHi: "", imageUrl: "" });
+
+  const { data: services, isLoading } = useQuery<GaushalaService[]>({
+    queryKey: ["/api/gaushala/services"],
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (data: Partial<GaushalaService>) => {
+      return apiRequest("POST", "/api/gaushala/services", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/gaushala/services"] });
+      setNewService({ titleEn: "", titleHi: "", descriptionEn: "", descriptionHi: "", imageUrl: "" });
+      toast({ title: t("Service added successfully", "सेवा सफलतापूर्वक जोड़ी गई") });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return apiRequest("DELETE", `/api/gaushala/services/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/gaushala/services"] });
+      toast({ title: t("Service deleted", "सेवा हटाई गई") });
+    },
+  });
+
+  if (isLoading) return <Skeleton className="h-48" />;
+
+  return (
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold">{t("Gaushala Services", "गौशाला सेवाएं")}</h3>
+      <p className="text-sm text-muted-foreground">{t("Manage services offered by the gaushala", "गौशाला द्वारा प्रदान की जाने वाली सेवाएं प्रबंधित करें")}</p>
+
+      <div className="grid gap-4">
+        {services?.map((service) => (
+          <Card key={service.id} data-testid={`admin-gaushala-service-${service.id}`}>
+            <CardContent className="flex items-center gap-4 p-4">
+              {service.imageUrl && <img src={service.imageUrl} alt="" className="w-16 h-16 object-cover rounded" />}
+              <div className="flex-1">
+                <p className="font-medium">{service.titleEn}</p>
+                <p className="text-sm text-muted-foreground">{service.titleHi}</p>
+              </div>
+              <Button
+                variant="destructive"
+                size="icon"
+                onClick={() => deleteMutation.mutate(service.id)}
+                disabled={deleteMutation.isPending}
+                data-testid={`button-delete-gaushala-service-${service.id}`}
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <Card>
+        <CardHeader className="pb-2">
+          <h4 className="font-medium">{t("Add New Service", "नई सेवा जोड़ें")}</h4>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <Input
+            placeholder={t("Title (English)", "शीर्षक (अंग्रेज़ी)")}
+            value={newService.titleEn}
+            onChange={(e) => setNewService({ ...newService, titleEn: e.target.value })}
+            data-testid="input-gaushala-service-title-en"
+          />
+          <Input
+            placeholder={t("Title (Hindi)", "शीर्षक (हिंदी)")}
+            value={newService.titleHi}
+            onChange={(e) => setNewService({ ...newService, titleHi: e.target.value })}
+            data-testid="input-gaushala-service-title-hi"
+          />
+          <Textarea
+            placeholder={t("Description (English)", "विवरण (अंग्रेज़ी)")}
+            value={newService.descriptionEn}
+            onChange={(e) => setNewService({ ...newService, descriptionEn: e.target.value })}
+            rows={2}
+            data-testid="input-gaushala-service-desc-en"
+          />
+          <Textarea
+            placeholder={t("Description (Hindi)", "विवरण (हिंदी)")}
+            value={newService.descriptionHi}
+            onChange={(e) => setNewService({ ...newService, descriptionHi: e.target.value })}
+            rows={2}
+            data-testid="input-gaushala-service-desc-hi"
+          />
+          <Input
+            placeholder={t("Image URL", "इमेज URL")}
+            value={newService.imageUrl}
+            onChange={(e) => setNewService({ ...newService, imageUrl: e.target.value })}
+            data-testid="input-gaushala-service-image-url"
+          />
+          <Button
+            onClick={() => createMutation.mutate({ ...newService, order: (services?.length || 0) + 1 })}
+            disabled={!newService.titleEn || createMutation.isPending}
+            data-testid="button-add-gaushala-service"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            {t("Add Service", "सेवा जोड़ें")}
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function GaushalaGalleryManager() {
+  const { t } = useLanguage();
+  const { toast } = useToast();
+  const [newItem, setNewItem] = useState({ imageUrl: "", titleEn: "", titleHi: "" });
+
+  const { data: items, isLoading } = useQuery<GaushalaGallery[]>({
+    queryKey: ["/api/gaushala/gallery"],
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (data: Partial<GaushalaGallery>) => {
+      return apiRequest("POST", "/api/gaushala/gallery", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/gaushala/gallery"] });
+      setNewItem({ imageUrl: "", titleEn: "", titleHi: "" });
+      toast({ title: t("Gallery item added", "गैलरी आइटम जोड़ा गया") });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return apiRequest("DELETE", `/api/gaushala/gallery/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/gaushala/gallery"] });
+      toast({ title: t("Gallery item deleted", "गैलरी आइटम हटाया गया") });
+    },
+  });
+
+  if (isLoading) return <Skeleton className="h-48" />;
+
+  return (
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold">{t("Gaushala Gallery", "गौशाला गैलरी")}</h3>
+      <p className="text-sm text-muted-foreground">{t("Manage photos for Gopal Gaushala gallery", "गोपाल गौशाला गैलरी के लिए फोटो प्रबंधित करें")}</p>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {items?.map((item) => (
+          <div key={item.id} className="relative group" data-testid={`admin-gaushala-gallery-${item.id}`}>
+            <img src={item.imageUrl} alt="" className="w-full h-24 object-cover rounded" />
+            <Button
+              variant="destructive"
+              size="icon"
+              className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
+              onClick={() => deleteMutation.mutate(item.id)}
+              data-testid={`button-delete-gaushala-gallery-${item.id}`}
+            >
+              <Trash2 className="w-3 h-3" />
+            </Button>
+          </div>
+        ))}
+      </div>
+
+      <Card>
+        <CardHeader className="pb-2">
+          <h4 className="font-medium">{t("Add New Photo", "नई फ़ोटो जोड़ें")}</h4>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <Input
+            placeholder={t("Image URL", "इमेज URL")}
+            value={newItem.imageUrl}
+            onChange={(e) => setNewItem({ ...newItem, imageUrl: e.target.value })}
+            data-testid="input-gaushala-gallery-url"
+          />
+          <Input
+            placeholder={t("Title (English)", "शीर्षक (अंग्रेज़ी)")}
+            value={newItem.titleEn}
+            onChange={(e) => setNewItem({ ...newItem, titleEn: e.target.value })}
+            data-testid="input-gaushala-gallery-title-en"
+          />
+          <Input
+            placeholder={t("Title (Hindi)", "शीर्षक (हिंदी)")}
+            value={newItem.titleHi}
+            onChange={(e) => setNewItem({ ...newItem, titleHi: e.target.value })}
+            data-testid="input-gaushala-gallery-title-hi"
+          />
+          <Button
+            onClick={() => createMutation.mutate({ ...newItem, order: (items?.length || 0) + 1, isActive: true })}
+            disabled={!newItem.imageUrl || createMutation.isPending}
+            data-testid="button-add-gaushala-gallery"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            {t("Add Photo", "फ़ोटो जोड़ें")}
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 function AdminPanel({ onLogout }: { onLogout: () => void }) {
   const { t } = useLanguage();
 
@@ -838,7 +1224,8 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
           </div>
 
           <Tabs defaultValue="sliders" className="w-full">
-            <TabsList className="grid w-full grid-cols-8 mb-6">
+            <TabsList className="flex flex-wrap w-full gap-1 h-auto mb-6 p-2">
+              <div className="w-full mb-2 text-xs font-medium text-muted-foreground">{t("Temple", "मंदिर")}</div>
               <TabsTrigger value="sliders" className="gap-1" data-testid="tab-admin-sliders">
                 <Image className="w-4 h-4" />
                 <span className="hidden sm:inline">{t("Sliders", "स्लाइडर")}</span>
@@ -870,6 +1257,23 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
               <TabsTrigger value="donations" className="gap-1" data-testid="tab-admin-donations">
                 <Heart className="w-4 h-4" />
                 <span className="hidden sm:inline">{t("Donations", "दान")}</span>
+              </TabsTrigger>
+              <div className="w-full mt-3 mb-2 pt-2 border-t text-xs font-medium text-muted-foreground">{t("Gaushala", "गौशाला")}</div>
+              <TabsTrigger value="gaushala-sliders" className="gap-1" data-testid="tab-admin-gaushala-sliders">
+                <Image className="w-4 h-4" />
+                <span className="hidden sm:inline">{t("G-Sliders", "स्लाइडर")}</span>
+              </TabsTrigger>
+              <TabsTrigger value="gaushala-about" className="gap-1" data-testid="tab-admin-gaushala-about">
+                <Home className="w-4 h-4" />
+                <span className="hidden sm:inline">{t("G-About", "परिचय")}</span>
+              </TabsTrigger>
+              <TabsTrigger value="gaushala-services" className="gap-1" data-testid="tab-admin-gaushala-services">
+                <Heart className="w-4 h-4" />
+                <span className="hidden sm:inline">{t("G-Services", "सेवाएं")}</span>
+              </TabsTrigger>
+              <TabsTrigger value="gaushala-gallery" className="gap-1" data-testid="tab-admin-gaushala-gallery">
+                <Camera className="w-4 h-4" />
+                <span className="hidden sm:inline">{t("G-Gallery", "गैलरी")}</span>
               </TabsTrigger>
             </TabsList>
 
@@ -933,6 +1337,38 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
               <Card>
                 <CardContent className="pt-6">
                   <DonationsManager />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="gaushala-sliders">
+              <Card>
+                <CardContent className="pt-6">
+                  <GaushalaSliderManager />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="gaushala-about">
+              <Card>
+                <CardContent className="pt-6">
+                  <GaushalaAboutManager />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="gaushala-services">
+              <Card>
+                <CardContent className="pt-6">
+                  <GaushalaServicesManager />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="gaushala-gallery">
+              <Card>
+                <CardContent className="pt-6">
+                  <GaushalaGalleryManager />
                 </CardContent>
               </Card>
             </TabsContent>
