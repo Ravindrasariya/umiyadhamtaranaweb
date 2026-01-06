@@ -610,14 +610,14 @@ function GalleryManager() {
           <div className="flex gap-2">
             <Button
               variant={newItem.type === "photo" ? "default" : "outline"}
-              onClick={() => setNewItem({ ...newItem, type: "photo" })}
+              onClick={() => setNewItem({ ...newItem, type: "photo", url: "", thumbnailUrl: "" })}
               data-testid="button-type-photo"
             >
               {t("Photo", "फ़ोटो")}
             </Button>
             <Button
               variant={newItem.type === "video" ? "default" : "outline"}
-              onClick={() => setNewItem({ ...newItem, type: "video" })}
+              onClick={() => setNewItem({ ...newItem, type: "video", url: "", thumbnailUrl: "" })}
               data-testid="button-type-video"
             >
               {t("Video", "वीडियो")}
@@ -1327,12 +1327,14 @@ function TeamMembersManager() {
                   onBlur={(e) => updateMutation.mutate({ id: member.id, data: { email: e.target.value } })}
                   data-testid={`input-team-email-${member.id}`}
                 />
-                <Input
-                  placeholder={t("Photo URL", "फ़ोटो URL")}
-                  defaultValue={member.imageUrl || ""}
-                  onBlur={(e) => updateMutation.mutate({ id: member.id, data: { imageUrl: e.target.value } })}
-                  className="md:col-span-2"
-                  data-testid={`input-team-image-${member.id}`}
+              </div>
+              <div className="md:col-span-2 mt-3">
+                <label className="text-sm font-medium mb-2 block">{t("Photo", "फ़ोटो")}</label>
+                <ImageUploader
+                  currentImageUrl={member.imageUrl || ""}
+                  onImageUploaded={(objectPath) => updateMutation.mutate({ id: member.id, data: { imageUrl: objectPath } })}
+                  onImageRemoved={() => updateMutation.mutate({ id: member.id, data: { imageUrl: "" } })}
+                  placeholder={t("Click to upload photo", "फ़ोटो अपलोड करने के लिए क्लिक करें")}
                 />
               </div>
               <div className="flex justify-end mt-3">
