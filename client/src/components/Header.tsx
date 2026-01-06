@@ -46,7 +46,7 @@ export function Header() {
                   data-testid={`nav-${item.labelEn.toLowerCase().replace(/\s/g, "-")}`}
                 >
                   {language === "hi" ? (
-                    <span className="text-xl">{item.labelHi}</span>
+                    <span className="text-xl font-extrabold">{item.labelHi}</span>
                   ) : (
                     item.labelEn
                   )}
