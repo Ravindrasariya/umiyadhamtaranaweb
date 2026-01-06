@@ -26,7 +26,7 @@ export async function seedDatabase() {
       {
         imageUrl: "https://images.unsplash.com/photo-1564804955013-e02e72e02ec8?w=1600&h=900&fit=crop",
         titleEn: "Welcome to Umiya Dham Tarana",
-        titleHi: "उमिया धाम टाराना में आपका स्वागत है",
+        titleHi: "उमिया धाम तराना में आपका स्वागत है",
         order: 1,
         isActive: true,
       },
@@ -50,7 +50,7 @@ export async function seedDatabase() {
       titleEn: "About Temple",
       titleHi: "मंदिर के बारे में",
       contentEn: "Umiya Dham Tarana is a sacred temple dedicated to Goddess Umiya, the kuldevi (clan deity) of the Kadva Patidar community. The temple stands as a beacon of spiritual devotion and cultural heritage, welcoming devotees from all over the world. With its magnificent architecture and serene atmosphere, the temple offers a divine experience to all who visit. The temple complex houses beautiful idols and provides various religious services throughout the year.",
-      contentHi: "उमिया धाम टाराना देवी उमिया को समर्पित एक पवित्र मंदिर है, जो कड़वा पाटीदार समुदाय की कुलदेवी हैं। यह मंदिर आध्यात्मिक भक्ति और सांस्कृतिक विरासत के प्रतीक के रूप में खड़ा है, जो दुनिया भर के भक्तों का स्वागत करता है। अपनी भव्य वास्तुकला और शांत वातावरण के साथ, मंदिर सभी आगंतुकों को एक दिव्य अनुभव प्रदान करता है। मंदिर परिसर में सुंदर मूर्तियाँ हैं और पूरे वर्ष विभिन्न धार्मिक सेवाएं प्रदान करता है।",
+      contentHi: "उमिया धाम तराना देवी उमिया को समर्पित एक पवित्र मंदिर है, जो कड़वा पाटीदार समुदाय की कुलदेवी हैं। यह मंदिर आध्यात्मिक भक्ति और सांस्कृतिक विरासत के प्रतीक के रूप में खड़ा है, जो दुनिया भर के भक्तों का स्वागत करता है। अपनी भव्य वास्तुकला और शांत वातावरण के साथ, मंदिर सभी आगंतुकों को एक दिव्य अनुभव प्रदान करता है। मंदिर परिसर में सुंदर मूर्तियाँ हैं और पूरे वर्ष विभिन्न धार्मिक सेवाएं प्रदान करता है।",
       imageUrl: "https://images.unsplash.com/photo-1609766934622-2a8e7f159a2e?w=600&h=400&fit=crop",
     });
 
@@ -110,7 +110,7 @@ export async function seedDatabase() {
       subtitleEn: "Learn about the organization that maintains and preserves the sacred Umiya Mataji Temple",
       subtitleHi: "उस संगठन के बारे में जानें जो पवित्र उमिया माताजी मंदिर का रखरखाव और संरक्षण करता है",
       contentEn: "The Shree Umiya Mataji Temple Trust was established in 2018 with the sacred mission of preserving and promoting the spiritual heritage of the Umiya Mataji Temple in Tarana, Ujjain, Madhya Pradesh. Our trust is dedicated to maintaining the temple's sanctity while serving the spiritual needs of devotees worldwide.\n\nRegistered under the Madhya Pradesh Public Trusts Act, our trust comprises devoted members who work tirelessly to ensure the temple's operations, rituals, and community services are carried out with utmost devotion and transparency.\n\nOver the years, the trust has objective to expanded its activities beyond temple maintenance to include educational initiatives, community welfare programs, and preservation of cultural heritage.",
-      contentHi: "श्री उमिया माताजी मंदिर ट्रस्ट की स्थापना 2018 में टाराना, उज्जैन, मध्य प्रदेश में उमिया माताजी मंदिर की आध्यात्मिक विरासत को संरक्षित और बढ़ावा देने के पवित्र मिशन के साथ की गई थी। हमारा ट्रस्ट दुनिया भर के भक्तों की आध्यात्मिक जरूरतों को पूरा करते हुए मंदिर की पवित्रता को बनाए रखने के लिए समर्पित है।\n\nमध्य प्रदेश पब्लिक ट्रस्ट अधिनियम के तहत पंजीकृत, हमारे ट्रस्ट में समर्पित सदस्य शामिल हैं जो यह सुनिश्चित करने के लिए अथक प्रयास करते हैं कि मंदिर के संचालन, अनुष्ठान और सामुदायिक सेवाएं अत्यंत भक्ति और पारदर्शिता के साथ की जाएं।\n\nवर्षों से, ट्रस्ट ने मंदिर के रखरखाव से परे शैक्षिक पहल, सामुदायिक कल्याण कार्यक्रम और सांस्कृतिक विरासत के संरक्षण को शामिल करने के लिए अपनी गतिविधियों का विस्तार करने का उद्देश्य रखा है।",
+      contentHi: "श्री उमिया माताजी मंदिर ट्रस्ट की स्थापना 2018 में तराना, उज्जैन, मध्य प्रदेश में उमिया माताजी मंदिर की आध्यात्मिक विरासत को संरक्षित और बढ़ावा देने के पवित्र मिशन के साथ की गई थी। हमारा ट्रस्ट दुनिया भर के भक्तों की आध्यात्मिक जरूरतों को पूरा करते हुए मंदिर की पवित्रता को बनाए रखने के लिए समर्पित है।\n\nमध्य प्रदेश पब्लिक ट्रस्ट अधिनियम के तहत पंजीकृत, हमारे ट्रस्ट में समर्पित सदस्य शामिल हैं जो यह सुनिश्चित करने के लिए अथक प्रयास करते हैं कि मंदिर के संचालन, अनुष्ठान और सामुदायिक सेवाएं अत्यंत भक्ति और पारदर्शिता के साथ की जाएं।\n\nवर्षों से, ट्रस्ट ने मंदिर के रखरखाव से परे शैक्षिक पहल, सामुदायिक कल्याण कार्यक्रम और सांस्कृतिक विरासत के संरक्षण को शामिल करने के लिए अपनी गतिविधियों का विस्तार करने का उद्देश्य रखा है।",
     });
 
     await db.insert(contactInfo).values({
@@ -119,7 +119,7 @@ export async function seedDatabase() {
       email1: "info@umiyadhamtarana.org",
       email2: "contact@umiyadhamtarana.org",
       addressEn: "Umiya Dham Tarana, Ujjain, Madhya Pradesh, India",
-      addressHi: "उमिया धाम टाराना, उज्जैन, मध्य प्रदेश, भारत",
+      addressHi: "उमिया धाम तराना, उज्जैन, मध्य प्रदेश, भारत",
     });
 
     await db.insert(termsContent).values({

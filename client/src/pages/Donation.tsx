@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Heart, CheckCircle } from "lucide-react";
+import { Link } from "wouter";
 
 const indianStates = [
   "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
@@ -309,7 +310,11 @@ export default function Donation() {
                     data-testid="checkbox-donation-terms"
                   />
                   <label htmlFor="terms" className="text-sm text-foreground cursor-pointer">
-                    {t("I agree to the ", "मैं ")}<span className="text-primary font-medium">{t("Terms and Conditions", "नियम और शर्तों")}</span>{t("", " से सहमत हूं")}
+                    {t("I agree to the ", "मैं ")}
+                    <Link href="/terms" className="text-primary font-medium hover:underline" data-testid="link-terms">
+                      {t("Terms and Conditions", "नियम और शर्तों")}
+                    </Link>
+                    {t("", " से सहमत हूं")}
                   </label>
                 </div>
               </CardContent>
