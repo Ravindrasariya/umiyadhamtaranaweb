@@ -336,13 +336,13 @@ function GaushalaGallerySection() {
           {displayGallery.map((item, index) => (
             <div
               key={item.id}
-              className="aspect-square relative overflow-hidden rounded-lg group"
+              className="aspect-square relative overflow-hidden rounded-lg group bg-muted"
               data-testid={`gaushala-gallery-item-${index}`}
             >
               <img
                 src={item.imageUrl}
                 alt={t(item.titleEn || "", item.titleHi || "")}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               {(item.titleEn || item.titleHi) && (

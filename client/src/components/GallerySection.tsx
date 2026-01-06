@@ -80,14 +80,14 @@ export function GallerySection() {
               {photos.map((photo) => (
                 <div
                   key={photo.id}
-                  className="relative group cursor-pointer overflow-hidden rounded-lg aspect-[4/3]"
+                  className="relative group cursor-pointer overflow-hidden rounded-lg aspect-[4/3] bg-muted"
                   onClick={() => setSelectedImage(photo.url)}
                   data-testid={`gallery-photo-${photo.id}`}
                 >
                   <img
                     src={photo.url}
                     alt={t(photo.titleEn || "", photo.titleHi || "")}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <span className="text-white text-sm font-medium px-2 text-center">
@@ -108,11 +108,11 @@ export function GallerySection() {
                   data-testid={`gallery-video-${video.id}`}
                 >
                   {video.thumbnailUrl ? (
-                    <div className="relative w-full h-full">
+                    <div className="relative w-full h-full bg-muted">
                       <img
                         src={video.thumbnailUrl}
                         alt={t(video.titleEn || "", video.titleHi || "")}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain"
                       />
                       <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                         <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center">
