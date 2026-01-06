@@ -11,8 +11,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Trash2, Plus, Save, Image, FileText, Clock, Camera, Building, Phone, Lock, Heart } from "lucide-react";
-import type { SliderImage, AboutContent, PoojaTiming, Service, GalleryItem, TrustContent, ContactInfo, Donation } from "@shared/schema";
+import { Trash2, Plus, Save, Image, FileText, Clock, Camera, Building, Phone, Lock, Heart, ScrollText } from "lucide-react";
+import type { SliderImage, AboutContent, PoojaTiming, Service, GalleryItem, TrustContent, ContactInfo, TermsContent, Donation } from "@shared/schema";
 
 function LoginForm({ onLogin }: { onLogin: () => void }) {
   const { t } = useLanguage();
@@ -658,6 +658,102 @@ function GalleryManager() {
   );
 }
 
+function TermsManager() {
+  const { t } = useLanguage();
+  const { toast } = useToast();
+
+  const { data: terms, isLoading } = useQuery<TermsContent>({
+    queryKey: ["/api/terms"],
+  });
+
+  const [form, setForm] = useState({
+    titleEn: "",
+    titleHi: "",
+    contentEn: "",
+    contentHi: "",
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async (data: Partial<TermsContent>) => {
+      await apiRequest("PATCH", `/api/terms/${terms?.id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/terms"] });
+      toast({ title: t("Terms updated", "नियम अपडेट किए गए") });
+    },
+  });
+
+  if (isLoading) return <Skeleton className="h-48" />;
+
+  const currentForm = {
+    titleEn: form.titleEn || terms?.titleEn || "",
+    titleHi: form.titleHi || terms?.titleHi || "",
+    contentEn: form.contentEn || terms?.contentEn || "",
+    contentHi: form.contentHi || terms?.contentHi || "",
+  };
+
+  return (
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold">{t("Terms & Conditions", "नियम और शर्तें")}</h3>
+      <p className="text-sm text-muted-foreground">
+        {t("Manage the terms and conditions shown on the donation page", "दान पृष्ठ पर दिखाई देने वाले नियम और शर्तें प्रबंधित करें")}
+      </p>
+
+      <div className="grid gap-4">
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <label className="text-sm font-medium">{t("Title (English)", "शीर्षक (अंग्रेज़ी)")}</label>
+            <Input
+              value={currentForm.titleEn}
+              onChange={(e) => setForm({ ...form, titleEn: e.target.value })}
+              data-testid="input-terms-title-en"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium">{t("Title (Hindi)", "शीर्षक (हिंदी)")}</label>
+            <Input
+              value={currentForm.titleHi}
+              onChange={(e) => setForm({ ...form, titleHi: e.target.value })}
+              data-testid="input-terms-title-hi"
+            />
+          </div>
+        </div>
+        <div>
+          <label className="text-sm font-medium">{t("Content (English)", "सामग्री (अंग्रेज़ी)")}</label>
+          <Textarea
+            value={currentForm.contentEn}
+            onChange={(e) => setForm({ ...form, contentEn: e.target.value })}
+            rows={12}
+            data-testid="input-terms-content-en"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium">{t("Content (Hindi)", "सामग्री (हिंदी)")}</label>
+          <Textarea
+            value={currentForm.contentHi}
+            onChange={(e) => setForm({ ...form, contentHi: e.target.value })}
+            rows={12}
+            data-testid="input-terms-content-hi"
+          />
+        </div>
+        <Button
+          onClick={() => updateMutation.mutate({
+            titleEn: currentForm.titleEn,
+            titleHi: currentForm.titleHi,
+            contentEn: currentForm.contentEn,
+            contentHi: currentForm.contentHi,
+          })}
+          disabled={updateMutation.isPending}
+          data-testid="button-save-terms"
+        >
+          <Save className="w-4 h-4 mr-2" />
+          {t("Save Changes", "परिवर्तन सहेजें")}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 function DonationsManager() {
   const { t } = useLanguage();
 
@@ -742,7 +838,7 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
           </div>
 
           <Tabs defaultValue="sliders" className="w-full">
-            <TabsList className="grid w-full grid-cols-7 mb-6">
+            <TabsList className="grid w-full grid-cols-8 mb-6">
               <TabsTrigger value="sliders" className="gap-1" data-testid="tab-admin-sliders">
                 <Image className="w-4 h-4" />
                 <span className="hidden sm:inline">{t("Sliders", "स्लाइडर")}</span>
@@ -766,6 +862,10 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
               <TabsTrigger value="gallery" className="gap-1" data-testid="tab-admin-gallery">
                 <Camera className="w-4 h-4" />
                 <span className="hidden sm:inline">{t("Gallery", "गैलरी")}</span>
+              </TabsTrigger>
+              <TabsTrigger value="terms" className="gap-1" data-testid="tab-admin-terms">
+                <ScrollText className="w-4 h-4" />
+                <span className="hidden sm:inline">{t("Terms", "नियम")}</span>
               </TabsTrigger>
               <TabsTrigger value="donations" className="gap-1" data-testid="tab-admin-donations">
                 <Heart className="w-4 h-4" />
@@ -817,6 +917,14 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
               <Card>
                 <CardContent className="pt-6">
                   <GalleryManager />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="terms">
+              <Card>
+                <CardContent className="pt-6">
+                  <TermsManager />
                 </CardContent>
               </Card>
             </TabsContent>

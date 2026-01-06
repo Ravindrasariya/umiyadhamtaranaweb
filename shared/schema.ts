@@ -139,6 +139,19 @@ export const insertContactInfoSchema = createInsertSchema(contactInfo).omit({ id
 export type InsertContactInfo = z.infer<typeof insertContactInfoSchema>;
 export type ContactInfo = typeof contactInfo.$inferSelect;
 
+// Terms & Conditions
+export const termsContent = pgTable("terms_content", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  titleEn: text("title_en").notNull(),
+  titleHi: text("title_hi").notNull(),
+  contentEn: text("content_en").notNull(),
+  contentHi: text("content_hi").notNull(),
+});
+
+export const insertTermsContentSchema = createInsertSchema(termsContent).omit({ id: true });
+export type InsertTermsContent = z.infer<typeof insertTermsContentSchema>;
+export type TermsContent = typeof termsContent.$inferSelect;
+
 // Donations
 export const donations = pgTable("donations", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),

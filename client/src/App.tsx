@@ -8,6 +8,7 @@ import Home from "@/pages/Home";
 import About from "@/pages/About";
 import Tourism from "@/pages/Tourism";
 import Donation from "@/pages/Donation";
+import Terms from "@/pages/Terms";
 import Admin from "@/pages/Admin";
 import NotFound from "@/pages/not-found";
 
@@ -18,6 +19,7 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/tourism" component={Tourism} />
       <Route path="/donation" component={Donation} />
+      <Route path="/terms" component={Terms} />
       <Route path="/admin" component={Admin} />
       <Route component={NotFound} />
     </Switch>

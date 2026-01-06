@@ -318,6 +318,28 @@ export async function registerRoutes(
     }
   });
 
+  // Terms Content
+  app.get("/api/terms", async (req, res) => {
+    try {
+      const terms = await storage.getTermsContent();
+      res.json(terms || null);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch terms" });
+    }
+  });
+
+  app.patch("/api/terms/:id", async (req, res) => {
+    try {
+      const terms = await storage.updateTermsContent(req.params.id, req.body);
+      if (!terms) {
+        return res.status(404).json({ error: "Terms not found" });
+      }
+      res.json(terms);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update terms" });
+    }
+  });
+
   // Donations
   app.get("/api/donations", async (req, res) => {
     try {

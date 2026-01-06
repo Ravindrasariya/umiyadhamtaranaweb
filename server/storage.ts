@@ -17,6 +17,8 @@ import {
   type InsertTrustContent,
   type ContactInfo,
   type InsertContactInfo,
+  type TermsContent,
+  type InsertTermsContent,
   type Donation,
   type InsertDonation,
   users,
@@ -28,6 +30,7 @@ import {
   siteSettings,
   trustContent,
   contactInfo,
+  termsContent,
   donations,
 } from "@shared/schema";
 import { db } from "./db";
@@ -84,6 +87,11 @@ export interface IStorage {
   getContactInfo(): Promise<ContactInfo | undefined>;
   updateContactInfo(id: string, data: Partial<InsertContactInfo>): Promise<ContactInfo | undefined>;
   createContactInfo(data: InsertContactInfo): Promise<ContactInfo>;
+
+  // Terms Content
+  getTermsContent(): Promise<TermsContent | undefined>;
+  updateTermsContent(id: string, data: Partial<InsertTermsContent>): Promise<TermsContent | undefined>;
+  createTermsContent(data: InsertTermsContent): Promise<TermsContent>;
 
   // Donations
   getDonations(): Promise<Donation[]>;
@@ -262,6 +270,22 @@ export class DatabaseStorage implements IStorage {
   async createContactInfo(data: InsertContactInfo): Promise<ContactInfo> {
     const [info] = await db.insert(contactInfo).values(data).returning();
     return info;
+  }
+
+  // Terms Content
+  async getTermsContent(): Promise<TermsContent | undefined> {
+    const [content] = await db.select().from(termsContent).limit(1);
+    return content || undefined;
+  }
+
+  async updateTermsContent(id: string, data: Partial<InsertTermsContent>): Promise<TermsContent | undefined> {
+    const [content] = await db.update(termsContent).set(data).where(eq(termsContent.id, id)).returning();
+    return content || undefined;
+  }
+
+  async createTermsContent(data: InsertTermsContent): Promise<TermsContent> {
+    const [content] = await db.insert(termsContent).values(data).returning();
+    return content;
   }
 
   // Donations
