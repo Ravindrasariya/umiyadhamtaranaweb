@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { registerObjectStorageRoutes } from "./replit_integrations/object_storage";
 import {
   insertSliderImageSchema,
   insertAboutContentSchema,
@@ -560,6 +561,9 @@ export async function registerRoutes(
       res.status(400).json({ error: "Failed to delete team member" });
     }
   });
+
+  // Register object storage routes for file uploads
+  registerObjectStorageRoutes(app);
 
   return httpServer;
 }
