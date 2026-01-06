@@ -3,6 +3,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Globe } from "lucide-react";
 import { useState } from "react";
+import templeLogo from "@assets/Screenshot_2026-01-06_at_11.56.05_AM_1767681641086.png";
 
 const navItems = [
   { path: "/", labelEn: "Home", labelHi: "होम" },
@@ -22,8 +23,8 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-white/90 flex items-center justify-center shadow-md overflow-hidden">
-              <span className="text-primary font-bold text-lg">ॐ</span>
+            <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-md overflow-hidden">
+              <img src={templeLogo} alt="Umiya Dham Tarana" className="w-full h-full object-cover" />
             </div>
             <span className="text-white font-extrabold text-xl md:text-2xl tracking-wide">
               {language === "hi" ? (
