@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Trash2, Plus, Save, Image, FileText, Clock, Camera, Building, Phone, Lock, Heart, ScrollText, Home, Users, Upload } from "lucide-react";
+import { Trash2, Plus, Save, Image, FileText, Clock, Camera, Building, Phone, Lock, Heart, ScrollText, Home, Users, Upload, Pencil, X } from "lucide-react";
 import { ImageUploader } from "@/components/ImageUploader";
 import type { SliderImage, AboutContent, PoojaTiming, Service, GalleryItem, TrustContent, ContactInfo, TermsContent, Donation, GaushalaSlider, GaushalaAbout, GaushalaService, GaushalaGallery, TeamMember } from "@shared/schema";
 
@@ -76,6 +76,8 @@ function SliderManager() {
   const { t } = useLanguage();
   const { toast } = useToast();
   const [newSlider, setNewSlider] = useState({ imageUrl: "", titleEn: "", titleHi: "" });
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editData, setEditData] = useState<{ imageUrl: string; titleEn: string; titleHi: string }>({ imageUrl: "", titleEn: "", titleHi: "" });
 
   const { data: sliders, isLoading } = useQuery<SliderImage[]>({
     queryKey: ["/api/slider-images"],
@@ -92,6 +94,18 @@ function SliderManager() {
     },
   });
 
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<SliderImage> }) => {
+      return apiRequest("PATCH", `/api/slider-images/${id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/slider-images"] });
+      setEditingId(null);
+      setEditData({ imageUrl: "", titleEn: "", titleHi: "" });
+      toast({ title: t("Slider updated successfully", "स्लाइडर सफलतापूर्वक अपडेट हुआ") });
+    },
+  });
+
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       return apiRequest("DELETE", `/api/slider-images/${id}`);
@@ -101,6 +115,16 @@ function SliderManager() {
       toast({ title: t("Slider deleted", "स्लाइडर हटाया गया") });
     },
   });
+
+  const startEditing = (slider: SliderImage) => {
+    setEditingId(slider.id);
+    setEditData({ imageUrl: slider.imageUrl, titleEn: slider.titleEn || "", titleHi: slider.titleHi || "" });
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    setEditData({ imageUrl: "", titleEn: "", titleHi: "" });
+  };
 
   if (isLoading) return <Skeleton className="h-48" />;
 
@@ -112,22 +136,72 @@ function SliderManager() {
       <div className="grid gap-4">
         {sliders?.map((slider) => (
           <Card key={slider.id} data-testid={`admin-slider-${slider.id}`}>
-            <CardContent className="flex items-center gap-4 p-4">
-              <img src={slider.imageUrl} alt="" className="w-24 h-16 object-cover rounded" />
-              <div className="flex-1">
-                <p className="font-medium">{slider.titleEn}</p>
-                <p className="text-sm text-muted-foreground">{slider.titleHi}</p>
-              </div>
-              <Button
-                variant="destructive"
-                size="icon"
-                onClick={() => deleteMutation.mutate(slider.id)}
-                disabled={deleteMutation.isPending}
-                data-testid={`button-delete-slider-${slider.id}`}
-              >
-                <Trash2 className="w-4 h-4" />
-              </Button>
-            </CardContent>
+            {editingId === slider.id ? (
+              <CardContent className="p-4 space-y-3">
+                <div>
+                  <label className="text-sm font-medium mb-2 block">{t("Upload Image", "इमेज अपलोड करें")}</label>
+                  <ImageUploader
+                    currentImageUrl={editData.imageUrl}
+                    onImageUploaded={(objectPath) => setEditData({ ...editData, imageUrl: objectPath })}
+                    onImageRemoved={() => setEditData({ ...editData, imageUrl: "" })}
+                    placeholder={t("Click to upload slider image", "स्लाइडर इमेज अपलोड करने के लिए क्लिक करें")}
+                  />
+                </div>
+                <Input
+                  placeholder={t("Title (English)", "शीर्षक (अंग्रेज़ी)")}
+                  value={editData.titleEn}
+                  onChange={(e) => setEditData({ ...editData, titleEn: e.target.value })}
+                  data-testid={`input-edit-slider-title-en-${slider.id}`}
+                />
+                <Input
+                  placeholder={t("Title (Hindi)", "शीर्षक (हिंदी)")}
+                  value={editData.titleHi}
+                  onChange={(e) => setEditData({ ...editData, titleHi: e.target.value })}
+                  data-testid={`input-edit-slider-title-hi-${slider.id}`}
+                />
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => updateMutation.mutate({ id: slider.id, data: editData })}
+                    disabled={!editData.imageUrl || updateMutation.isPending}
+                    data-testid={`button-save-slider-${slider.id}`}
+                  >
+                    <Save className="w-4 h-4 mr-2" />
+                    {t("Save", "सहेजें")}
+                  </Button>
+                  <Button variant="outline" onClick={cancelEditing} data-testid={`button-cancel-edit-slider-${slider.id}`}>
+                    <X className="w-4 h-4 mr-2" />
+                    {t("Cancel", "रद्द करें")}
+                  </Button>
+                </div>
+              </CardContent>
+            ) : (
+              <CardContent className="flex items-center gap-4 p-4">
+                <img src={slider.imageUrl} alt="" className="w-24 h-16 object-cover rounded" />
+                <div className="flex-1">
+                  <p className="font-medium">{slider.titleEn}</p>
+                  <p className="text-sm text-muted-foreground">{slider.titleHi}</p>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => startEditing(slider)}
+                    data-testid={`button-edit-slider-${slider.id}`}
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    onClick={() => deleteMutation.mutate(slider.id)}
+                    disabled={deleteMutation.isPending}
+                    data-testid={`button-delete-slider-${slider.id}`}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            )}
           </Card>
         ))}
       </div>
