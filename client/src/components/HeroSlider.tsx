@@ -67,13 +67,11 @@ export function HeroSlider() {
             index === currentSlide ? "opacity-100" : "opacity-0"
           }`}
         >
-          <div className="w-full h-full bg-black flex items-center justify-center">
-            <img
-              src={slide.imageUrl}
-              alt={t(slide.titleEn || "", slide.titleHi || "")}
-              className="w-full h-full object-contain"
-            />
-          </div>
+          <img
+            src={slide.imageUrl}
+            alt={t(slide.titleEn || "", slide.titleHi || "")}
+            className="w-full h-full object-cover"
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-8 md:p-16 text-center">
             <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white drop-shadow-lg mb-4">
