@@ -8,6 +8,32 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Camera, Video, X } from "lucide-react";
 import type { GalleryItem } from "@shared/schema";
 
+function convertToEmbedUrl(url: string): string {
+  if (!url) return url;
+  
+  if (url.includes("youtube.com/embed/")) {
+    return url;
+  }
+  
+  let videoId = "";
+  
+  const watchMatch = url.match(/youtube\.com\/watch\?v=([^&]+)/);
+  if (watchMatch) {
+    videoId = watchMatch[1];
+  }
+  
+  const shortMatch = url.match(/youtu\.be\/([^?]+)/);
+  if (shortMatch) {
+    videoId = shortMatch[1];
+  }
+  
+  if (videoId) {
+    return `https://www.youtube.com/embed/${videoId}`;
+  }
+  
+  return url;
+}
+
 const defaultPhotos: GalleryItem[] = [
   { id: "1", type: "photo", url: "https://images.unsplash.com/photo-1564804955013-e02e72e02ec8?w=600&h=400&fit=crop", thumbnailUrl: "", titleEn: "Temple Exterior", titleHi: "मंदिर का बाहरी दृश्य", order: 1, isActive: true },
   { id: "2", type: "photo", url: "https://images.unsplash.com/photo-1609766934622-2a8e7f159a2e?w=600&h=400&fit=crop", thumbnailUrl: "", titleEn: "Divine Idol", titleHi: "दिव्य मूर्ति", order: 2, isActive: true },
@@ -122,7 +148,7 @@ export function GallerySection() {
                     </div>
                   ) : (
                     <iframe
-                      src={video.url}
+                      src={convertToEmbedUrl(video.url)}
                       title={t(video.titleEn || "", video.titleHi || "")}
                       className="w-full h-full"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
