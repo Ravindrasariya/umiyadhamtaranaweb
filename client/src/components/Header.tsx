@@ -29,12 +29,34 @@ export function Header() {
             </div>
             <span className="text-white font-extrabold text-xl md:text-2xl tracking-wide">
               {language === "hi" ? (
-                <span className="text-2xl md:text-3xl">उमिया धाम तराना</span>
+                <span className="text-2xl md:text-3xl">माँ उमिया धाम तराना</span>
               ) : (
-                "Umiya Dham Tarana"
+                "Maa Umiya Dham Tarana"
               )}
             </span>
           </div>
+
+          <nav className="hidden md:flex items-center gap-1">
+            {navItems.filter(item => ["/", "/about", "/donation"].includes(item.path)).map((item) => (
+              <Link key={item.path} href={item.path}>
+                <Button
+                  variant="ghost"
+                  className={`text-white/90 font-extrabold text-base px-4 py-2 ${
+                    location === item.path
+                      ? "bg-white/20 text-white"
+                      : ""
+                  }`}
+                  data-testid={`nav-${item.labelEn.toLowerCase().replace(/\s/g, "-")}`}
+                >
+                  {language === "hi" ? (
+                    <span className="text-lg font-extrabold">{item.labelHi}</span>
+                  ) : (
+                    item.labelEn
+                  )}
+                </Button>
+              </Link>
+            ))}
+          </nav>
 
           <div className="flex items-center gap-2">
             <Button
@@ -63,7 +85,7 @@ export function Header() {
       <nav className="hidden md:block bg-primary/90 border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center gap-2 py-2">
-            {navItems.map((item) => (
+            {navItems.filter(item => !["/", "/about", "/donation"].includes(item.path)).map((item) => (
               <Link key={item.path} href={item.path}>
                 <Button
                   variant="ghost"
@@ -72,7 +94,7 @@ export function Header() {
                       ? "bg-white/20 text-white"
                       : ""
                   }`}
-                  data-testid={`nav-${item.labelEn.toLowerCase().replace(/\s/g, "-")}`}
+                  data-testid={`nav-${item.labelEn.toLowerCase().replace(/\s/g, "-")}-row2`}
                 >
                   {language === "hi" ? (
                     <span className="text-xl font-extrabold">{item.labelHi}</span>
