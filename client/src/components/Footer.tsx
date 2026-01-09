@@ -13,17 +13,41 @@ const quickLinks = [
 ];
 
 const additionalLinks = [
-  { path: "/gallery", labelEn: "Gallery", labelHi: "गैलरी" },
+  { path: "/#gallery", labelEn: "Gallery", labelHi: "गैलरी" },
   { path: "/terms", labelEn: "Terms & Conditions", labelHi: "नियम और शर्तें" },
-  { path: "/privacy", labelEn: "Privacy Policy", labelHi: "गोपनीयता नीति" },
+  { path: "/terms", labelEn: "Privacy Policy", labelHi: "गोपनीयता नीति" },
 ];
 
 function FooterLink({ path, children }: { path: string; children: React.ReactNode }) {
   const [, setLocation] = useLocation();
   
+  const handleClick = () => {
+    if (path.includes('#')) {
+      const [basePath, hash] = path.split('#');
+      if (basePath === '' || basePath === '/') {
+        const element = document.getElementById(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          setLocation('/');
+          setTimeout(() => {
+            document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+          }, 100);
+        }
+      } else {
+        setLocation(basePath);
+        setTimeout(() => {
+          document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+        }, 300);
+      }
+    } else {
+      setLocation(path);
+    }
+  };
+  
   return (
     <button
-      onClick={() => setLocation(path)}
+      onClick={handleClick}
       className="block text-gray-300 hover:text-primary transition-colors cursor-pointer text-left"
     >
       {children}
