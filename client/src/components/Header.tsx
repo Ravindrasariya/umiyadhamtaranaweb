@@ -10,6 +10,7 @@ const navItems = [
   { path: "/about", labelEn: "About Us", labelHi: "हमारे बारे में" },
   { path: "/gaushala", labelEn: "Gopal Gaushala", labelHi: "गोपाल गौशाला" },
   { path: "/tourism", labelEn: "Tourism", labelHi: "पर्यटन" },
+  { path: "/vivaah-sammelan", labelEn: "Vivaah Sammelan", labelHi: "विवाह सम्मेलन" },
   { path: "/donation", labelEn: "Donation", labelHi: "दान" },
 ];
 
