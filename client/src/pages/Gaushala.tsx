@@ -6,7 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ChevronLeft, ChevronRight, Heart, Leaf, Sprout, Phone, Mail, User } from "lucide-react";
+import { ChevronLeft, ChevronRight, Heart, Leaf, Sprout, Phone } from "lucide-react";
 import type { GaushalaSlider, GaushalaAbout, GaushalaService, GaushalaGallery } from "@shared/schema";
 
 const defaultSlides = [
@@ -37,6 +37,7 @@ const defaultAbout: GaushalaAbout = {
   contentEn: "Gopal Gaushala Kachnariya is a sacred cow shelter dedicated to the protection and care of cows. The gaushala provides shelter, food, and medical care to cows and promotes the ancient tradition of cow worship. We believe in serving Gau Mata with devotion and dedication.",
   contentHi: "गोपाल गौशाला कचनारिया गायों की सुरक्षा और देखभाल के लिए समर्पित एक पवित्र गौशाला है। गौशाला गायों को आश्रय, भोजन और चिकित्सा देखभाल प्रदान करती है और गौ पूजा की प्राचीन परंपरा को बढ़ावा देती है। हम भक्ति और समर्पण के साथ गौ माता की सेवा में विश्वास करते हैं।",
   imageUrl: "https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?w=800&h=600&fit=crop",
+  contactPhone: null,
 };
 
 const defaultServices: GaushalaService[] = [
@@ -360,94 +361,43 @@ function GaushalaGallerySection() {
   );
 }
 
-function GaushalaManagementSection() {
+function GaushalaContactSection() {
   const { t } = useLanguage();
 
-  const managementTeam = [
-    {
-      id: "adhyaksha",
-      designationEn: "Adhyaksha",
-      designationHi: "अध्यक्ष",
-      nameEn: "Name",
-      nameHi: "नाम",
-      phone: "",
-      email: "",
-      imageUrl: "",
-    },
-    {
-      id: "sanchalak",
-      designationEn: "Sanchalak",
-      designationHi: "संचालक",
-      nameEn: "Name",
-      nameHi: "नाम",
-      phone: "",
-      email: "",
-      imageUrl: "",
-    },
-  ];
+  const { data: about } = useQuery<GaushalaAbout>({
+    queryKey: ["/api/gaushala/about"],
+  });
+
+  if (!about?.contactPhone) return null;
 
   return (
-    <section className="py-16 bg-muted/30" data-testid="section-gaushala-management">
-      <div className="max-w-5xl mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4" data-testid="text-gaushala-management-title">
-            {t("Gaushala Management", "गौशाला प्रबंधन")}
+    <section className="py-16 bg-muted/30" data-testid="section-gaushala-contact">
+      <div className="max-w-4xl mx-auto px-4">
+        <div className="text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6" data-testid="text-gaushala-contact-title">
+            {t("Contact Gaushala", "गौशाला से संपर्क करें")}
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            {t(
-              "Meet our dedicated team managing Gopal Gaushala Kachnariya",
-              "गोपाल गौशाला कचनारिया का प्रबंधन करने वाली हमारी समर्पित टीम से मिलें"
-            )}
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-          {managementTeam.map((member) => (
-            <Card key={member.id} className="text-center overflow-visible" data-testid={`card-gaushala-management-${member.id}`}>
-              <CardContent className="p-6">
-                <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-muted border-4 border-primary/20 flex items-center justify-center overflow-hidden">
-                  {member.imageUrl ? (
-                    <img
-                      src={member.imageUrl}
-                      alt={t(member.nameEn, member.nameHi)}
-                      className="w-full h-full object-cover"
-                      data-testid={`img-gaushala-management-${member.id}`}
-                    />
-                  ) : (
-                    <User className="w-16 h-16 text-muted-foreground" />
-                  )}
+          <Card className="max-w-md mx-auto">
+            <CardContent className="p-8">
+              <div className="flex items-center justify-center gap-4">
+                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Phone className="w-7 h-7 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold text-foreground mb-1" data-testid={`text-gaushala-management-name-${member.id}`}>
-                  {t(member.nameEn, member.nameHi)}
-                </h3>
-                <p className="text-primary font-medium mb-3" data-testid={`text-gaushala-management-designation-${member.id}`}>
-                  {t(member.designationEn, member.designationHi)}
-                </p>
-                <div className="space-y-1 text-sm text-muted-foreground">
-                  {member.phone && (
-                    <a
-                      href={`tel:${member.phone.replace(/\s/g, "")}`}
-                      className="flex items-center justify-center gap-2 hover:text-primary transition-colors"
-                      data-testid={`link-gaushala-management-phone-${member.id}`}
-                    >
-                      <Phone className="w-4 h-4" />
-                      {member.phone}
-                    </a>
-                  )}
-                  {member.email && (
-                    <a
-                      href={`mailto:${member.email}`}
-                      className="flex items-center justify-center gap-2 hover:text-primary transition-colors"
-                      data-testid={`link-gaushala-management-email-${member.id}`}
-                    >
-                      <Mail className="w-4 h-4" />
-                      {member.email}
-                    </a>
-                  )}
+                <div className="text-left">
+                  <p className="text-sm text-muted-foreground mb-1">
+                    {t("Phone Number", "फ़ोन नंबर")}
+                  </p>
+                  <a
+                    href={`tel:${about.contactPhone.replace(/\s/g, "")}`}
+                    className="text-xl font-semibold text-foreground hover:text-primary transition-colors"
+                    data-testid="link-gaushala-phone"
+                  >
+                    {about.contactPhone}
+                  </a>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </section>
@@ -463,7 +413,7 @@ export default function Gaushala() {
         <GaushalaAboutSection />
         <GaushalaServicesSection />
         <GaushalaGallerySection />
-        <GaushalaManagementSection />
+        <GaushalaContactSection />
       </main>
       <Footer />
     </div>

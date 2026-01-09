@@ -194,6 +194,7 @@ export const gaushalaAbout = pgTable("gaushala_about", {
   contentEn: text("content_en").notNull(),
   contentHi: text("content_hi").notNull(),
   imageUrl: text("image_url"),
+  contactPhone: text("contact_phone"),
 });
 
 export const insertGaushalaAboutSchema = createInsertSchema(gaushalaAbout).omit({ id: true });
