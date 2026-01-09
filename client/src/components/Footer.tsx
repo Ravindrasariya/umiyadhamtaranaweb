@@ -93,7 +93,7 @@ export function Footer() {
             </div>
           </div>
 
-          <div>
+          <div id="footer-contact">
             <h3 className="text-xl font-bold text-primary mb-4">
               {t("Contact Us", "संपर्क करें")}
             </h3>

@@ -123,6 +123,9 @@ export function ServicesSection() {
                 <Button
                   className="w-full max-w-[200px]"
                   data-testid={`button-service-${service.id}`}
+                  onClick={() => {
+                    document.getElementById("footer-contact")?.scrollIntoView({ behavior: "smooth" });
+                  }}
                 >
                   {t(service.buttonTextEn, service.buttonTextHi)}
                 </Button>
