@@ -4,6 +4,14 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plane, Train, MapPin } from "lucide-react";
 
+import mahakaleshwarImg from "@assets/stock_images/mahakaleshwar_temple_6a5146a6.jpg";
+import gaushalaImg from "@assets/stock_images/indian_cow_shelter_g_33487d7e.jpg";
+import harsiddhiImg from "@assets/stock_images/hindu_temple_goddess_11aa7825.jpg";
+import ramGhatImg from "@assets/stock_images/indian_river_ghat_ho_546ba447.jpg";
+import sandipaniImg from "@assets/stock_images/ancient_ashram_medit_335565e5.jpg";
+import mangalnathImg from "@assets/stock_images/hindu_temple_archite_307fcbb0.jpg";
+import chintamanImg from "@assets/stock_images/ganesh_temple_idol_h_c3b571af.jpg";
+
 const transportOptions = [
   {
     icon: Plane,
@@ -44,7 +52,7 @@ const nearbyTemples = [
   {
     nameEn: "Mahakaleshwar Temple",
     nameHi: "महाकालेश्वर मंदिर",
-    imageUrl: "https://images.unsplash.com/photo-1621427642649-dce9fd05d2ed?w=600&h=400&fit=crop",
+    imageUrl: mahakaleshwarImg,
     descriptionEn: "One of the 12 Jyotirlingas, Mahakaleshwar Temple is dedicated to Lord Shiva. The temple is known for its unique south-facing idol and the famous Bhasma Aarti performed with sacred ash from the cremation ground.",
     descriptionHi: "12 ज्योतिर्लिंगों में से एक, महाकालेश्वर मंदिर भगवान शिव को समर्पित है। यह मंदिर अपनी दक्षिण मुखी मूर्ति और श्मशान भूमि की पवित्र राख से की जाने वाली प्रसिद्ध भस्म आरती के लिए जाना जाता है।",
   },
@@ -53,42 +61,42 @@ const nearbyTemples = [
     nameHi: "गोपाल गौशाला कचनारिया",
     distanceEn: "10 KM",
     distanceHi: "10 किमी",
-    imageUrl: "https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?w=600&h=400&fit=crop",
+    imageUrl: gaushalaImg,
     descriptionEn: "Gopal Gaushala Kachnariya is a sacred cow shelter dedicated to the protection and care of cows. The gaushala provides shelter, food, and medical care to cows and promotes the ancient tradition of cow worship.",
     descriptionHi: "गोपाल गौशाला कचनारिया गायों की सुरक्षा और देखभाल के लिए समर्पित एक पवित्र गौशाला है। गौशाला गायों को आश्रय, भोजन और चिकित्सा देखभाल प्रदान करती है और गौ पूजा की प्राचीन परंपरा को बढ़ावा देती है।",
   },
   {
     nameEn: "Harsiddhi Mata Temple",
     nameHi: "हरसिद्धि माता मंदिर",
-    imageUrl: "https://images.unsplash.com/photo-1609766934622-2a8e7f159a2e?w=600&h=400&fit=crop",
+    imageUrl: harsiddhiImg,
     descriptionEn: "A renowned Shakti Pith, Harsiddhi Mata Temple is one of the 51 Shakti Peethas. The temple houses the idol of Goddess Harsiddhi and is famous for its two pillars adorned with lamps that are lit during Navratri.",
     descriptionHi: "एक प्रसिद्ध शक्ति पीठ, हरसिद्धि माता मंदिर 51 शक्ति पीठों में से एक है। मंदिर में देवी हरसिद्धि की मूर्ति है और यह दीपों से सजे दो स्तंभों के लिए प्रसिद्ध है जो नवरात्रि के दौरान जलाए जाते हैं।",
   },
   {
     nameEn: "Ram Ghat",
     nameHi: "राम घाट",
-    imageUrl: "https://images.unsplash.com/photo-1564804955013-e02e72e02ec8?w=600&h=400&fit=crop",
+    imageUrl: ramGhatImg,
     descriptionEn: "Ram Ghat is the main ghat on the banks of River Shipra. It is believed that Lord Rama performed his father's last rites here. The ghat is famous for the Simhastha Kumbh Mela and daily evening aarti.",
     descriptionHi: "राम घाट शिप्रा नदी के तट पर मुख्य घाट है। ऐसा माना जाता है कि भगवान राम ने यहां अपने पिता का अंतिम संस्कार किया था। यह घाट सिंहस्थ कुंभ मेला और दैनिक शाम की आरती के लिए प्रसिद्ध है।",
   },
   {
     nameEn: "Sandipani Ashram",
     nameHi: "सांदीपनी आश्रम",
-    imageUrl: "https://images.unsplash.com/photo-1545126178-d998b23ed8e5?w=600&h=400&fit=crop",
+    imageUrl: sandipaniImg,
     descriptionEn: "This ancient ashram is where Lord Krishna, along with Balarama and Sudama, received education from Guru Sandipani. The ashram still has the stone slab used for counting and a sacred well.",
     descriptionHi: "यह प्राचीन आश्रम वह स्थान है जहां भगवान कृष्ण ने बलराम और सुदामा के साथ गुरु सांदीपनी से शिक्षा प्राप्त की थी। आश्रम में अभी भी गिनती के लिए इस्तेमाल की जाने वाली पत्थर की शिला और एक पवित्र कुआं है।",
   },
   {
     nameEn: "Mangalnath Temple",
     nameHi: "मंगलनाथ मंदिर",
-    imageUrl: "https://images.unsplash.com/photo-1600606585584-e82b0a5e6c3a?w=600&h=400&fit=crop",
+    imageUrl: mangalnathImg,
     descriptionEn: "According to ancient texts, Mangalnath Temple is considered the birthplace of Mars (Mangal). The temple is significant for those performing Mangal Dosha remedies and offers panoramic views of the city.",
     descriptionHi: "प्राचीन ग्रंथों के अनुसार, मंगलनाथ मंदिर को मंगल ग्रह का जन्मस्थान माना जाता है। यह मंदिर मंगल दोष निवारण करने वालों के लिए महत्वपूर्ण है और शहर का मनोरम दृश्य प्रस्तुत करता है।",
   },
   {
     nameEn: "Chintaman Ganesh Temple",
     nameHi: "चिंतामन गणेश मंदिर",
-    imageUrl: "https://images.unsplash.com/photo-1621427642649-dce9fd05d2ed?w=600&h=400&fit=crop",
+    imageUrl: chintamanImg,
     descriptionEn: "One of the three self-manifested Ganesh temples in Ujjain, Chintaman Ganesh is believed to remove all worries (chinta) of devotees. The idol is said to be naturally formed and of ancient origin.",
     descriptionHi: "उज्जैन में तीन स्वयंभू गणेश मंदिरों में से एक, चिंतामन गणेश भक्तों की सभी चिंताओं को दूर करने वाले माने जाते हैं। मूर्ति प्राकृतिक रूप से निर्मित और प्राचीन मूल की बताई जाती है।",
   },
