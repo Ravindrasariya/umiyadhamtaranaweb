@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Clock, Sparkles, Home } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Clock, Sparkles, Home, Phone, MapPin } from "lucide-react";
 import type { Service } from "@shared/schema";
 
 const defaultServices: Service[] = [
@@ -53,12 +55,21 @@ const serviceIcons = [
 
 export function ServicesSection() {
   const { t } = useLanguage();
+  const [showAccommodationModal, setShowAccommodationModal] = useState(false);
 
   const { data: services, isLoading } = useQuery<Service[]>({
     queryKey: ["/api/services"],
   });
 
   const displayServices = services && services.length > 0 ? services : defaultServices;
+
+  const handleServiceClick = (service: Service) => {
+    if (service.titleEn.toLowerCase().includes("accommodation") || service.titleHi.includes("आवास")) {
+      setShowAccommodationModal(true);
+    } else {
+      document.getElementById("footer-contact")?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   if (isLoading) {
     return (
@@ -123,9 +134,7 @@ export function ServicesSection() {
                 <Button
                   className="w-full max-w-[200px]"
                   data-testid={`button-service-${service.id}`}
-                  onClick={() => {
-                    document.getElementById("footer-contact")?.scrollIntoView({ behavior: "smooth" });
-                  }}
+                  onClick={() => handleServiceClick(service)}
                 >
                   {t(service.buttonTextEn, service.buttonTextHi)}
                 </Button>
@@ -134,6 +143,71 @@ export function ServicesSection() {
           ))}
         </div>
       </div>
+
+      <Dialog open={showAccommodationModal} onOpenChange={setShowAccommodationModal}>
+        <DialogContent className="max-w-lg" data-testid="dialog-accommodation">
+          <DialogHeader>
+            <DialogTitle className="text-2xl text-center text-primary">
+              {t("Accommodation Options", "आवास विकल्प")}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div 
+              className="relative border-2 border-primary rounded-lg p-4 overflow-hidden"
+              data-testid="card-accommodation-guesthouse"
+            >
+              <div className="blur-[1px] opacity-70">
+                <div className="flex items-start gap-3">
+                  <Home className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                  <div>
+                    <h4 className="font-bold text-foreground">
+                      {t("Guest House", "अतिथि गृह")}
+                    </h4>
+                    <p className="text-muted-foreground text-sm mt-1">
+                      {t(
+                        "Shree Umiya Patidar Samaj Seva Trust Tarana",
+                        "श्री उमिया पाटीदार समाज सेवा ट्रस्ट तराना"
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center bg-background/30">
+                <span className="bg-primary text-primary-foreground px-4 py-2 rounded-md font-semibold text-sm">
+                  {t("Facility Coming Soon", "सुविधा जल्द आ रही है")}
+                </span>
+              </div>
+            </div>
+
+            <div 
+              className="border border-border rounded-lg p-4 bg-card"
+              data-testid="card-accommodation-balaji"
+            >
+              <div className="flex items-start gap-3">
+                <MapPin className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                <div>
+                  <h4 className="font-bold text-foreground">
+                    {t("Balaji Garden Tarana", "बालाजी गार्डन तराना")}
+                  </h4>
+                  <p className="text-muted-foreground text-sm mt-1">
+                    {t("~2 KM from Mandir", "~2 किमी मंदिर से")}
+                  </p>
+                  <div className="flex items-center gap-2 mt-3">
+                    <Phone className="w-4 h-4 text-primary" />
+                    <a 
+                      href="tel:9926047924" 
+                      className="text-primary font-semibold hover:underline"
+                      data-testid="link-balaji-phone"
+                    >
+                      99260 47924
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
