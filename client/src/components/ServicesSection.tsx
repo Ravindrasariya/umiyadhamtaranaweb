@@ -165,8 +165,8 @@ export function ServicesSection() {
                     </h4>
                     <p className="text-muted-foreground text-sm mt-1">
                       {t(
-                        "Shree Umiya Patidar Samaj Seva Trust Tarana",
-                        "श्री उमिया पाटीदार समाज सेवा ट्रस्ट तराना"
+                        "Maa Umiya Patidar Samaj Seva Trust Tarana",
+                        "माँ उमिया पाटीदार समाज सेवा ट्रस्ट तराना"
                       )}
                     </p>
                   </div>

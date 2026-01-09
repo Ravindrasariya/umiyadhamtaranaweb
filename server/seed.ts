@@ -105,12 +105,12 @@ export async function seedDatabase() {
     ]);
 
     await db.insert(trustContent).values({
-      titleEn: "Shree Umiya Mataji Temple Trust",
-      titleHi: "श्री उमिया माताजी मंदिर ट्रस्ट",
-      subtitleEn: "Learn about the organization that maintains and preserves the sacred Umiya Mataji Temple",
-      subtitleHi: "उस संगठन के बारे में जानें जो पवित्र उमिया माताजी मंदिर का रखरखाव और संरक्षण करता है",
-      contentEn: "The Shree Umiya Mataji Temple Trust was established in 2018 with the sacred mission of preserving and promoting the spiritual heritage of the Umiya Mataji Temple in Tarana, Ujjain, Madhya Pradesh. Our trust is dedicated to maintaining the temple's sanctity while serving the spiritual needs of devotees worldwide.\n\nRegistered under the Madhya Pradesh Public Trusts Act, our trust comprises devoted members who work tirelessly to ensure the temple's operations, rituals, and community services are carried out with utmost devotion and transparency.\n\nOver the years, the trust has objective to expanded its activities beyond temple maintenance to include educational initiatives, community welfare programs, and preservation of cultural heritage.",
-      contentHi: "श्री उमिया माताजी मंदिर ट्रस्ट की स्थापना 2018 में तराना, उज्जैन, मध्य प्रदेश में उमिया माताजी मंदिर की आध्यात्मिक विरासत को संरक्षित और बढ़ावा देने के पवित्र मिशन के साथ की गई थी। हमारा ट्रस्ट दुनिया भर के भक्तों की आध्यात्मिक जरूरतों को पूरा करते हुए मंदिर की पवित्रता को बनाए रखने के लिए समर्पित है।\n\nमध्य प्रदेश पब्लिक ट्रस्ट अधिनियम के तहत पंजीकृत, हमारे ट्रस्ट में समर्पित सदस्य शामिल हैं जो यह सुनिश्चित करने के लिए अथक प्रयास करते हैं कि मंदिर के संचालन, अनुष्ठान और सामुदायिक सेवाएं अत्यंत भक्ति और पारदर्शिता के साथ की जाएं।\n\nवर्षों से, ट्रस्ट ने मंदिर के रखरखाव से परे शैक्षिक पहल, सामुदायिक कल्याण कार्यक्रम और सांस्कृतिक विरासत के संरक्षण को शामिल करने के लिए अपनी गतिविधियों का विस्तार करने का उद्देश्य रखा है।",
+      titleEn: "Maa Umiya Patidar Samaj Seva Trust",
+      titleHi: "माँ उमिया पाटीदार समाज सेवा ट्रस्ट",
+      subtitleEn: "Learn about the organization that maintains and preserves the sacred Maa Umiya Dham Temple",
+      subtitleHi: "उस संगठन के बारे में जानें जो पवित्र माँ उमिया धाम मंदिर का रखरखाव और संरक्षण करता है",
+      contentEn: "The Maa Umiya Patidar Samaj Seva Trust was established with the sacred mission of preserving and promoting the spiritual heritage of the Maa Umiya Dham Temple in Tarana, Ujjain, Madhya Pradesh. Our trust is dedicated to maintaining the temple's sanctity while serving the spiritual needs of devotees worldwide.\n\nRegistered under the Madhya Pradesh Public Trusts Act, our trust comprises devoted members who work tirelessly to ensure the temple's operations, rituals, and community services are carried out with utmost devotion and transparency.\n\nOver the years, the trust has objective to expanded its activities beyond temple maintenance to include educational initiatives, community welfare programs, and preservation of cultural heritage.",
+      contentHi: "माँ उमिया पाटीदार समाज सेवा ट्रस्ट की स्थापना तराना, उज्जैन, मध्य प्रदेश में माँ उमिया धाम मंदिर की आध्यात्मिक विरासत को संरक्षित और बढ़ावा देने के पवित्र मिशन के साथ की गई थी। हमारा ट्रस्ट दुनिया भर के भक्तों की आध्यात्मिक जरूरतों को पूरा करते हुए मंदिर की पवित्रता को बनाए रखने के लिए समर्पित है।\n\nमध्य प्रदेश पब्लिक ट्रस्ट अधिनियम के तहत पंजीकृत, हमारे ट्रस्ट में समर्पित सदस्य शामिल हैं जो यह सुनिश्चित करने के लिए अथक प्रयास करते हैं कि मंदिर के संचालन, अनुष्ठान और सामुदायिक सेवाएं अत्यंत भक्ति और पारदर्शिता के साथ की जाएं।\n\nवर्षों से, ट्रस्ट ने मंदिर के रखरखाव से परे शैक्षिक पहल, सामुदायिक कल्याण कार्यक्रम और सांस्कृतिक विरासत के संरक्षण को शामिल करने के लिए अपनी गतिविधियों का विस्तार करने का उद्देश्य रखा है।",
     });
 
     await db.insert(contactInfo).values({
@@ -125,7 +125,7 @@ export async function seedDatabase() {
     await db.insert(termsContent).values({
       titleEn: "Terms & Conditions for Donations",
       titleHi: "दान के लिए नियम और शर्तें",
-      contentEn: `1. All donations made to Shri Umiya Dham Trust are voluntary and made with the donor's free will.
+      contentEn: `1. All donations made to Maa Umiya Patidar Samaj Seva Trust are voluntary and made with the donor's free will.
 
 2. Donations are non-refundable once processed. Please ensure all details are correct before submitting.
 
