@@ -36,28 +36,6 @@ export function Header() {
             </span>
           </div>
 
-          <nav className="hidden md:flex items-center gap-2">
-            {navItems.map((item) => (
-              <Link key={item.path} href={item.path}>
-                <Button
-                  variant="ghost"
-                  className={`text-white/90 font-extrabold text-lg px-5 py-2 ${
-                    location === item.path
-                      ? "bg-white/20 text-white"
-                      : ""
-                  }`}
-                  data-testid={`nav-${item.labelEn.toLowerCase().replace(/\s/g, "-")}`}
-                >
-                  {language === "hi" ? (
-                    <span className="text-xl font-extrabold">{item.labelHi}</span>
-                  ) : (
-                    item.labelEn
-                  )}
-                </Button>
-              </Link>
-            ))}
-          </nav>
-
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
@@ -81,6 +59,32 @@ export function Header() {
           </div>
         </div>
       </div>
+
+      <nav className="hidden md:block bg-primary/90 border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center gap-2 py-2">
+            {navItems.map((item) => (
+              <Link key={item.path} href={item.path}>
+                <Button
+                  variant="ghost"
+                  className={`text-white/90 font-extrabold text-lg px-5 py-2 ${
+                    location === item.path
+                      ? "bg-white/20 text-white"
+                      : ""
+                  }`}
+                  data-testid={`nav-${item.labelEn.toLowerCase().replace(/\s/g, "-")}`}
+                >
+                  {language === "hi" ? (
+                    <span className="text-xl font-extrabold">{item.labelHi}</span>
+                  ) : (
+                    item.labelEn
+                  )}
+                </Button>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </nav>
 
       {mobileMenuOpen && (
         <div className="md:hidden bg-primary/95 border-t border-white/10">
