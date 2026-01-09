@@ -1,6 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.font-hindi {
+  font-family: 'Noto Sans Devanagari', sans-serif;
+}
 
 /* LIGHT MODE */
 :root {

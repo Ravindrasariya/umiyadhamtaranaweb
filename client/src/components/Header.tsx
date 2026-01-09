@@ -29,7 +29,7 @@ export function Header() {
             </div>
             <span className="text-white font-extrabold text-xl md:text-2xl tracking-wide">
               {language === "hi" ? (
-                <span className="text-2xl md:text-3xl">माँ उमिया धाम तराना</span>
+                <span className="text-2xl md:text-3xl font-hindi font-extrabold">माँ उमिया धाम तराना</span>
               ) : (
                 "Maa Umiya Dham Tarana"
               )}
@@ -49,7 +49,7 @@ export function Header() {
                   data-testid={`nav-${item.labelEn.toLowerCase().replace(/\s/g, "-")}`}
                 >
                   {language === "hi" ? (
-                    <span className="text-xl font-extrabold">{item.labelHi}</span>
+                    <span className="text-xl font-hindi font-extrabold">{item.labelHi}</span>
                   ) : (
                     item.labelEn
                   )}
@@ -84,7 +84,7 @@ export function Header() {
 
       <nav className="hidden md:block bg-primary/90 border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-end gap-2 py-2 pr-[88px]">
+          <div className="flex items-center justify-center gap-2 py-2">
             {navItems.filter(item => !["/", "/about", "/donation"].includes(item.path)).map((item) => (
               <Link key={item.path} href={item.path}>
                 <Button
@@ -97,7 +97,7 @@ export function Header() {
                   data-testid={`nav-${item.labelEn.toLowerCase().replace(/\s/g, "-")}-row2`}
                 >
                   {language === "hi" ? (
-                    <span className="text-lg font-extrabold">{item.labelHi}</span>
+                    <span className="text-lg font-hindi font-extrabold">{item.labelHi}</span>
                   ) : (
                     item.labelEn
                   )}
@@ -121,7 +121,11 @@ export function Header() {
                   onClick={() => setMobileMenuOpen(false)}
                   data-testid={`mobile-nav-${item.labelEn.toLowerCase().replace(/\s/g, "-")}`}
                 >
-                  {t(item.labelEn, item.labelHi)}
+                  {language === "hi" ? (
+                    <span className="font-hindi font-bold">{item.labelHi}</span>
+                  ) : (
+                    item.labelEn
+                  )}
                 </Button>
               </Link>
             ))}
