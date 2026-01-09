@@ -2,9 +2,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Heart, Users, Calendar, MapPin, Plus, IndianRupee } from "lucide-react";
+import { Heart, MapPin, IndianRupee, Handshake } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import type { VivaahPageInfo, VivaahSammelan as VivaahSammelanType, VivaahParticipant } from "@shared/schema";
 
@@ -26,10 +25,53 @@ export default function VivaahSammelan() {
 
   const brides = participants?.filter(p => p.type === "bride") || [];
   const grooms = participants?.filter(p => p.type === "groom") || [];
+  const maxCouples = Math.max(brides.length, grooms.length);
 
   const formatCurrency = (value: string) => {
     const num = parseFloat(value) || 0;
     return new Intl.NumberFormat('en-IN').format(num);
+  };
+
+  const renderParticipantCard = (participant: VivaahParticipant | undefined, type: "bride" | "groom", index: number) => {
+    if (!participant) {
+      return (
+        <div className={`flex-1 p-4 rounded-lg border-2 border-dashed ${type === "bride" ? "border-pink-200 bg-pink-50/30" : "border-blue-200 bg-blue-50/30"}`}>
+          <p className="text-muted-foreground text-center text-sm">
+            {type === "bride" ? t("Awaiting bride entry", "वधू प्रविष्टि की प्रतीक्षा") : t("Awaiting groom entry", "वर प्रविष्टि की प्रतीक्षा")}
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <Card className={`flex-1 ${type === "bride" ? "border-pink-300 bg-pink-50/50" : "border-blue-300 bg-blue-50/50"}`} data-testid={`${type}-${participant.id}`}>
+        <CardContent className="p-4">
+          <h4 className={`font-semibold mb-2 ${type === "bride" ? "text-pink-700" : "text-blue-700"}`}>
+            {index + 1}. {language === "hi" ? participant.nameHi : participant.nameEn}
+          </h4>
+          <div className="text-sm text-muted-foreground space-y-1">
+            {(participant.fatherNameEn || participant.fatherNameHi) && (
+              <p>{t("Father", "पिता")}: {language === "hi" ? participant.fatherNameHi : participant.fatherNameEn}</p>
+            )}
+            {(participant.motherNameEn || participant.motherNameHi) && (
+              <p>{t("Mother", "माता")}: {language === "hi" ? participant.motherNameHi : participant.motherNameEn}</p>
+            )}
+            {(participant.grandfatherNameEn || participant.grandfatherNameHi) && (
+              <p>{t("Grandfather", "दादा")}: {language === "hi" ? participant.grandfatherNameHi : participant.grandfatherNameEn}</p>
+            )}
+            {(participant.grandmotherNameEn || participant.grandmotherNameHi) && (
+              <p>{t("Grandmother", "दादी")}: {language === "hi" ? participant.grandmotherNameHi : participant.grandmotherNameEn}</p>
+            )}
+            {(participant.locationEn || participant.locationHi) && (
+              <p className="flex items-center gap-1">
+                <MapPin className="w-3 h-3" />
+                {language === "hi" ? participant.locationHi : participant.locationEn}
+              </p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    );
   };
 
   return (
@@ -95,171 +137,50 @@ export default function VivaahSammelan() {
             )}
 
             {activeSammelan && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                <Card className="overflow-visible" data-testid="card-brides">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center">
-                        <Users className="w-6 h-6 text-pink-600" />
-                      </div>
-                      <h3 className="text-xl font-bold text-pink-600">
-                        {t("Brides", "वधू")} ({brides.length})
-                      </h3>
-                    </div>
-                    {participantsLoading ? (
-                      <div className="space-y-3">
-                        <Skeleton className="h-24" />
-                        <Skeleton className="h-24" />
-                      </div>
-                    ) : brides.length > 0 ? (
-                      <div className="space-y-4">
-                        {brides.map((bride) => (
-                          <Card key={bride.id} className="border-pink-200" data-testid={`bride-${bride.id}`}>
-                            <CardContent className="p-4">
-                              <h4 className="font-semibold text-foreground mb-2">
-                                {language === "hi" ? bride.nameHi : bride.nameEn}
-                              </h4>
-                              <div className="text-sm text-muted-foreground space-y-1">
-                                {(bride.fatherNameEn || bride.fatherNameHi) && (
-                                  <p>{t("Father", "पिता")}: {language === "hi" ? bride.fatherNameHi : bride.fatherNameEn}</p>
-                                )}
-                                {(bride.motherNameEn || bride.motherNameHi) && (
-                                  <p>{t("Mother", "माता")}: {language === "hi" ? bride.motherNameHi : bride.motherNameEn}</p>
-                                )}
-                                {(bride.grandfatherNameEn || bride.grandfatherNameHi) && (
-                                  <p>{t("Grandfather", "दादा")}: {language === "hi" ? bride.grandfatherNameHi : bride.grandfatherNameEn}</p>
-                                )}
-                                {(bride.grandmotherNameEn || bride.grandmotherNameHi) && (
-                                  <p>{t("Grandmother", "दादी")}: {language === "hi" ? bride.grandmotherNameHi : bride.grandmotherNameEn}</p>
-                                )}
-                                {(bride.locationEn || bride.locationHi) && (
-                                  <p className="flex items-center gap-1">
-                                    <MapPin className="w-3 h-3" />
-                                    {language === "hi" ? bride.locationHi : bride.locationEn}
-                                  </p>
-                                )}
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-muted-foreground text-center py-8">
-                        {t("No brides registered yet", "अभी तक कोई वधू पंजीकृत नहीं है")}
-                      </p>
-                    )}
-                  </CardContent>
-                </Card>
+              <div className="mb-12">
+                <div className="flex items-center justify-center gap-4 mb-8">
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-pink-500"></div>
+                    <span className="text-pink-600 font-semibold">{t("Brides", "वधू")} ({brides.length})</span>
+                  </div>
+                  <Handshake className="w-8 h-8 text-primary" />
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-blue-500"></div>
+                    <span className="text-blue-600 font-semibold">{t("Grooms", "वर")} ({grooms.length})</span>
+                  </div>
+                </div>
 
-                <Card className="overflow-visible" data-testid="card-grooms">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                        <Users className="w-6 h-6 text-blue-600" />
+                {participantsLoading ? (
+                  <div className="space-y-4">
+                    <Skeleton className="h-32" />
+                    <Skeleton className="h-32" />
+                  </div>
+                ) : maxCouples > 0 ? (
+                  <div className="space-y-4">
+                    {Array.from({ length: maxCouples }).map((_, index) => (
+                      <div key={index} className="flex items-stretch gap-2 md:gap-4" data-testid={`couple-row-${index}`}>
+                        {renderParticipantCard(brides[index], "bride", index)}
+                        <div className="flex items-center justify-center px-2 md:px-4">
+                          <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                            <Handshake className="w-6 h-6 md:w-8 md:h-8 text-primary" />
+                          </div>
+                        </div>
+                        {renderParticipantCard(grooms[index], "groom", index)}
                       </div>
-                      <h3 className="text-xl font-bold text-blue-600">
-                        {t("Grooms", "वर")} ({grooms.length})
-                      </h3>
-                    </div>
-                    {participantsLoading ? (
-                      <div className="space-y-3">
-                        <Skeleton className="h-24" />
-                        <Skeleton className="h-24" />
-                      </div>
-                    ) : grooms.length > 0 ? (
-                      <div className="space-y-4">
-                        {grooms.map((groom) => (
-                          <Card key={groom.id} className="border-blue-200" data-testid={`groom-${groom.id}`}>
-                            <CardContent className="p-4">
-                              <h4 className="font-semibold text-foreground mb-2">
-                                {language === "hi" ? groom.nameHi : groom.nameEn}
-                              </h4>
-                              <div className="text-sm text-muted-foreground space-y-1">
-                                {(groom.fatherNameEn || groom.fatherNameHi) && (
-                                  <p>{t("Father", "पिता")}: {language === "hi" ? groom.fatherNameHi : groom.fatherNameEn}</p>
-                                )}
-                                {(groom.motherNameEn || groom.motherNameHi) && (
-                                  <p>{t("Mother", "माता")}: {language === "hi" ? groom.motherNameHi : groom.motherNameEn}</p>
-                                )}
-                                {(groom.grandfatherNameEn || groom.grandfatherNameHi) && (
-                                  <p>{t("Grandfather", "दादा")}: {language === "hi" ? groom.grandfatherNameHi : groom.grandfatherNameEn}</p>
-                                )}
-                                {(groom.grandmotherNameEn || groom.grandmotherNameHi) && (
-                                  <p>{t("Grandmother", "दादी")}: {language === "hi" ? groom.grandmotherNameHi : groom.grandmotherNameEn}</p>
-                                )}
-                                {(groom.locationEn || groom.locationHi) && (
-                                  <p className="flex items-center gap-1">
-                                    <MapPin className="w-3 h-3" />
-                                    {language === "hi" ? groom.locationHi : groom.locationEn}
-                                  </p>
-                                )}
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-muted-foreground text-center py-8">
-                        {t("No grooms registered yet", "अभी तक कोई वर पंजीकृत नहीं है")}
+                    ))}
+                  </div>
+                ) : (
+                  <Card className="overflow-visible">
+                    <CardContent className="p-8 text-center">
+                      <Handshake className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
+                      <p className="text-muted-foreground">
+                        {t("No participants registered yet. Check back soon!", "अभी तक कोई प्रतिभागी पंजीकृत नहीं है। जल्द ही देखें!")}
                       </p>
-                    )}
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             )}
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-              <Card className="overflow-visible text-center" data-testid="card-vivaah-community">
-                <CardContent className="p-6">
-                  <div className="w-14 h-14 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                    <Users className="w-7 h-7 text-primary" />
-                  </div>
-                  <h3 className="font-bold text-foreground text-lg mb-2">
-                    {t("Community Event", "सामुदायिक आयोजन")}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {t(
-                      "Organized for Patidar community members seeking matrimonial alliances",
-                      "वैवाहिक संबंध खोजने वाले पाटीदार समुदाय के सदस्यों के लिए आयोजित"
-                    )}
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="overflow-visible text-center" data-testid="card-vivaah-calendar">
-                <CardContent className="p-6">
-                  <div className="w-14 h-14 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                    <Calendar className="w-7 h-7 text-primary" />
-                  </div>
-                  <h3 className="font-bold text-foreground text-lg mb-2">
-                    {t("Annual Event", "वार्षिक आयोजन")}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {t(
-                      "Held annually at the temple premises with traditional ceremonies",
-                      "पारंपरिक समारोहों के साथ मंदिर परिसर में प्रतिवर्ष आयोजित"
-                    )}
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="overflow-visible text-center" data-testid="card-vivaah-location">
-                <CardContent className="p-6">
-                  <div className="w-14 h-14 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                    <MapPin className="w-7 h-7 text-primary" />
-                  </div>
-                  <h3 className="font-bold text-foreground text-lg mb-2">
-                    {t("Temple Venue", "मंदिर स्थल")}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {t(
-                      "Conducted at Maa Umiya Dham Tarana with divine blessings",
-                      "दिव्य आशीर्वाद के साथ माँ उमिया धाम तराना में आयोजित"
-                    )}
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
 
             {!activeSammelan && !sammelanLoading && (
               <Card className="overflow-visible" data-testid="card-vivaah-info">
