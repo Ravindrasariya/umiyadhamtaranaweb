@@ -1,7 +1,9 @@
 import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { MapPin, Phone, Mail } from "lucide-react";
 import { SiFacebook, SiInstagram, SiYoutube } from "react-icons/si";
+import type { ContactInfo } from "@shared/schema";
 
 const quickLinks = [
   { path: "/", labelEn: "Home", labelHi: "होम" },
@@ -31,6 +33,10 @@ function FooterLink({ path, children }: { path: string; children: React.ReactNod
 
 export function Footer() {
   const { t } = useLanguage();
+  
+  const { data: contactData } = useQuery<ContactInfo>({
+    queryKey: ["/api/contact"],
+  });
 
   return (
     <footer className="bg-[#1a3326] text-white" data-testid="footer">
@@ -101,20 +107,38 @@ export function Footer() {
               <div className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                 <span className="text-gray-300">
-                  {t(
-                    "Temple Office, Umiya Dham Tarana, Dist. Ujjain, Madhya Pradesh, India",
-                    "मंदिर कार्यालय, उमिया धाम तराना, जिला उज्जैन, मध्य प्रदेश, भारत"
-                  )}
+                  {contactData?.addressEn || contactData?.addressHi
+                    ? t(contactData.addressEn || "", contactData.addressHi || "")
+                    : t(
+                        "Temple Office, Umiya Dham Tarana, Dist. Ujjain, Madhya Pradesh, India",
+                        "मंदिर कार्यालय, उमिया धाम तराना, जिला उज्जैन, मध्य प्रदेश, भारत"
+                      )}
                 </span>
               </div>
-              <div className="flex items-center gap-3">
-                <Phone className="w-5 h-5 text-primary flex-shrink-0" />
-                <span className="text-gray-300">+91 XXXXX XXXXX</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Mail className="w-5 h-5 text-primary flex-shrink-0" />
-                <span className="text-gray-300">info@umiyadhamtarana.org</span>
-              </div>
+              {contactData?.phone1 && (
+                <div className="flex items-center gap-3">
+                  <Phone className="w-5 h-5 text-primary flex-shrink-0" />
+                  <a 
+                    href={`tel:${contactData.phone1.replace(/\s/g, "")}`}
+                    className="text-gray-300 hover:text-primary transition-colors"
+                    data-testid="link-footer-phone"
+                  >
+                    {contactData.phone1}
+                  </a>
+                </div>
+              )}
+              {contactData?.email1 && (
+                <div className="flex items-center gap-3">
+                  <Mail className="w-5 h-5 text-primary flex-shrink-0" />
+                  <a 
+                    href={`mailto:${contactData.email1}`}
+                    className="text-gray-300 hover:text-primary transition-colors"
+                    data-testid="link-footer-email"
+                  >
+                    {contactData.email1}
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </div>
