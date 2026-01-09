@@ -36,12 +36,12 @@ export function Header() {
             </span>
           </div>
 
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-2">
             {navItems.filter(item => ["/", "/about", "/donation"].includes(item.path)).map((item) => (
               <Link key={item.path} href={item.path}>
                 <Button
                   variant="ghost"
-                  className={`text-white/90 font-extrabold text-base px-4 py-2 ${
+                  className={`text-white/90 font-extrabold text-lg px-5 py-2 ${
                     location === item.path
                       ? "bg-white/20 text-white"
                       : ""
@@ -49,7 +49,7 @@ export function Header() {
                   data-testid={`nav-${item.labelEn.toLowerCase().replace(/\s/g, "-")}`}
                 >
                   {language === "hi" ? (
-                    <span className="text-lg font-extrabold">{item.labelHi}</span>
+                    <span className="text-xl font-extrabold">{item.labelHi}</span>
                   ) : (
                     item.labelEn
                   )}
@@ -89,7 +89,7 @@ export function Header() {
               <Link key={item.path} href={item.path}>
                 <Button
                   variant="ghost"
-                  className={`text-white/90 font-extrabold text-lg px-5 py-2 ${
+                  className={`text-white/90 font-bold text-base px-5 py-2 ${
                     location === item.path
                       ? "bg-white/20 text-white"
                       : ""
@@ -97,7 +97,7 @@ export function Header() {
                   data-testid={`nav-${item.labelEn.toLowerCase().replace(/\s/g, "-")}-row2`}
                 >
                   {language === "hi" ? (
-                    <span className="text-xl font-extrabold">{item.labelHi}</span>
+                    <span className="text-lg font-bold">{item.labelHi}</span>
                   ) : (
                     item.labelEn
                   )}
