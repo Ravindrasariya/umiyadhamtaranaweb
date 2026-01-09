@@ -1084,6 +1084,15 @@ function GaushalaAboutManager() {
             placeholder={t("Click to upload image", "इमेज अपलोड करने के लिए क्लिक करें")}
           />
         </div>
+        <div>
+          <label className="text-sm font-medium">{t("Contact Phone Number", "संपर्क फ़ोन नंबर")}</label>
+          <Input
+            value={currentData.contactPhone || ""}
+            onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })}
+            placeholder={t("e.g., +91 98765 43210", "जैसे +91 98765 43210")}
+            data-testid="input-gaushala-contact-phone"
+          />
+        </div>
         <Button
           onClick={() => updateMutation.mutate(formData)}
           disabled={updateMutation.isPending}
