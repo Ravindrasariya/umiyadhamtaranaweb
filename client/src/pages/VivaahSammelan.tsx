@@ -35,37 +35,37 @@ export default function VivaahSammelan() {
   const renderParticipantCard = (participant: VivaahParticipant | undefined, type: "bride" | "groom", index: number) => {
     if (!participant) {
       return (
-        <div className={`flex-1 p-4 rounded-lg border-2 border-dashed ${type === "bride" ? "border-pink-200 bg-pink-50/30" : "border-blue-200 bg-blue-50/30"}`}>
-          <p className="text-muted-foreground text-center text-sm">
-            {type === "bride" ? t("Awaiting bride entry", "वधू प्रविष्टि की प्रतीक्षा") : t("Awaiting groom entry", "वर प्रविष्टि की प्रतीक्षा")}
+        <div className={`flex-1 basis-0 min-w-0 p-3 rounded-lg border-2 border-dashed ${type === "bride" ? "border-pink-200 bg-pink-50/30" : "border-blue-200 bg-blue-50/30"}`}>
+          <p className="text-muted-foreground text-center text-xs">
+            {type === "bride" ? t("Awaiting", "प्रतीक्षा") : t("Awaiting", "प्रतीक्षा")}
           </p>
         </div>
       );
     }
 
     return (
-      <Card className={`flex-1 ${type === "bride" ? "border-pink-300 bg-pink-50/50" : "border-blue-300 bg-blue-50/50"}`} data-testid={`${type}-${participant.id}`}>
-        <CardContent className="p-4">
-          <h4 className={`font-semibold mb-2 ${type === "bride" ? "text-pink-700" : "text-blue-700"}`}>
+      <Card className={`flex-1 basis-0 min-w-0 overflow-hidden ${type === "bride" ? "border-pink-300 bg-pink-50/50" : "border-blue-300 bg-blue-50/50"}`} data-testid={`${type}-${participant.id}`}>
+        <CardContent className="p-2 md:p-4">
+          <h4 className={`font-semibold mb-1 text-sm md:text-base truncate ${type === "bride" ? "text-pink-700" : "text-blue-700"}`}>
             {index + 1}. {language === "hi" ? participant.nameHi : participant.nameEn}
           </h4>
-          <div className="text-sm text-muted-foreground space-y-1">
+          <div className="text-xs md:text-sm text-muted-foreground space-y-0.5">
             {(participant.fatherNameEn || participant.fatherNameHi) && (
-              <p>{t("Father", "पिता")}: {language === "hi" ? participant.fatherNameHi : participant.fatherNameEn}</p>
+              <p className="truncate">{t("Father", "पिता")}: {language === "hi" ? participant.fatherNameHi : participant.fatherNameEn}</p>
             )}
             {(participant.motherNameEn || participant.motherNameHi) && (
-              <p>{t("Mother", "माता")}: {language === "hi" ? participant.motherNameHi : participant.motherNameEn}</p>
+              <p className="truncate">{t("Mother", "माता")}: {language === "hi" ? participant.motherNameHi : participant.motherNameEn}</p>
             )}
             {(participant.grandfatherNameEn || participant.grandfatherNameHi) && (
-              <p>{t("Grandfather", "दादा")}: {language === "hi" ? participant.grandfatherNameHi : participant.grandfatherNameEn}</p>
+              <p className="truncate hidden md:block">{t("Grandfather", "दादा")}: {language === "hi" ? participant.grandfatherNameHi : participant.grandfatherNameEn}</p>
             )}
             {(participant.grandmotherNameEn || participant.grandmotherNameHi) && (
-              <p>{t("Grandmother", "दादी")}: {language === "hi" ? participant.grandmotherNameHi : participant.grandmotherNameEn}</p>
+              <p className="truncate hidden md:block">{t("Grandmother", "दादी")}: {language === "hi" ? participant.grandmotherNameHi : participant.grandmotherNameEn}</p>
             )}
             {(participant.locationEn || participant.locationHi) && (
-              <p className="flex items-center gap-1">
-                <MapPin className="w-3 h-3" />
-                {language === "hi" ? participant.locationHi : participant.locationEn}
+              <p className="flex items-center gap-1 truncate">
+                <MapPin className="w-3 h-3 flex-shrink-0" />
+                <span className="truncate">{language === "hi" ? participant.locationHi : participant.locationEn}</span>
               </p>
             )}
           </div>
