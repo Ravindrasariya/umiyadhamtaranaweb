@@ -13,7 +13,8 @@ import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Trash2, Plus, Save, Image, FileText, Clock, Camera, Building, Phone, Lock, Heart, ScrollText, Home, Users, Upload, Pencil, X } from "lucide-react";
 import { ImageUploader } from "@/components/ImageUploader";
-import type { SliderImage, AboutContent, PoojaTiming, Service, GalleryItem, TrustContent, ContactInfo, TermsContent, Donation, GaushalaSlider, GaushalaAbout, GaushalaService, GaushalaGallery, TeamMember } from "@shared/schema";
+import type { SliderImage, AboutContent, PoojaTiming, Service, GalleryItem, TrustContent, ContactInfo, TermsContent, Donation, GaushalaSlider, GaushalaAbout, GaushalaService, GaushalaGallery, TeamMember, VivaahPageInfo, VivaahSammelan, VivaahParticipant } from "@shared/schema";
+import { HeartHandshake } from "lucide-react";
 
 function LoginForm({ onLogin }: { onLogin: () => void }) {
   const { t } = useLanguage();
@@ -1502,6 +1503,263 @@ function TeamMembersManager() {
   );
 }
 
+function VivaahSammelanManager() {
+  const { t } = useLanguage();
+  const { toast } = useToast();
+  const [selectedSammelanId, setSelectedSammelanId] = useState<string | null>(null);
+
+  const { data: pageInfo, isLoading: pageInfoLoading } = useQuery<VivaahPageInfo>({
+    queryKey: ["/api/vivaah/page-info"],
+  });
+
+  const { data: sammelans, isLoading: sammelansLoading } = useQuery<VivaahSammelan[]>({
+    queryKey: ["/api/vivaah/sammelans"],
+  });
+
+  const { data: participants } = useQuery<VivaahParticipant[]>({
+    queryKey: ["/api/vivaah/participants", selectedSammelanId],
+    enabled: !!selectedSammelanId,
+  });
+
+  const [pageFormData, setPageFormData] = useState<Partial<VivaahPageInfo>>({});
+  const [newSammelan, setNewSammelan] = useState({ titleEn: "", titleHi: "", overallIncome: "0", overallExpense: "0", asOfDate: "" });
+  const [editingSammelanId, setEditingSammelanId] = useState<string | null>(null);
+  const [editSammelanData, setEditSammelanData] = useState<Partial<VivaahSammelan>>({});
+  const [newParticipant, setNewParticipant] = useState({ type: "bride" as "bride" | "groom", nameEn: "", nameHi: "", fatherNameEn: "", fatherNameHi: "", motherNameEn: "", motherNameHi: "", grandfatherNameEn: "", grandfatherNameHi: "", grandmotherNameEn: "", grandmotherNameHi: "", locationEn: "", locationHi: "" });
+
+  const updatePageInfoMutation = useMutation({
+    mutationFn: async (data: Partial<VivaahPageInfo>) => {
+      if (pageInfo?.id) {
+        return apiRequest("PATCH", `/api/vivaah/page-info/${pageInfo.id}`, data);
+      }
+      return apiRequest("POST", "/api/vivaah/page-info", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/vivaah/page-info"] });
+      toast({ title: t("Page info updated", "पेज जानकारी अपडेट हुई") });
+    },
+  });
+
+  const createSammelanMutation = useMutation({
+    mutationFn: async (data: Partial<VivaahSammelan>) => apiRequest("POST", "/api/vivaah/sammelans", data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/vivaah/sammelans"] });
+      setNewSammelan({ titleEn: "", titleHi: "", overallIncome: "0", overallExpense: "0", asOfDate: "" });
+      toast({ title: t("Sammelan created", "सम्मेलन बनाया गया") });
+    },
+  });
+
+  const updateSammelanMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<VivaahSammelan> }) => apiRequest("PATCH", `/api/vivaah/sammelans/${id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/vivaah/sammelans"] });
+      setEditingSammelanId(null);
+      toast({ title: t("Sammelan updated", "सम्मेलन अपडेट हुआ") });
+    },
+  });
+
+  const deleteSammelanMutation = useMutation({
+    mutationFn: async (id: string) => apiRequest("DELETE", `/api/vivaah/sammelans/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/vivaah/sammelans"] });
+      if (selectedSammelanId) setSelectedSammelanId(null);
+      toast({ title: t("Sammelan deleted", "सम्मेलन हटाया गया") });
+    },
+  });
+
+  const createParticipantMutation = useMutation({
+    mutationFn: async (data: Partial<VivaahParticipant>) => apiRequest("POST", "/api/vivaah/participants", data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/vivaah/participants", selectedSammelanId] });
+      setNewParticipant({ type: "bride", nameEn: "", nameHi: "", fatherNameEn: "", fatherNameHi: "", motherNameEn: "", motherNameHi: "", grandfatherNameEn: "", grandfatherNameHi: "", grandmotherNameEn: "", grandmotherNameHi: "", locationEn: "", locationHi: "" });
+      toast({ title: t("Participant added", "प्रतिभागी जोड़ा गया") });
+    },
+  });
+
+  const deleteParticipantMutation = useMutation({
+    mutationFn: async (id: string) => apiRequest("DELETE", `/api/vivaah/participants/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/vivaah/participants", selectedSammelanId] });
+      toast({ title: t("Participant deleted", "प्रतिभागी हटाया गया") });
+    },
+  });
+
+  if (pageInfoLoading || sammelansLoading) return <Skeleton className="h-64" />;
+
+  const currentPageData = { ...pageInfo, ...pageFormData };
+  const brides = participants?.filter(p => p.type === "bride") || [];
+  const grooms = participants?.filter(p => p.type === "groom") || [];
+
+  return (
+    <div className="space-y-6">
+      <h3 className="text-lg font-semibold">{t("Vivaah Sammelan Management", "विवाह सम्मेलन प्रबंधन")}</h3>
+
+      <Card>
+        <CardHeader className="pb-2">
+          <h4 className="font-medium">{t("Page Info (Title & Description)", "पेज जानकारी (शीर्षक और विवरण)")}</h4>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Input placeholder={t("Title (English)", "शीर्षक (अंग्रेज़ी)")} value={currentPageData.titleEn || ""} onChange={(e) => setPageFormData({ ...pageFormData, titleEn: e.target.value })} data-testid="input-vivaah-page-title-en" />
+            <Input placeholder={t("Title (Hindi)", "शीर्षक (हिंदी)")} value={currentPageData.titleHi || ""} onChange={(e) => setPageFormData({ ...pageFormData, titleHi: e.target.value })} data-testid="input-vivaah-page-title-hi" />
+          </div>
+          <Textarea placeholder={t("Description (English)", "विवरण (अंग्रेज़ी)")} value={currentPageData.descriptionEn || ""} onChange={(e) => setPageFormData({ ...pageFormData, descriptionEn: e.target.value })} rows={3} data-testid="input-vivaah-page-desc-en" />
+          <Textarea placeholder={t("Description (Hindi)", "विवरण (हिंदी)")} value={currentPageData.descriptionHi || ""} onChange={(e) => setPageFormData({ ...pageFormData, descriptionHi: e.target.value })} rows={3} data-testid="input-vivaah-page-desc-hi" />
+          <Button onClick={() => updatePageInfoMutation.mutate(pageFormData)} disabled={updatePageInfoMutation.isPending} data-testid="button-save-vivaah-page-info">
+            <Save className="w-4 h-4 mr-2" />
+            {t("Save Page Info", "पेज जानकारी सहेजें")}
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="pb-2">
+          <h4 className="font-medium">{t("Sammelans (Events)", "सम्मेलन (कार्यक्रम)")}</h4>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {sammelans?.map((sammelan) => (
+            <Card key={sammelan.id} className={`${sammelan.isActive ? "border-green-500" : ""}`} data-testid={`vivaah-sammelan-${sammelan.id}`}>
+              <CardContent className="p-4">
+                {editingSammelanId === sammelan.id ? (
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-2 gap-2">
+                      <Input placeholder={t("Title (English)", "शीर्षक")} value={editSammelanData.titleEn || ""} onChange={(e) => setEditSammelanData({ ...editSammelanData, titleEn: e.target.value })} />
+                      <Input placeholder={t("Title (Hindi)", "शीर्षक (हिंदी)")} value={editSammelanData.titleHi || ""} onChange={(e) => setEditSammelanData({ ...editSammelanData, titleHi: e.target.value })} />
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <Input placeholder={t("Income", "आय")} value={editSammelanData.overallIncome || ""} onChange={(e) => setEditSammelanData({ ...editSammelanData, overallIncome: e.target.value })} />
+                      <Input placeholder={t("Expense", "व्यय")} value={editSammelanData.overallExpense || ""} onChange={(e) => setEditSammelanData({ ...editSammelanData, overallExpense: e.target.value })} />
+                      <Input type="date" value={editSammelanData.asOfDate || ""} onChange={(e) => setEditSammelanData({ ...editSammelanData, asOfDate: e.target.value })} />
+                    </div>
+                    <div className="flex gap-2">
+                      <Button onClick={() => updateSammelanMutation.mutate({ id: sammelan.id, data: editSammelanData })}><Save className="w-4 h-4 mr-1" />{t("Save", "सहेजें")}</Button>
+                      <Button variant="outline" onClick={() => setEditingSammelanId(null)}><X className="w-4 h-4 mr-1" />{t("Cancel", "रद्द")}</Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium">{sammelan.titleEn} / {sammelan.titleHi}</p>
+                      <p className="text-sm"><span className="text-green-600">{t("Income", "आय")}: ₹{sammelan.overallIncome}</span> | <span className="text-red-600">{t("Expense", "व्यय")}: ₹{sammelan.overallExpense}</span> | {t("As of", "दिनांक")}: {sammelan.asOfDate}</p>
+                      {sammelan.isActive && <span className="text-xs text-green-600 font-medium">{t("Active", "सक्रिय")}</span>}
+                    </div>
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="outline" onClick={() => { setSelectedSammelanId(sammelan.id); }}>{t("Participants", "प्रतिभागी")}</Button>
+                      <Button size="sm" variant="outline" onClick={() => { setEditingSammelanId(sammelan.id); setEditSammelanData(sammelan); }}><Pencil className="w-4 h-4" /></Button>
+                      <Button size="sm" variant="outline" onClick={() => updateSammelanMutation.mutate({ id: sammelan.id, data: { isActive: !sammelan.isActive } })}>{sammelan.isActive ? t("Deactivate", "निष्क्रिय") : t("Activate", "सक्रिय")}</Button>
+                      <Button size="sm" variant="destructive" onClick={() => deleteSammelanMutation.mutate(sammelan.id)}><Trash2 className="w-4 h-4" /></Button>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+
+          <div className="border-t pt-4 space-y-3">
+            <h5 className="font-medium">{t("Add New Sammelan", "नया सम्मेलन जोड़ें")}</h5>
+            <div className="grid grid-cols-2 gap-2">
+              <Input placeholder={t("Title (English)", "शीर्षक")} value={newSammelan.titleEn} onChange={(e) => setNewSammelan({ ...newSammelan, titleEn: e.target.value })} data-testid="input-new-sammelan-title-en" />
+              <Input placeholder={t("Title (Hindi)", "शीर्षक (हिंदी)")} value={newSammelan.titleHi} onChange={(e) => setNewSammelan({ ...newSammelan, titleHi: e.target.value })} data-testid="input-new-sammelan-title-hi" />
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              <Input placeholder={t("Income", "आय")} value={newSammelan.overallIncome} onChange={(e) => setNewSammelan({ ...newSammelan, overallIncome: e.target.value })} data-testid="input-new-sammelan-income" />
+              <Input placeholder={t("Expense", "व्यय")} value={newSammelan.overallExpense} onChange={(e) => setNewSammelan({ ...newSammelan, overallExpense: e.target.value })} data-testid="input-new-sammelan-expense" />
+              <Input type="date" value={newSammelan.asOfDate} onChange={(e) => setNewSammelan({ ...newSammelan, asOfDate: e.target.value })} data-testid="input-new-sammelan-date" />
+            </div>
+            <Button onClick={() => createSammelanMutation.mutate({ ...newSammelan, isActive: true })} disabled={!newSammelan.titleEn || !newSammelan.asOfDate || createSammelanMutation.isPending} data-testid="button-add-sammelan">
+              <Plus className="w-4 h-4 mr-2" />
+              {t("Add Sammelan", "सम्मेलन जोड़ें")}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {selectedSammelanId && (
+        <Card>
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <h4 className="font-medium">{t("Participants (Bride & Groom)", "प्रतिभागी (वधू और वर)")}</h4>
+              <Button size="sm" variant="outline" onClick={() => setSelectedSammelanId(null)}><X className="w-4 h-4 mr-1" />{t("Close", "बंद")}</Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h5 className="font-medium text-pink-600 mb-3">{t("Brides", "वधू")}</h5>
+                {brides.map((bride) => (
+                  <Card key={bride.id} className="mb-2 border-pink-200" data-testid={`participant-bride-${bride.id}`}>
+                    <CardContent className="p-3">
+                      <div className="flex justify-between items-start">
+                        <div className="text-sm">
+                          <p className="font-medium">{bride.nameEn} / {bride.nameHi}</p>
+                          <p className="text-muted-foreground">{t("Father", "पिता")}: {bride.fatherNameEn || "-"}</p>
+                          <p className="text-muted-foreground">{t("Mother", "माता")}: {bride.motherNameEn || "-"}</p>
+                          <p className="text-muted-foreground">{t("Location", "स्थान")}: {bride.locationEn || "-"}</p>
+                        </div>
+                        <Button size="icon" variant="destructive" onClick={() => deleteParticipantMutation.mutate(bride.id)}><Trash2 className="w-4 h-4" /></Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              <div>
+                <h5 className="font-medium text-blue-600 mb-3">{t("Grooms", "वर")}</h5>
+                {grooms.map((groom) => (
+                  <Card key={groom.id} className="mb-2 border-blue-200" data-testid={`participant-groom-${groom.id}`}>
+                    <CardContent className="p-3">
+                      <div className="flex justify-between items-start">
+                        <div className="text-sm">
+                          <p className="font-medium">{groom.nameEn} / {groom.nameHi}</p>
+                          <p className="text-muted-foreground">{t("Father", "पिता")}: {groom.fatherNameEn || "-"}</p>
+                          <p className="text-muted-foreground">{t("Mother", "माता")}: {groom.motherNameEn || "-"}</p>
+                          <p className="text-muted-foreground">{t("Location", "स्थान")}: {groom.locationEn || "-"}</p>
+                        </div>
+                        <Button size="icon" variant="destructive" onClick={() => deleteParticipantMutation.mutate(groom.id)}><Trash2 className="w-4 h-4" /></Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            <div className="border-t mt-6 pt-4 space-y-3">
+              <h5 className="font-medium">{t("Add New Participant", "नया प्रतिभागी जोड़ें")}</h5>
+              <div className="flex gap-4 mb-3">
+                <label className="flex items-center gap-2">
+                  <input type="radio" name="participantType" checked={newParticipant.type === "bride"} onChange={() => setNewParticipant({ ...newParticipant, type: "bride" })} />
+                  <span className="text-pink-600">{t("Bride", "वधू")}</span>
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="radio" name="participantType" checked={newParticipant.type === "groom"} onChange={() => setNewParticipant({ ...newParticipant, type: "groom" })} />
+                  <span className="text-blue-600">{t("Groom", "वर")}</span>
+                </label>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <Input placeholder={t("Name (English)", "नाम")} value={newParticipant.nameEn} onChange={(e) => setNewParticipant({ ...newParticipant, nameEn: e.target.value })} data-testid="input-participant-name-en" />
+                <Input placeholder={t("Name (Hindi)", "नाम (हिंदी)")} value={newParticipant.nameHi} onChange={(e) => setNewParticipant({ ...newParticipant, nameHi: e.target.value })} data-testid="input-participant-name-hi" />
+                <Input placeholder={t("Father's Name (English)", "पिता का नाम")} value={newParticipant.fatherNameEn} onChange={(e) => setNewParticipant({ ...newParticipant, fatherNameEn: e.target.value })} />
+                <Input placeholder={t("Father's Name (Hindi)", "पिता का नाम (हिंदी)")} value={newParticipant.fatherNameHi} onChange={(e) => setNewParticipant({ ...newParticipant, fatherNameHi: e.target.value })} />
+                <Input placeholder={t("Mother's Name (English)", "माता का नाम")} value={newParticipant.motherNameEn} onChange={(e) => setNewParticipant({ ...newParticipant, motherNameEn: e.target.value })} />
+                <Input placeholder={t("Mother's Name (Hindi)", "माता का नाम (हिंदी)")} value={newParticipant.motherNameHi} onChange={(e) => setNewParticipant({ ...newParticipant, motherNameHi: e.target.value })} />
+                <Input placeholder={t("Grandfather's Name (English)", "दादा का नाम")} value={newParticipant.grandfatherNameEn} onChange={(e) => setNewParticipant({ ...newParticipant, grandfatherNameEn: e.target.value })} />
+                <Input placeholder={t("Grandfather's Name (Hindi)", "दादा का नाम (हिंदी)")} value={newParticipant.grandfatherNameHi} onChange={(e) => setNewParticipant({ ...newParticipant, grandfatherNameHi: e.target.value })} />
+                <Input placeholder={t("Grandmother's Name (English)", "दादी का नाम")} value={newParticipant.grandmotherNameEn} onChange={(e) => setNewParticipant({ ...newParticipant, grandmotherNameEn: e.target.value })} />
+                <Input placeholder={t("Grandmother's Name (Hindi)", "दादी का नाम (हिंदी)")} value={newParticipant.grandmotherNameHi} onChange={(e) => setNewParticipant({ ...newParticipant, grandmotherNameHi: e.target.value })} />
+                <Input placeholder={t("Location (English)", "स्थान")} value={newParticipant.locationEn} onChange={(e) => setNewParticipant({ ...newParticipant, locationEn: e.target.value })} />
+                <Input placeholder={t("Location (Hindi)", "स्थान (हिंदी)")} value={newParticipant.locationHi} onChange={(e) => setNewParticipant({ ...newParticipant, locationHi: e.target.value })} />
+              </div>
+              <Button onClick={() => createParticipantMutation.mutate({ ...newParticipant, sammelanId: selectedSammelanId, order: (participants?.length || 0) + 1 })} disabled={!newParticipant.nameEn || createParticipantMutation.isPending} data-testid="button-add-participant">
+                <Plus className="w-4 h-4 mr-2" />
+                {t("Add Participant", "प्रतिभागी जोड़ें")}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
+
 function AdminPanel({ onLogout }: { onLogout: () => void }) {
   const { t } = useLanguage();
 
@@ -1580,6 +1838,11 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
               <TabsTrigger value="team" className="gap-1" data-testid="tab-admin-team">
                 <Users className="w-4 h-4" />
                 <span className="hidden sm:inline">{t("Team", "टीम")}</span>
+              </TabsTrigger>
+              <div className="w-full mt-3 mb-2 pt-2 border-t text-xs font-medium text-muted-foreground">{t("Vivaah Sammelan", "विवाह सम्मेलन")}</div>
+              <TabsTrigger value="vivaah" className="gap-1" data-testid="tab-admin-vivaah">
+                <HeartHandshake className="w-4 h-4" />
+                <span className="hidden sm:inline">{t("Vivaah", "विवाह")}</span>
               </TabsTrigger>
             </TabsList>
 
@@ -1683,6 +1946,14 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
               <Card>
                 <CardContent className="pt-6">
                   <TeamMembersManager />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="vivaah">
+              <Card>
+                <CardContent className="pt-6">
+                  <VivaahSammelanManager />
                 </CardContent>
               </Card>
             </TabsContent>

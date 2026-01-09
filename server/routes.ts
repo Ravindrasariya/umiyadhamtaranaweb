@@ -16,6 +16,9 @@ import {
   insertGaushalaServiceSchema,
   insertGaushalaGallerySchema,
   insertTeamMemberSchema,
+  insertVivaahPageInfoSchema,
+  insertVivaahSammelanSchema,
+  insertVivaahParticipantSchema,
 } from "@shared/schema";
 
 export async function registerRoutes(
@@ -559,6 +562,129 @@ export async function registerRoutes(
       res.json({ success: true });
     } catch (error) {
       res.status(400).json({ error: "Failed to delete team member" });
+    }
+  });
+
+  // Vivaah Page Info
+  app.get("/api/vivaah/page-info", async (req, res) => {
+    try {
+      const info = await storage.getVivaahPageInfo();
+      res.json(info || null);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch vivaah page info" });
+    }
+  });
+
+  app.post("/api/vivaah/page-info", async (req, res) => {
+    try {
+      const data = insertVivaahPageInfoSchema.parse(req.body);
+      const info = await storage.createVivaahPageInfo(data);
+      res.json(info);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid data" });
+    }
+  });
+
+  app.patch("/api/vivaah/page-info/:id", async (req, res) => {
+    try {
+      const info = await storage.updateVivaahPageInfo(req.params.id, req.body);
+      if (!info) {
+        return res.status(404).json({ error: "Page info not found" });
+      }
+      res.json(info);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update page info" });
+    }
+  });
+
+  // Vivaah Sammelan
+  app.get("/api/vivaah/sammelans", async (req, res) => {
+    try {
+      const sammelans = await storage.getVivaahSammelans();
+      res.json(sammelans);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch sammelans" });
+    }
+  });
+
+  app.get("/api/vivaah/active-sammelan", async (req, res) => {
+    try {
+      const sammelan = await storage.getActiveSammelan();
+      res.json(sammelan || null);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch active sammelan" });
+    }
+  });
+
+  app.post("/api/vivaah/sammelans", async (req, res) => {
+    try {
+      const data = insertVivaahSammelanSchema.parse(req.body);
+      const sammelan = await storage.createVivaahSammelan(data);
+      res.json(sammelan);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid data" });
+    }
+  });
+
+  app.patch("/api/vivaah/sammelans/:id", async (req, res) => {
+    try {
+      const sammelan = await storage.updateVivaahSammelan(req.params.id, req.body);
+      if (!sammelan) {
+        return res.status(404).json({ error: "Sammelan not found" });
+      }
+      res.json(sammelan);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update sammelan" });
+    }
+  });
+
+  app.delete("/api/vivaah/sammelans/:id", async (req, res) => {
+    try {
+      await storage.deleteVivaahSammelan(req.params.id);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(400).json({ error: "Failed to delete sammelan" });
+    }
+  });
+
+  // Vivaah Participants
+  app.get("/api/vivaah/participants/:sammelanId", async (req, res) => {
+    try {
+      const participants = await storage.getVivaahParticipants(req.params.sammelanId);
+      res.json(participants);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch participants" });
+    }
+  });
+
+  app.post("/api/vivaah/participants", async (req, res) => {
+    try {
+      const data = insertVivaahParticipantSchema.parse(req.body);
+      const participant = await storage.createVivaahParticipant(data);
+      res.json(participant);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid data" });
+    }
+  });
+
+  app.patch("/api/vivaah/participants/:id", async (req, res) => {
+    try {
+      const participant = await storage.updateVivaahParticipant(req.params.id, req.body);
+      if (!participant) {
+        return res.status(404).json({ error: "Participant not found" });
+      }
+      res.json(participant);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update participant" });
+    }
+  });
+
+  app.delete("/api/vivaah/participants/:id", async (req, res) => {
+    try {
+      await storage.deleteVivaahParticipant(req.params.id);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(400).json({ error: "Failed to delete participant" });
     }
   });
 

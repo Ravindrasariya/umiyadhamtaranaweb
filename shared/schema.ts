@@ -246,3 +246,55 @@ export const teamMembers = pgTable("team_members", {
 export const insertTeamMemberSchema = createInsertSchema(teamMembers).omit({ id: true });
 export type InsertTeamMember = z.infer<typeof insertTeamMemberSchema>;
 export type TeamMember = typeof teamMembers.$inferSelect;
+
+// Vivaah Sammelan Page Info
+export const vivaahPageInfo = pgTable("vivaah_page_info", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  titleEn: text("title_en").notNull(),
+  titleHi: text("title_hi").notNull(),
+  descriptionEn: text("description_en").notNull(),
+  descriptionHi: text("description_hi").notNull(),
+});
+
+export const insertVivaahPageInfoSchema = createInsertSchema(vivaahPageInfo).omit({ id: true });
+export type InsertVivaahPageInfo = z.infer<typeof insertVivaahPageInfoSchema>;
+export type VivaahPageInfo = typeof vivaahPageInfo.$inferSelect;
+
+// Vivaah Sammelan Details (upcoming sammelan, financials)
+export const vivaahSammelan = pgTable("vivaah_sammelan", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  titleEn: text("title_en").notNull(),
+  titleHi: text("title_hi").notNull(),
+  overallIncome: text("overall_income").notNull().default("0"),
+  overallExpense: text("overall_expense").notNull().default("0"),
+  asOfDate: text("as_of_date").notNull(),
+  isActive: boolean("is_active").notNull().default(true),
+});
+
+export const insertVivaahSammelanSchema = createInsertSchema(vivaahSammelan).omit({ id: true });
+export type InsertVivaahSammelan = z.infer<typeof insertVivaahSammelanSchema>;
+export type VivaahSammelan = typeof vivaahSammelan.$inferSelect;
+
+// Vivaah Participants (Bride/Groom entries)
+export const vivaahParticipants = pgTable("vivaah_participants", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sammelanId: varchar("sammelan_id").notNull(),
+  type: text("type").notNull(), // 'bride' or 'groom'
+  nameEn: text("name_en").notNull(),
+  nameHi: text("name_hi").notNull(),
+  fatherNameEn: text("father_name_en"),
+  fatherNameHi: text("father_name_hi"),
+  motherNameEn: text("mother_name_en"),
+  motherNameHi: text("mother_name_hi"),
+  grandfatherNameEn: text("grandfather_name_en"),
+  grandfatherNameHi: text("grandfather_name_hi"),
+  grandmotherNameEn: text("grandmother_name_en"),
+  grandmotherNameHi: text("grandmother_name_hi"),
+  locationEn: text("location_en"),
+  locationHi: text("location_hi"),
+  order: integer("order").notNull().default(0),
+});
+
+export const insertVivaahParticipantSchema = createInsertSchema(vivaahParticipants).omit({ id: true });
+export type InsertVivaahParticipant = z.infer<typeof insertVivaahParticipantSchema>;
+export type VivaahParticipant = typeof vivaahParticipants.$inferSelect;

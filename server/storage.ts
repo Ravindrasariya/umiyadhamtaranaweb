@@ -31,6 +31,12 @@ import {
   type InsertGaushalaGallery,
   type TeamMember,
   type InsertTeamMember,
+  type VivaahPageInfo,
+  type InsertVivaahPageInfo,
+  type VivaahSammelan,
+  type InsertVivaahSammelan,
+  type VivaahParticipant,
+  type InsertVivaahParticipant,
   users,
   sliderImages,
   aboutContent,
@@ -47,6 +53,9 @@ import {
   gaushalaServices,
   gaushalaGallery,
   teamMembers,
+  vivaahPageInfo,
+  vivaahSammelan,
+  vivaahParticipants,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, asc, desc } from "drizzle-orm";
@@ -140,6 +149,24 @@ export interface IStorage {
   createTeamMember(data: InsertTeamMember): Promise<TeamMember>;
   updateTeamMember(id: string, data: Partial<InsertTeamMember>): Promise<TeamMember | undefined>;
   deleteTeamMember(id: string): Promise<boolean>;
+
+  // Vivaah Page Info
+  getVivaahPageInfo(): Promise<VivaahPageInfo | undefined>;
+  createVivaahPageInfo(data: InsertVivaahPageInfo): Promise<VivaahPageInfo>;
+  updateVivaahPageInfo(id: string, data: Partial<InsertVivaahPageInfo>): Promise<VivaahPageInfo | undefined>;
+
+  // Vivaah Sammelan
+  getVivaahSammelans(): Promise<VivaahSammelan[]>;
+  getActiveSammelan(): Promise<VivaahSammelan | undefined>;
+  createVivaahSammelan(data: InsertVivaahSammelan): Promise<VivaahSammelan>;
+  updateVivaahSammelan(id: string, data: Partial<InsertVivaahSammelan>): Promise<VivaahSammelan | undefined>;
+  deleteVivaahSammelan(id: string): Promise<boolean>;
+
+  // Vivaah Participants
+  getVivaahParticipants(sammelanId: string): Promise<VivaahParticipant[]>;
+  createVivaahParticipant(data: InsertVivaahParticipant): Promise<VivaahParticipant>;
+  updateVivaahParticipant(id: string, data: Partial<InsertVivaahParticipant>): Promise<VivaahParticipant | undefined>;
+  deleteVivaahParticipant(id: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -435,6 +462,68 @@ export class DatabaseStorage implements IStorage {
 
   async deleteTeamMember(id: string): Promise<boolean> {
     await db.delete(teamMembers).where(eq(teamMembers.id, id));
+    return true;
+  }
+
+  // Vivaah Page Info
+  async getVivaahPageInfo(): Promise<VivaahPageInfo | undefined> {
+    const [info] = await db.select().from(vivaahPageInfo).limit(1);
+    return info || undefined;
+  }
+
+  async createVivaahPageInfo(data: InsertVivaahPageInfo): Promise<VivaahPageInfo> {
+    const [info] = await db.insert(vivaahPageInfo).values(data).returning();
+    return info;
+  }
+
+  async updateVivaahPageInfo(id: string, data: Partial<InsertVivaahPageInfo>): Promise<VivaahPageInfo | undefined> {
+    const [info] = await db.update(vivaahPageInfo).set(data).where(eq(vivaahPageInfo.id, id)).returning();
+    return info || undefined;
+  }
+
+  // Vivaah Sammelan
+  async getVivaahSammelans(): Promise<VivaahSammelan[]> {
+    return db.select().from(vivaahSammelan);
+  }
+
+  async getActiveSammelan(): Promise<VivaahSammelan | undefined> {
+    const [sammelan] = await db.select().from(vivaahSammelan).where(eq(vivaahSammelan.isActive, true)).limit(1);
+    return sammelan || undefined;
+  }
+
+  async createVivaahSammelan(data: InsertVivaahSammelan): Promise<VivaahSammelan> {
+    const [sammelan] = await db.insert(vivaahSammelan).values(data).returning();
+    return sammelan;
+  }
+
+  async updateVivaahSammelan(id: string, data: Partial<InsertVivaahSammelan>): Promise<VivaahSammelan | undefined> {
+    const [sammelan] = await db.update(vivaahSammelan).set(data).where(eq(vivaahSammelan.id, id)).returning();
+    return sammelan || undefined;
+  }
+
+  async deleteVivaahSammelan(id: string): Promise<boolean> {
+    await db.delete(vivaahParticipants).where(eq(vivaahParticipants.sammelanId, id));
+    await db.delete(vivaahSammelan).where(eq(vivaahSammelan.id, id));
+    return true;
+  }
+
+  // Vivaah Participants
+  async getVivaahParticipants(sammelanId: string): Promise<VivaahParticipant[]> {
+    return db.select().from(vivaahParticipants).where(eq(vivaahParticipants.sammelanId, sammelanId)).orderBy(asc(vivaahParticipants.order));
+  }
+
+  async createVivaahParticipant(data: InsertVivaahParticipant): Promise<VivaahParticipant> {
+    const [participant] = await db.insert(vivaahParticipants).values(data).returning();
+    return participant;
+  }
+
+  async updateVivaahParticipant(id: string, data: Partial<InsertVivaahParticipant>): Promise<VivaahParticipant | undefined> {
+    const [participant] = await db.update(vivaahParticipants).set(data).where(eq(vivaahParticipants.id, id)).returning();
+    return participant || undefined;
+  }
+
+  async deleteVivaahParticipant(id: string): Promise<boolean> {
+    await db.delete(vivaahParticipants).where(eq(vivaahParticipants.id, id));
     return true;
   }
 }
