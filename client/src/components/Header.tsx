@@ -84,12 +84,12 @@ export function Header() {
 
       <nav className="hidden md:block bg-primary/90 border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center gap-2 py-2">
+          <div className="flex items-center justify-end gap-2 py-2 pr-[88px]">
             {navItems.filter(item => !["/", "/about", "/donation"].includes(item.path)).map((item) => (
               <Link key={item.path} href={item.path}>
                 <Button
                   variant="ghost"
-                  className={`text-white/90 font-bold text-base px-5 py-2 ${
+                  className={`text-white/90 font-extrabold text-base px-5 py-2 ${
                     location === item.path
                       ? "bg-white/20 text-white"
                       : ""
@@ -97,7 +97,7 @@ export function Header() {
                   data-testid={`nav-${item.labelEn.toLowerCase().replace(/\s/g, "-")}-row2`}
                 >
                   {language === "hi" ? (
-                    <span className="text-lg font-bold">{item.labelHi}</span>
+                    <span className="text-lg font-extrabold">{item.labelHi}</span>
                   ) : (
                     item.labelEn
                   )}
