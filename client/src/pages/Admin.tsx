@@ -1523,6 +1523,8 @@ function VivaahSammelanManager() {
   const [pageFormData, setPageFormData] = useState<Partial<VivaahPageInfo>>({});
   const [sammelanFormData, setSammelanFormData] = useState({ titleEn: "", titleHi: "", overallIncome: "0", overallExpense: "0", asOfDate: "" });
   const [newParticipant, setNewParticipant] = useState({ type: "bride" as "bride" | "groom", nameEn: "", nameHi: "", fatherNameEn: "", fatherNameHi: "", motherNameEn: "", motherNameHi: "", grandfatherNameEn: "", grandfatherNameHi: "", grandmotherNameEn: "", grandmotherNameHi: "", locationEn: "", locationHi: "" });
+  const [editingParticipantId, setEditingParticipantId] = useState<string | null>(null);
+  const [editParticipantData, setEditParticipantData] = useState<Partial<VivaahParticipant>>({});
 
   const updatePageInfoMutation = useMutation({
     mutationFn: async (data: Partial<VivaahPageInfo>) => {
@@ -1559,6 +1561,16 @@ function VivaahSammelanManager() {
     },
   });
 
+  const updateParticipantMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<VivaahParticipant> }) => apiRequest("PATCH", `/api/vivaah/participants/${id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/vivaah/participants", activeSammelan?.id] });
+      setEditingParticipantId(null);
+      setEditParticipantData({});
+      toast({ title: t("Participant updated", "प्रतिभागी अपडेट हुआ") });
+    },
+  });
+
   const deleteParticipantMutation = useMutation({
     mutationFn: async (id: string) => apiRequest("DELETE", `/api/vivaah/participants/${id}`),
     onSuccess: () => {
@@ -1566,6 +1578,30 @@ function VivaahSammelanManager() {
       toast({ title: t("Participant deleted", "प्रतिभागी हटाया गया") });
     },
   });
+
+  const startEditingParticipant = (participant: VivaahParticipant) => {
+    setEditingParticipantId(participant.id);
+    setEditParticipantData({
+      type: participant.type,
+      nameEn: participant.nameEn,
+      nameHi: participant.nameHi || "",
+      fatherNameEn: participant.fatherNameEn || "",
+      fatherNameHi: participant.fatherNameHi || "",
+      motherNameEn: participant.motherNameEn || "",
+      motherNameHi: participant.motherNameHi || "",
+      grandfatherNameEn: participant.grandfatherNameEn || "",
+      grandfatherNameHi: participant.grandfatherNameHi || "",
+      grandmotherNameEn: participant.grandmotherNameEn || "",
+      grandmotherNameHi: participant.grandmotherNameHi || "",
+      locationEn: participant.locationEn || "",
+      locationHi: participant.locationHi || "",
+    });
+  };
+
+  const cancelEditingParticipant = () => {
+    setEditingParticipantId(null);
+    setEditParticipantData({});
+  };
 
   if (pageInfoLoading || sammelanLoading) return <Skeleton className="h-64" />;
 
@@ -1677,14 +1713,44 @@ function VivaahSammelanManager() {
                     {brides.map((bride, idx) => (
                       <Card key={bride.id} className="border-pink-200" data-testid={`participant-bride-${bride.id}`}>
                         <CardContent className="p-3">
-                          <div className="flex justify-between items-start">
-                            <div className="text-sm">
-                              <p className="font-medium">{idx + 1}. {bride.nameEn} / {bride.nameHi}</p>
-                              <p className="text-muted-foreground">{t("Father", "पिता")}: {bride.fatherNameEn || "-"}</p>
-                              <p className="text-muted-foreground">{t("Location", "स्थान")}: {bride.locationEn || "-"}</p>
+                          {editingParticipantId === bride.id ? (
+                            <div className="space-y-2">
+                              <div className="grid grid-cols-2 gap-2">
+                                <Input placeholder={t("Name (English)", "नाम")} value={editParticipantData.nameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, nameEn: e.target.value })} />
+                                <Input placeholder={t("Name (Hindi)", "नाम (हिंदी)")} value={editParticipantData.nameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, nameHi: e.target.value })} />
+                                <Input placeholder={t("Father's Name (English)", "पिता का नाम")} value={editParticipantData.fatherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, fatherNameEn: e.target.value })} />
+                                <Input placeholder={t("Father's Name (Hindi)", "पिता का नाम (हिंदी)")} value={editParticipantData.fatherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, fatherNameHi: e.target.value })} />
+                                <Input placeholder={t("Mother's Name (English)", "माता का नाम")} value={editParticipantData.motherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, motherNameEn: e.target.value })} />
+                                <Input placeholder={t("Mother's Name (Hindi)", "माता का नाम (हिंदी)")} value={editParticipantData.motherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, motherNameHi: e.target.value })} />
+                                <Input placeholder={t("Grandfather's Name (English)", "दादा का नाम")} value={editParticipantData.grandfatherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandfatherNameEn: e.target.value })} />
+                                <Input placeholder={t("Grandfather's Name (Hindi)", "दादा का नाम (हिंदी)")} value={editParticipantData.grandfatherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandfatherNameHi: e.target.value })} />
+                                <Input placeholder={t("Grandmother's Name (English)", "दादी का नाम")} value={editParticipantData.grandmotherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandmotherNameEn: e.target.value })} />
+                                <Input placeholder={t("Grandmother's Name (Hindi)", "दादी का नाम (हिंदी)")} value={editParticipantData.grandmotherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandmotherNameHi: e.target.value })} />
+                                <Input placeholder={t("Location (English)", "स्थान")} value={editParticipantData.locationEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, locationEn: e.target.value })} />
+                                <Input placeholder={t("Location (Hindi)", "स्थान (हिंदी)")} value={editParticipantData.locationHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, locationHi: e.target.value })} />
+                              </div>
+                              <div className="flex gap-2">
+                                <Button size="sm" onClick={() => updateParticipantMutation.mutate({ id: bride.id, data: editParticipantData })} disabled={updateParticipantMutation.isPending}>
+                                  <Save className="w-3 h-3 mr-1" />{t("Save", "सहेजें")}
+                                </Button>
+                                <Button size="sm" variant="outline" onClick={cancelEditingParticipant}>
+                                  <X className="w-3 h-3 mr-1" />{t("Cancel", "रद्द")}
+                                </Button>
+                              </div>
                             </div>
-                            <Button size="icon" variant="destructive" onClick={() => deleteParticipantMutation.mutate(bride.id)}><Trash2 className="w-4 h-4" /></Button>
-                          </div>
+                          ) : (
+                            <div className="flex justify-between items-start">
+                              <div className="text-sm">
+                                <p className="font-medium">{idx + 1}. {bride.nameEn} / {bride.nameHi}</p>
+                                <p className="text-muted-foreground">{t("Father", "पिता")}: {bride.fatherNameEn || "-"}</p>
+                                <p className="text-muted-foreground">{t("Location", "स्थान")}: {bride.locationEn || "-"}</p>
+                              </div>
+                              <div className="flex gap-1">
+                                <Button size="icon" variant="ghost" onClick={() => startEditingParticipant(bride)} data-testid={`button-edit-bride-${bride.id}`}><Pencil className="w-4 h-4" /></Button>
+                                <Button size="icon" variant="destructive" onClick={() => deleteParticipantMutation.mutate(bride.id)}><Trash2 className="w-4 h-4" /></Button>
+                              </div>
+                            </div>
+                          )}
                         </CardContent>
                       </Card>
                     ))}
@@ -1697,14 +1763,44 @@ function VivaahSammelanManager() {
                     {grooms.map((groom, idx) => (
                       <Card key={groom.id} className="border-blue-200" data-testid={`participant-groom-${groom.id}`}>
                         <CardContent className="p-3">
-                          <div className="flex justify-between items-start">
-                            <div className="text-sm">
-                              <p className="font-medium">{idx + 1}. {groom.nameEn} / {groom.nameHi}</p>
-                              <p className="text-muted-foreground">{t("Father", "पिता")}: {groom.fatherNameEn || "-"}</p>
-                              <p className="text-muted-foreground">{t("Location", "स्थान")}: {groom.locationEn || "-"}</p>
+                          {editingParticipantId === groom.id ? (
+                            <div className="space-y-2">
+                              <div className="grid grid-cols-2 gap-2">
+                                <Input placeholder={t("Name (English)", "नाम")} value={editParticipantData.nameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, nameEn: e.target.value })} />
+                                <Input placeholder={t("Name (Hindi)", "नाम (हिंदी)")} value={editParticipantData.nameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, nameHi: e.target.value })} />
+                                <Input placeholder={t("Father's Name (English)", "पिता का नाम")} value={editParticipantData.fatherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, fatherNameEn: e.target.value })} />
+                                <Input placeholder={t("Father's Name (Hindi)", "पिता का नाम (हिंदी)")} value={editParticipantData.fatherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, fatherNameHi: e.target.value })} />
+                                <Input placeholder={t("Mother's Name (English)", "माता का नाम")} value={editParticipantData.motherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, motherNameEn: e.target.value })} />
+                                <Input placeholder={t("Mother's Name (Hindi)", "माता का नाम (हिंदी)")} value={editParticipantData.motherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, motherNameHi: e.target.value })} />
+                                <Input placeholder={t("Grandfather's Name (English)", "दादा का नाम")} value={editParticipantData.grandfatherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandfatherNameEn: e.target.value })} />
+                                <Input placeholder={t("Grandfather's Name (Hindi)", "दादा का नाम (हिंदी)")} value={editParticipantData.grandfatherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandfatherNameHi: e.target.value })} />
+                                <Input placeholder={t("Grandmother's Name (English)", "दादी का नाम")} value={editParticipantData.grandmotherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandmotherNameEn: e.target.value })} />
+                                <Input placeholder={t("Grandmother's Name (Hindi)", "दादी का नाम (हिंदी)")} value={editParticipantData.grandmotherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandmotherNameHi: e.target.value })} />
+                                <Input placeholder={t("Location (English)", "स्थान")} value={editParticipantData.locationEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, locationEn: e.target.value })} />
+                                <Input placeholder={t("Location (Hindi)", "स्थान (हिंदी)")} value={editParticipantData.locationHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, locationHi: e.target.value })} />
+                              </div>
+                              <div className="flex gap-2">
+                                <Button size="sm" onClick={() => updateParticipantMutation.mutate({ id: groom.id, data: editParticipantData })} disabled={updateParticipantMutation.isPending}>
+                                  <Save className="w-3 h-3 mr-1" />{t("Save", "सहेजें")}
+                                </Button>
+                                <Button size="sm" variant="outline" onClick={cancelEditingParticipant}>
+                                  <X className="w-3 h-3 mr-1" />{t("Cancel", "रद्द")}
+                                </Button>
+                              </div>
                             </div>
-                            <Button size="icon" variant="destructive" onClick={() => deleteParticipantMutation.mutate(groom.id)}><Trash2 className="w-4 h-4" /></Button>
-                          </div>
+                          ) : (
+                            <div className="flex justify-between items-start">
+                              <div className="text-sm">
+                                <p className="font-medium">{idx + 1}. {groom.nameEn} / {groom.nameHi}</p>
+                                <p className="text-muted-foreground">{t("Father", "पिता")}: {groom.fatherNameEn || "-"}</p>
+                                <p className="text-muted-foreground">{t("Location", "स्थान")}: {groom.locationEn || "-"}</p>
+                              </div>
+                              <div className="flex gap-1">
+                                <Button size="icon" variant="ghost" onClick={() => startEditingParticipant(groom)} data-testid={`button-edit-groom-${groom.id}`}><Pencil className="w-4 h-4" /></Button>
+                                <Button size="icon" variant="destructive" onClick={() => deleteParticipantMutation.mutate(groom.id)}><Trash2 className="w-4 h-4" /></Button>
+                              </div>
+                            </div>
+                          )}
                         </CardContent>
                       </Card>
                     ))}
