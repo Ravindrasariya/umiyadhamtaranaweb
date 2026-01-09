@@ -156,13 +156,13 @@ export default function VivaahSammelan() {
                     <Skeleton className="h-32" />
                   </div>
                 ) : maxCouples > 0 ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {Array.from({ length: maxCouples }).map((_, index) => (
-                      <div key={index} className="flex items-stretch gap-2 md:gap-4" data-testid={`couple-row-${index}`}>
+                      <div key={index} className="flex items-stretch gap-1" data-testid={`couple-row-${index}`}>
                         {renderParticipantCard(brides[index], "bride", index)}
-                        <div className="flex items-center justify-center px-2 md:px-4">
-                          <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                            <Handshake className="w-6 h-6 md:w-8 md:h-8 text-primary" />
+                        <div className="flex-shrink-0 w-8 md:w-12 flex items-center justify-center">
+                          <div className="w-6 h-6 md:w-10 md:h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                            <Handshake className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                           </div>
                         </div>
                         {renderParticipantCard(grooms[index], "groom", index)}
