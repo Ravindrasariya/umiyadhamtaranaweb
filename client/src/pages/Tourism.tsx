@@ -4,13 +4,13 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plane, Train, MapPin } from "lucide-react";
 
-import mahakaleshwarImg from "@assets/stock_images/mahakaleshwar_temple_6a5146a6.jpg";
+import mahakaleshwarImg from "@assets/MahaKaleshwar_Bhagwan_1767956421548.png";
 import gaushalaImg from "@assets/stock_images/indian_cow_shelter_g_33487d7e.jpg";
-import harsiddhiImg from "@assets/stock_images/hindu_temple_goddess_11aa7825.jpg";
-import ramGhatImg from "@assets/stock_images/indian_river_ghat_ho_546ba447.jpg";
-import sandipaniImg from "@assets/stock_images/ancient_ashram_medit_335565e5.jpg";
-import mangalnathImg from "@assets/stock_images/hindu_temple_archite_307fcbb0.jpg";
-import chintamanImg from "@assets/stock_images/ganesh_temple_idol_h_c3b571af.jpg";
+import harsiddhiImg from "@assets/Harsiddhi_Mata_1767956421548.png";
+import ramGhatImg from "@assets/Ramghat_1767956421548.png";
+import sandipaniImg from "@assets/Sandipani_Aashram_1767956421548.png";
+import mangalnathImg from "@assets/Mangalnath_Mandir_1767956421548.png";
+import chintamanImg from "@assets/Chintaman_Ganesh_1767956421548.png";
 
 const transportOptions = [
   {
