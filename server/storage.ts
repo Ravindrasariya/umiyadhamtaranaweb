@@ -21,14 +21,6 @@ import {
   type InsertTermsContent,
   type Donation,
   type InsertDonation,
-  type GaushalaSlider,
-  type InsertGaushalaSlider,
-  type GaushalaAbout,
-  type InsertGaushalaAbout,
-  type GaushalaService,
-  type InsertGaushalaService,
-  type GaushalaGallery,
-  type InsertGaushalaGallery,
   type TeamMember,
   type InsertTeamMember,
   type VivaahPageInfo,
@@ -48,10 +40,6 @@ import {
   contactInfo,
   termsContent,
   donations,
-  gaushalaSliders,
-  gaushalaAbout,
-  gaushalaServices,
-  gaushalaGallery,
   teamMembers,
   vivaahPageInfo,
   vivaahSammelan,
@@ -120,29 +108,6 @@ export interface IStorage {
   // Donations
   getDonations(): Promise<Donation[]>;
   createDonation(data: InsertDonation): Promise<Donation>;
-
-  // Gaushala Sliders
-  getGaushalaSliders(): Promise<GaushalaSlider[]>;
-  createGaushalaSlider(data: InsertGaushalaSlider): Promise<GaushalaSlider>;
-  updateGaushalaSlider(id: string, data: Partial<InsertGaushalaSlider>): Promise<GaushalaSlider | undefined>;
-  deleteGaushalaSlider(id: string): Promise<boolean>;
-
-  // Gaushala About
-  getGaushalaAbout(): Promise<GaushalaAbout | undefined>;
-  createGaushalaAbout(data: InsertGaushalaAbout): Promise<GaushalaAbout>;
-  updateGaushalaAbout(id: string, data: Partial<InsertGaushalaAbout>): Promise<GaushalaAbout | undefined>;
-
-  // Gaushala Services
-  getGaushalaServices(): Promise<GaushalaService[]>;
-  createGaushalaService(data: InsertGaushalaService): Promise<GaushalaService>;
-  updateGaushalaService(id: string, data: Partial<InsertGaushalaService>): Promise<GaushalaService | undefined>;
-  deleteGaushalaService(id: string): Promise<boolean>;
-
-  // Gaushala Gallery
-  getGaushalaGallery(): Promise<GaushalaGallery[]>;
-  createGaushalaGalleryItem(data: InsertGaushalaGallery): Promise<GaushalaGallery>;
-  updateGaushalaGalleryItem(id: string, data: Partial<InsertGaushalaGallery>): Promise<GaushalaGallery | undefined>;
-  deleteGaushalaGalleryItem(id: string): Promise<boolean>;
 
   // Team Members
   getTeamMembers(): Promise<TeamMember[]>;
@@ -367,82 +332,6 @@ export class DatabaseStorage implements IStorage {
   async createDonation(data: InsertDonation): Promise<Donation> {
     const [donation] = await db.insert(donations).values(data).returning();
     return donation;
-  }
-
-  // Gaushala Sliders
-  async getGaushalaSliders(): Promise<GaushalaSlider[]> {
-    return db.select().from(gaushalaSliders).where(eq(gaushalaSliders.isActive, true)).orderBy(asc(gaushalaSliders.order));
-  }
-
-  async createGaushalaSlider(data: InsertGaushalaSlider): Promise<GaushalaSlider> {
-    const [slider] = await db.insert(gaushalaSliders).values(data).returning();
-    return slider;
-  }
-
-  async updateGaushalaSlider(id: string, data: Partial<InsertGaushalaSlider>): Promise<GaushalaSlider | undefined> {
-    const [slider] = await db.update(gaushalaSliders).set(data).where(eq(gaushalaSliders.id, id)).returning();
-    return slider || undefined;
-  }
-
-  async deleteGaushalaSlider(id: string): Promise<boolean> {
-    await db.delete(gaushalaSliders).where(eq(gaushalaSliders.id, id));
-    return true;
-  }
-
-  // Gaushala About
-  async getGaushalaAbout(): Promise<GaushalaAbout | undefined> {
-    const [content] = await db.select().from(gaushalaAbout).limit(1);
-    return content || undefined;
-  }
-
-  async createGaushalaAbout(data: InsertGaushalaAbout): Promise<GaushalaAbout> {
-    const [content] = await db.insert(gaushalaAbout).values(data).returning();
-    return content;
-  }
-
-  async updateGaushalaAbout(id: string, data: Partial<InsertGaushalaAbout>): Promise<GaushalaAbout | undefined> {
-    const [content] = await db.update(gaushalaAbout).set(data).where(eq(gaushalaAbout.id, id)).returning();
-    return content || undefined;
-  }
-
-  // Gaushala Services
-  async getGaushalaServices(): Promise<GaushalaService[]> {
-    return db.select().from(gaushalaServices).orderBy(asc(gaushalaServices.order));
-  }
-
-  async createGaushalaService(data: InsertGaushalaService): Promise<GaushalaService> {
-    const [service] = await db.insert(gaushalaServices).values(data).returning();
-    return service;
-  }
-
-  async updateGaushalaService(id: string, data: Partial<InsertGaushalaService>): Promise<GaushalaService | undefined> {
-    const [service] = await db.update(gaushalaServices).set(data).where(eq(gaushalaServices.id, id)).returning();
-    return service || undefined;
-  }
-
-  async deleteGaushalaService(id: string): Promise<boolean> {
-    await db.delete(gaushalaServices).where(eq(gaushalaServices.id, id));
-    return true;
-  }
-
-  // Gaushala Gallery
-  async getGaushalaGallery(): Promise<GaushalaGallery[]> {
-    return db.select().from(gaushalaGallery).where(eq(gaushalaGallery.isActive, true)).orderBy(asc(gaushalaGallery.order));
-  }
-
-  async createGaushalaGalleryItem(data: InsertGaushalaGallery): Promise<GaushalaGallery> {
-    const [item] = await db.insert(gaushalaGallery).values(data).returning();
-    return item;
-  }
-
-  async updateGaushalaGalleryItem(id: string, data: Partial<InsertGaushalaGallery>): Promise<GaushalaGallery | undefined> {
-    const [item] = await db.update(gaushalaGallery).set(data).where(eq(gaushalaGallery.id, id)).returning();
-    return item || undefined;
-  }
-
-  async deleteGaushalaGalleryItem(id: string): Promise<boolean> {
-    await db.delete(gaushalaGallery).where(eq(gaushalaGallery.id, id));
-    return true;
   }
 
   // Team Members
