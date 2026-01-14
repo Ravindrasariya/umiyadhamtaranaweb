@@ -8,7 +8,7 @@ import type { TermsContent } from "@shared/schema";
 const defaultTerms = {
   titleEn: "Terms & Conditions for Donations",
   titleHi: "दान के लिए नियम और शर्तें",
-  contentEn: `1. All donations made to Maa Umiya Patidar Samaj Seva Trust are voluntary and made with the donor's free will.
+  contentEn: `1. All donations made to Umiya Patidar Samaj Seva Trust are voluntary and made with the donor's free will.
 
 2. Donations are non-refundable once processed. Please ensure all details are correct before submitting.
 

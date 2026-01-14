@@ -173,8 +173,8 @@ export function Footer() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-center">
             <p className="text-gray-400 text-sm">
               {t(
-                "2025 Maa Umiya Patidar Samaj Seva Trust. All Rights Reserved.",
-                "2025 माँ उमिया पाटीदार समाज सेवा ट्रस्ट। सर्वाधिकार सुरक्षित।"
+                "2025 Umiya Patidar Samaj Seva Trust. All Rights Reserved.",
+                "2025 उमिया पाटीदार समाज सेवा ट्रस्ट। सर्वाधिकार सुरक्षित।"
               )}
             </p>
             <p className="text-gray-400 text-sm">

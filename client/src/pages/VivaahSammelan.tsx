@@ -191,8 +191,8 @@ export default function VivaahSammelan() {
                   <div className="prose prose-lg max-w-none text-muted-foreground">
                     <p className="mb-4">
                       {t(
-                        "Vivaah Sammelan is a sacred matrimonial gathering organized under the auspices of Maa Umiya Patidar Samaj Seva Trust Tarana. This event brings together eligible youth from the Patidar community seeking suitable life partners.",
-                        "विवाह सम्मेलन श्री उमिया पाटीदार समाज सेवा ट्रस्ट तराना के तत्वावधान में आयोजित एक पवित्र वैवाहिक सम्मेलन है। यह आयोजन उपयुक्त जीवन साथी की तलाश में पाटीदार समुदाय के योग्य युवाओं को एक साथ लाता है।"
+                        "Vivaah Sammelan is a sacred matrimonial gathering organized under the auspices of Umiya Patidar Samaj Seva Trust Tarana. This event brings together eligible youth from the Patidar community seeking suitable life partners.",
+                        "विवाह सम्मेलन उमिया पाटीदार समाज सेवा ट्रस्ट तराना के तत्वावधान में आयोजित एक पवित्र वैवाहिक सम्मेलन है। यह आयोजन उपयुक्त जीवन साथी की तलाश में पाटीदार समुदाय के योग्य युवाओं को एक साथ लाता है।"
                       )}
                     </p>
                     <p className="mb-4">
