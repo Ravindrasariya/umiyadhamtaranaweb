@@ -47,7 +47,7 @@ export default function VivaahSammelan() {
       <Card className={`flex-1 basis-0 min-w-0 overflow-hidden ${type === "bride" ? "border-pink-300 bg-pink-50/50" : "border-blue-300 bg-blue-50/50"}`} data-testid={`${type}-${participant.id}`}>
         <CardContent className="p-2 md:p-4">
           <h4 className={`font-semibold mb-1 text-sm md:text-base truncate ${type === "bride" ? "text-pink-700" : "text-blue-700"}`}>
-            {index + 1}. {language === "hi" ? participant.nameHi : participant.nameEn}
+            {language === "hi" ? participant.nameHi : participant.nameEn}
           </h4>
           <div className="text-xs md:text-sm text-muted-foreground space-y-0.5">
             {(participant.fatherNameEn || participant.fatherNameHi) && (
@@ -160,8 +160,11 @@ export default function VivaahSammelan() {
                     {Array.from({ length: maxCouples }).map((_, index) => (
                       <div key={index} className="flex items-stretch gap-1" data-testid={`couple-row-${index}`}>
                         {renderParticipantCard(brides[index], "bride", index)}
-                        <div className="flex-shrink-0 w-8 md:w-12 flex items-center justify-center">
-                          <div className="w-6 h-6 md:w-10 md:h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <div className="flex-shrink-0 w-10 md:w-14 flex flex-col items-center justify-center gap-1">
+                          <span className="text-xs md:text-sm font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">
+                            {index + 1}
+                          </span>
+                          <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-primary/10 flex items-center justify-center">
                             <Handshake className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                           </div>
                         </div>
