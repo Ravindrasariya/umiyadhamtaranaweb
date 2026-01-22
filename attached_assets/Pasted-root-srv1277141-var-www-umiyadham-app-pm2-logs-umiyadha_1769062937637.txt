@@ -1,0 +1,29 @@
+root@srv1277141:/var/www/umiyadham-app# pm2 logs umiyadham-app --lines 20
+[TAILING] Tailing last 20 lines for [umiyadham-app] process (change the value with --lines option)
+/root/.pm2/logs/umiyadham-app-error-16.log last 20 lines:
+16|umiyadh |     at Object.<anonymous> (/var/www/umiyadham-app/dist/index.cjs:70:120673)
+16|umiyadh |     at Module._compile (node:internal/modules/cjs/loader:1521:14)
+16|umiyadh |     at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+16|umiyadh |     at Module.load (node:internal/modules/cjs/loader:1266:32)
+16|umiyadh |     at Module._load (node:internal/modules/cjs/loader:1091:12)
+16|umiyadh |     at cjsLoader (node:internal/modules/esm/translators:298:15)
+16|umiyadh |     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)
+16|umiyadh |     at ModuleJob.run (node:internal/modules/esm/module_job:325:25)
+16|umiyadh | You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+16|umiyadh | TypeError: e.get is not a function
+16|umiyadh |     at o_ (/var/www/umiyadham-app/dist/index.cjs:70:110701)
+16|umiyadh |     at /var/www/umiyadham-app/dist/index.cjs:70:120360
+16|umiyadh |     at Object.<anonymous> (/var/www/umiyadham-app/dist/index.cjs:70:120570)
+16|umiyadh |     at Module._compile (node:internal/modules/cjs/loader:1521:14)
+16|umiyadh |     at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+16|umiyadh |     at Module.load (node:internal/modules/cjs/loader:1266:32)
+16|umiyadh |     at Module._load (node:internal/modules/cjs/loader:1091:12)
+16|umiyadh |     at cjsLoader (node:internal/modules/esm/translators:298:15)
+16|umiyadh |     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)
+16|umiyadh |     at ModuleJob.run (node:internal/modules/esm/module_job:325:25)
+
+/root/.pm2/logs/umiyadham-app-out-16.log last 20 lines:
+16|umiyadh | [4:35:11 AM] GET /api/gallery 304 in 8ms
+16|umiyadh | [4:35:11 AM] GET /api/contact 304 in 1ms
+16|umiyadh | [4:35:11 AM] GET /api/pooja-timings 304 in 2ms
+16|umiyadh | [4:35:11 AM] GET /api/services 304 in 1ms

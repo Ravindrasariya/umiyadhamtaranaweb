@@ -1,7 +1,10 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { registerObjectStorageRoutes } from "./replit_integrations/object_storage";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import { randomUUID } from "crypto";
 import {
   insertSliderImageSchema,
   insertAboutContentSchema,
@@ -529,8 +532,76 @@ export async function registerRoutes(
     }
   });
 
-  // Register object storage routes for file uploads
-  registerObjectStorageRoutes(app);
+  // Configure multer for local file uploads
+  const uploadsDir = path.join(process.cwd(), 'uploads');
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+
+  const multerStorage = multer.diskStorage({
+    destination: (_req, _file, cb) => {
+      cb(null, uploadsDir);
+    },
+    filename: (_req, file, cb) => {
+      const ext = path.extname(file.originalname);
+      const uniqueName = `${randomUUID()}${ext}`;
+      cb(null, uniqueName);
+    }
+  });
+
+  const upload = multer({
+    storage: multerStorage,
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+    fileFilter: (_req, file, cb) => {
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+      if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+      } else {
+        cb(new Error('Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed.'));
+      }
+    }
+  });
+
+  // Local file upload endpoint
+  app.post("/api/uploads", upload.single('file'), (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+      const filePath = `/uploads/${req.file.filename}`;
+      res.json({
+        success: true,
+        filePath,
+        filename: req.file.filename,
+        originalName: req.file.originalname,
+        size: req.file.size
+      });
+    } catch (error) {
+      console.error("Upload error:", error);
+      res.status(500).json({ error: "Failed to upload file" });
+    }
+  });
+
+  // Serve uploaded files
+  app.use('/uploads', (req, res, next) => {
+    const filePath = path.join(uploadsDir, req.path);
+    if (fs.existsSync(filePath)) {
+      res.sendFile(filePath);
+    } else {
+      next();
+    }
+  });
+
+  // Legacy support: serve /objects/* paths from uploads folder (for existing data)
+  app.get("/objects/*", (req, res) => {
+    const objectPath = req.path.replace('/objects/uploads/', '');
+    const filePath = path.join(uploadsDir, objectPath);
+    if (fs.existsSync(filePath)) {
+      res.sendFile(filePath);
+    } else {
+      res.status(404).json({ error: "File not found" });
+    }
+  });
 
   return httpServer;
 }
