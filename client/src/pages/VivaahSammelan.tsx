@@ -138,6 +138,12 @@ export default function VivaahSammelan() {
 
             {activeSammelan && (
               <div className="mb-12">
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <Handshake className="w-5 h-5 text-primary" />
+                  <span className="font-bold text-primary text-lg">
+                    {t(`Total Pairs # ${maxCouples}`, `कुल जोड़े # ${maxCouples}`)}
+                  </span>
+                </div>
                 <div className="flex items-center justify-center gap-4 mb-8">
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 rounded-full bg-pink-500"></div>
@@ -157,12 +163,6 @@ export default function VivaahSammelan() {
                   </div>
                 ) : maxCouples > 0 ? (
                   <div className="space-y-3">
-                    <div className="flex items-center justify-center gap-2 py-2 mb-2">
-                      <Handshake className="w-5 h-5 text-primary" />
-                      <span className="font-bold text-primary text-lg">
-                        {t(`Total Pairs # ${maxCouples}`, `कुल जोड़े # ${maxCouples}`)}
-                      </span>
-                    </div>
                     {Array.from({ length: maxCouples }).map((_, index) => (
                       <div key={index} className="flex items-stretch gap-1" data-testid={`couple-row-${index}`}>
                         {renderParticipantCard(brides[index], "bride", index)}
