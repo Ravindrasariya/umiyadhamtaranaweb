@@ -41,6 +41,14 @@ The server follows a layered architecture:
 - **Schema Location**: `shared/schema.ts` using Drizzle ORM table definitions
 - **Migrations**: Managed via `drizzle-kit push` command
 
+### File Upload System
+- **Storage**: Local filesystem (`uploads/` directory)
+- **Upload Endpoint**: POST `/api/uploads` (multipart/form-data with field "file")
+- **Serving**: Static files served from `/uploads/*` path
+- **Legacy Support**: `/objects/*` paths redirect to uploads folder for backward compatibility
+- **File Types**: JPEG, PNG, GIF, WebP only (10MB max)
+- **Response Format**: `{ success, filePath, filename, originalName, size }`
+
 Key database tables:
 - `users` - Admin authentication
 - `slider_images` - Hero carousel content
