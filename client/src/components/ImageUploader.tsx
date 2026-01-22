@@ -32,7 +32,7 @@ export function ImageUploader({
 
   const { uploadFile, isUploading } = useUpload({
     onSuccess: (response) => {
-      onImageUploaded(response.objectPath);
+      onImageUploaded(response.filePath);
       setError(null);
     },
     onError: (err) => {
