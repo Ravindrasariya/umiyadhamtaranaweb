@@ -1252,7 +1252,7 @@ function VivaahSammelanManager() {
           </div>
           <Button onClick={() => saveSammelanMutation.mutate(sammelanFormData)} disabled={saveSammelanMutation.isPending} data-testid="button-save-sammelan">
             <Save className="w-4 h-4 mr-2" />
-            {activeSammelan ? t("Update Sammelan", "सम्मेलन अपडेट करें") : t("Create Sammelan", "सम्मेलन बनाएं")}
+            {activeSammelan ? t("Update", "अपडेट करें") : t("Create Sammelan", "सम्मेलन बनाएं")}
           </Button>
         </CardContent>
       </Card>
