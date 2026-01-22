@@ -182,35 +182,6 @@ export default function VivaahSammelan() {
               </div>
             )}
 
-            {!activeSammelan && !sammelanLoading && (
-              <Card className="overflow-visible" data-testid="card-vivaah-info">
-                <CardContent className="p-8">
-                  <h2 className="text-2xl font-bold text-foreground mb-6 text-center">
-                    {t("About Vivaah Sammelan", "विवाह सम्मेलन के बारे में")}
-                  </h2>
-                  <div className="prose prose-lg max-w-none text-muted-foreground">
-                    <p className="mb-4">
-                      {t(
-                        "Vivaah Sammelan is a sacred matrimonial gathering organized under the auspices of Umiya Patidar Samaj Seva Trust Tarana. This event brings together eligible youth from the Patidar community seeking suitable life partners.",
-                        "विवाह सम्मेलन उमिया पाटीदार समाज सेवा ट्रस्ट तराना के तत्वावधान में आयोजित एक पवित्र वैवाहिक सम्मेलन है। यह आयोजन उपयुक्त जीवन साथी की तलाश में पाटीदार समुदाय के योग्य युवाओं को एक साथ लाता है।"
-                      )}
-                    </p>
-                    <p className="mb-4">
-                      {t(
-                        "The event is conducted with full traditional values and under the divine blessings of Maa Umiya. Families from across the region participate in this auspicious gathering to find compatible matches for their children.",
-                        "यह आयोजन पूर्ण पारंपरिक मूल्यों के साथ और माँ उमिया के दिव्य आशीर्वाद में आयोजित किया जाता है। क्षेत्र भर के परिवार अपने बच्चों के लिए उपयुक्त रिश्ते खोजने के लिए इस शुभ सम्मेलन में भाग लेते हैं।"
-                      )}
-                    </p>
-                    <p>
-                      {t(
-                        "For registration and more information about upcoming Vivaah Sammelan events, please contact the temple administration or visit during office hours.",
-                        "पंजीकरण और आगामी विवाह सम्मेलन कार्यक्रमों के बारे में अधिक जानकारी के लिए, कृपया मंदिर प्रशासन से संपर्क करें या कार्यालय समय के दौरान आएं।"
-                      )}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
           </div>
         </section>
       </main>

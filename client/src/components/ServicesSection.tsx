@@ -190,7 +190,7 @@ export function ServicesSection() {
                     {t("Balaji Garden Tarana", "बालाजी गार्डन तराना")}
                   </h4>
                   <p className="text-muted-foreground text-sm mt-1">
-                    {t("~2 KM from Mandir", "~2 किमी मंदिर से")}
+                    {t("~1 KM from Mandir", "~1 किमी मंदिर से")}
                   </p>
                   <div className="flex items-center gap-2 mt-3">
                     <Phone className="w-4 h-4 text-primary" />
