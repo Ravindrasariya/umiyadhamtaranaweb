@@ -1117,7 +1117,7 @@ function VivaahSammelanManager() {
 
   const [pageFormData, setPageFormData] = useState<Partial<VivaahPageInfo>>({});
   const [sammelanFormData, setSammelanFormData] = useState({ titleEn: "", titleHi: "", overallIncome: "0", overallExpense: "0", asOfDate: "" });
-  const [newParticipant, setNewParticipant] = useState({ type: "bride" as "bride" | "groom", nameEn: "", nameHi: "", fatherNameEn: "", fatherNameHi: "", motherNameEn: "", motherNameHi: "", grandfatherNameEn: "", grandfatherNameHi: "", grandmotherNameEn: "", grandmotherNameHi: "", locationEn: "", locationHi: "" });
+  const [newParticipant, setNewParticipant] = useState({ type: "bride" as "bride" | "groom", nameEn: "", nameHi: "", fatherNameEn: "", fatherNameHi: "", motherNameEn: "", motherNameHi: "", grandfatherNameEn: "", grandfatherNameHi: "", grandmotherNameEn: "", grandmotherNameHi: "", locationEn: "", locationHi: "", photoUrl: "" });
   const [editingParticipantId, setEditingParticipantId] = useState<string | null>(null);
   const [editParticipantData, setEditParticipantData] = useState<Partial<VivaahParticipant>>({});
 
@@ -1151,7 +1151,7 @@ function VivaahSammelanManager() {
     mutationFn: async (data: Partial<VivaahParticipant>) => apiRequest("POST", "/api/vivaah/participants", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/vivaah/participants", activeSammelan?.id] });
-      setNewParticipant({ type: "bride", nameEn: "", nameHi: "", fatherNameEn: "", fatherNameHi: "", motherNameEn: "", motherNameHi: "", grandfatherNameEn: "", grandfatherNameHi: "", grandmotherNameEn: "", grandmotherNameHi: "", locationEn: "", locationHi: "" });
+      setNewParticipant({ type: "bride", nameEn: "", nameHi: "", fatherNameEn: "", fatherNameHi: "", motherNameEn: "", motherNameHi: "", grandfatherNameEn: "", grandfatherNameHi: "", grandmotherNameEn: "", grandmotherNameHi: "", locationEn: "", locationHi: "", photoUrl: "" });
       toast({ title: t("Participant added", "प्रतिभागी जोड़ा गया") });
     },
   });
@@ -1275,7 +1275,18 @@ function VivaahSammelanManager() {
                   <span className="text-blue-600 font-medium">{t("Groom", "वर")}</span>
                 </label>
               </div>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex items-start gap-4">
+                <div className="w-24 flex-shrink-0">
+                  <label className="text-sm font-medium mb-2 block">{t("Photo", "फ़ोटो")}</label>
+                  <ImageUploader
+                    currentImageUrl={newParticipant.photoUrl}
+                    onImageUploaded={(objectPath) => setNewParticipant({ ...newParticipant, photoUrl: objectPath })}
+                    onImageRemoved={() => setNewParticipant({ ...newParticipant, photoUrl: "" })}
+                    placeholder={t("Upload", "अपलोड")}
+                    className="w-24 h-24 rounded-full overflow-hidden"
+                  />
+                </div>
+                <div className="flex-1 grid grid-cols-2 gap-2">
                 <Input placeholder={t("Name (English)", "नाम")} value={newParticipant.nameEn} onChange={(e) => setNewParticipant({ ...newParticipant, nameEn: e.target.value })} data-testid="input-participant-name-en" />
                 <Input placeholder={t("Name (Hindi)", "नाम (हिंदी)")} value={newParticipant.nameHi} onChange={(e) => setNewParticipant({ ...newParticipant, nameHi: e.target.value })} data-testid="input-participant-name-hi" />
                 <Input placeholder={t("Father's Name (English)", "पिता का नाम")} value={newParticipant.fatherNameEn} onChange={(e) => setNewParticipant({ ...newParticipant, fatherNameEn: e.target.value })} />
@@ -1288,6 +1299,7 @@ function VivaahSammelanManager() {
                 <Input placeholder={t("Grandmother's Name (Hindi)", "दादी का नाम (हिंदी)")} value={newParticipant.grandmotherNameHi} onChange={(e) => setNewParticipant({ ...newParticipant, grandmotherNameHi: e.target.value })} />
                 <Input placeholder={t("Location (English)", "स्थान")} value={newParticipant.locationEn} onChange={(e) => setNewParticipant({ ...newParticipant, locationEn: e.target.value })} />
                 <Input placeholder={t("Location (Hindi)", "स्थान (हिंदी)")} value={newParticipant.locationHi} onChange={(e) => setNewParticipant({ ...newParticipant, locationHi: e.target.value })} />
+                </div>
               </div>
               <Button onClick={() => createParticipantMutation.mutate({ ...newParticipant, sammelanId: activeSammelan.id, order: (participants?.length || 0) + 1 })} disabled={!newParticipant.nameEn || createParticipantMutation.isPending} data-testid="button-add-participant">
                 <Plus className="w-4 h-4 mr-2" />
@@ -1310,19 +1322,30 @@ function VivaahSammelanManager() {
                         <CardContent className="p-3">
                           {editingParticipantId === bride.id ? (
                             <div className="space-y-2">
-                              <div className="grid grid-cols-2 gap-2">
-                                <Input placeholder={t("Name (English)", "नाम")} value={editParticipantData.nameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, nameEn: e.target.value })} />
-                                <Input placeholder={t("Name (Hindi)", "नाम (हिंदी)")} value={editParticipantData.nameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, nameHi: e.target.value })} />
-                                <Input placeholder={t("Father's Name (English)", "पिता का नाम")} value={editParticipantData.fatherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, fatherNameEn: e.target.value })} />
-                                <Input placeholder={t("Father's Name (Hindi)", "पिता का नाम (हिंदी)")} value={editParticipantData.fatherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, fatherNameHi: e.target.value })} />
-                                <Input placeholder={t("Mother's Name (English)", "माता का नाम")} value={editParticipantData.motherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, motherNameEn: e.target.value })} />
-                                <Input placeholder={t("Mother's Name (Hindi)", "माता का नाम (हिंदी)")} value={editParticipantData.motherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, motherNameHi: e.target.value })} />
-                                <Input placeholder={t("Grandfather's Name (English)", "दादा का नाम")} value={editParticipantData.grandfatherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandfatherNameEn: e.target.value })} />
-                                <Input placeholder={t("Grandfather's Name (Hindi)", "दादा का नाम (हिंदी)")} value={editParticipantData.grandfatherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandfatherNameHi: e.target.value })} />
-                                <Input placeholder={t("Grandmother's Name (English)", "दादी का नाम")} value={editParticipantData.grandmotherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandmotherNameEn: e.target.value })} />
-                                <Input placeholder={t("Grandmother's Name (Hindi)", "दादी का नाम (हिंदी)")} value={editParticipantData.grandmotherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandmotherNameHi: e.target.value })} />
-                                <Input placeholder={t("Location (English)", "स्थान")} value={editParticipantData.locationEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, locationEn: e.target.value })} />
-                                <Input placeholder={t("Location (Hindi)", "स्थान (हिंदी)")} value={editParticipantData.locationHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, locationHi: e.target.value })} />
+                              <div className="flex items-start gap-3">
+                                <div className="w-16 flex-shrink-0">
+                                  <ImageUploader
+                                    currentImageUrl={editParticipantData.photoUrl || ""}
+                                    onImageUploaded={(objectPath) => setEditParticipantData({ ...editParticipantData, photoUrl: objectPath })}
+                                    onImageRemoved={() => setEditParticipantData({ ...editParticipantData, photoUrl: "" })}
+                                    placeholder=""
+                                    className="w-16 h-16 rounded-full overflow-hidden"
+                                  />
+                                </div>
+                                <div className="flex-1 grid grid-cols-2 gap-2">
+                                  <Input placeholder={t("Name (English)", "नाम")} value={editParticipantData.nameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, nameEn: e.target.value })} />
+                                  <Input placeholder={t("Name (Hindi)", "नाम (हिंदी)")} value={editParticipantData.nameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, nameHi: e.target.value })} />
+                                  <Input placeholder={t("Father's Name (English)", "पिता का नाम")} value={editParticipantData.fatherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, fatherNameEn: e.target.value })} />
+                                  <Input placeholder={t("Father's Name (Hindi)", "पिता का नाम (हिंदी)")} value={editParticipantData.fatherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, fatherNameHi: e.target.value })} />
+                                  <Input placeholder={t("Mother's Name (English)", "माता का नाम")} value={editParticipantData.motherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, motherNameEn: e.target.value })} />
+                                  <Input placeholder={t("Mother's Name (Hindi)", "माता का नाम (हिंदी)")} value={editParticipantData.motherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, motherNameHi: e.target.value })} />
+                                  <Input placeholder={t("Grandfather's Name (English)", "दादा का नाम")} value={editParticipantData.grandfatherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandfatherNameEn: e.target.value })} />
+                                  <Input placeholder={t("Grandfather's Name (Hindi)", "दादा का नाम (हिंदी)")} value={editParticipantData.grandfatherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandfatherNameHi: e.target.value })} />
+                                  <Input placeholder={t("Grandmother's Name (English)", "दादी का नाम")} value={editParticipantData.grandmotherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandmotherNameEn: e.target.value })} />
+                                  <Input placeholder={t("Grandmother's Name (Hindi)", "दादी का नाम (हिंदी)")} value={editParticipantData.grandmotherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandmotherNameHi: e.target.value })} />
+                                  <Input placeholder={t("Location (English)", "स्थान")} value={editParticipantData.locationEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, locationEn: e.target.value })} />
+                                  <Input placeholder={t("Location (Hindi)", "स्थान (हिंदी)")} value={editParticipantData.locationHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, locationHi: e.target.value })} />
+                                </div>
                               </div>
                               <div className="flex gap-2">
                                 <Button size="sm" onClick={() => updateParticipantMutation.mutate({ id: bride.id, data: editParticipantData })} disabled={updateParticipantMutation.isPending}>
@@ -1335,10 +1358,13 @@ function VivaahSammelanManager() {
                             </div>
                           ) : (
                             <div className="flex justify-between items-start">
-                              <div className="text-sm">
-                                <p className="font-medium">{idx + 1}. {bride.nameEn} / {bride.nameHi}</p>
-                                <p className="text-muted-foreground">{t("Father", "पिता")}: {bride.fatherNameEn || "-"}</p>
-                                <p className="text-muted-foreground">{t("Location", "स्थान")}: {bride.locationEn || "-"}</p>
+                              <div className="flex items-center gap-2">
+                                {bride.photoUrl && <img src={bride.photoUrl} alt="" className="w-10 h-10 rounded-full object-cover" />}
+                                <div className="text-sm">
+                                  <p className="font-medium">{idx + 1}. {bride.nameEn} / {bride.nameHi}</p>
+                                  <p className="text-muted-foreground">{t("Father", "पिता")}: {bride.fatherNameEn || "-"}</p>
+                                  <p className="text-muted-foreground">{t("Location", "स्थान")}: {bride.locationEn || "-"}</p>
+                                </div>
                               </div>
                               <div className="flex gap-1">
                                 <Button size="icon" variant="ghost" onClick={() => startEditingParticipant(bride)} data-testid={`button-edit-bride-${bride.id}`}><Pencil className="w-4 h-4" /></Button>
@@ -1360,19 +1386,30 @@ function VivaahSammelanManager() {
                         <CardContent className="p-3">
                           {editingParticipantId === groom.id ? (
                             <div className="space-y-2">
-                              <div className="grid grid-cols-2 gap-2">
-                                <Input placeholder={t("Name (English)", "नाम")} value={editParticipantData.nameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, nameEn: e.target.value })} />
-                                <Input placeholder={t("Name (Hindi)", "नाम (हिंदी)")} value={editParticipantData.nameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, nameHi: e.target.value })} />
-                                <Input placeholder={t("Father's Name (English)", "पिता का नाम")} value={editParticipantData.fatherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, fatherNameEn: e.target.value })} />
-                                <Input placeholder={t("Father's Name (Hindi)", "पिता का नाम (हिंदी)")} value={editParticipantData.fatherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, fatherNameHi: e.target.value })} />
-                                <Input placeholder={t("Mother's Name (English)", "माता का नाम")} value={editParticipantData.motherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, motherNameEn: e.target.value })} />
-                                <Input placeholder={t("Mother's Name (Hindi)", "माता का नाम (हिंदी)")} value={editParticipantData.motherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, motherNameHi: e.target.value })} />
-                                <Input placeholder={t("Grandfather's Name (English)", "दादा का नाम")} value={editParticipantData.grandfatherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandfatherNameEn: e.target.value })} />
-                                <Input placeholder={t("Grandfather's Name (Hindi)", "दादा का नाम (हिंदी)")} value={editParticipantData.grandfatherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandfatherNameHi: e.target.value })} />
-                                <Input placeholder={t("Grandmother's Name (English)", "दादी का नाम")} value={editParticipantData.grandmotherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandmotherNameEn: e.target.value })} />
-                                <Input placeholder={t("Grandmother's Name (Hindi)", "दादी का नाम (हिंदी)")} value={editParticipantData.grandmotherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandmotherNameHi: e.target.value })} />
-                                <Input placeholder={t("Location (English)", "स्थान")} value={editParticipantData.locationEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, locationEn: e.target.value })} />
-                                <Input placeholder={t("Location (Hindi)", "स्थान (हिंदी)")} value={editParticipantData.locationHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, locationHi: e.target.value })} />
+                              <div className="flex items-start gap-3">
+                                <div className="w-16 flex-shrink-0">
+                                  <ImageUploader
+                                    currentImageUrl={editParticipantData.photoUrl || ""}
+                                    onImageUploaded={(objectPath) => setEditParticipantData({ ...editParticipantData, photoUrl: objectPath })}
+                                    onImageRemoved={() => setEditParticipantData({ ...editParticipantData, photoUrl: "" })}
+                                    placeholder=""
+                                    className="w-16 h-16 rounded-full overflow-hidden"
+                                  />
+                                </div>
+                                <div className="flex-1 grid grid-cols-2 gap-2">
+                                  <Input placeholder={t("Name (English)", "नाम")} value={editParticipantData.nameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, nameEn: e.target.value })} />
+                                  <Input placeholder={t("Name (Hindi)", "नाम (हिंदी)")} value={editParticipantData.nameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, nameHi: e.target.value })} />
+                                  <Input placeholder={t("Father's Name (English)", "पिता का नाम")} value={editParticipantData.fatherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, fatherNameEn: e.target.value })} />
+                                  <Input placeholder={t("Father's Name (Hindi)", "पिता का नाम (हिंदी)")} value={editParticipantData.fatherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, fatherNameHi: e.target.value })} />
+                                  <Input placeholder={t("Mother's Name (English)", "माता का नाम")} value={editParticipantData.motherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, motherNameEn: e.target.value })} />
+                                  <Input placeholder={t("Mother's Name (Hindi)", "माता का नाम (हिंदी)")} value={editParticipantData.motherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, motherNameHi: e.target.value })} />
+                                  <Input placeholder={t("Grandfather's Name (English)", "दादा का नाम")} value={editParticipantData.grandfatherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandfatherNameEn: e.target.value })} />
+                                  <Input placeholder={t("Grandfather's Name (Hindi)", "दादा का नाम (हिंदी)")} value={editParticipantData.grandfatherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandfatherNameHi: e.target.value })} />
+                                  <Input placeholder={t("Grandmother's Name (English)", "दादी का नाम")} value={editParticipantData.grandmotherNameEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandmotherNameEn: e.target.value })} />
+                                  <Input placeholder={t("Grandmother's Name (Hindi)", "दादी का नाम (हिंदी)")} value={editParticipantData.grandmotherNameHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, grandmotherNameHi: e.target.value })} />
+                                  <Input placeholder={t("Location (English)", "स्थान")} value={editParticipantData.locationEn || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, locationEn: e.target.value })} />
+                                  <Input placeholder={t("Location (Hindi)", "स्थान (हिंदी)")} value={editParticipantData.locationHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, locationHi: e.target.value })} />
+                                </div>
                               </div>
                               <div className="flex gap-2">
                                 <Button size="sm" onClick={() => updateParticipantMutation.mutate({ id: groom.id, data: editParticipantData })} disabled={updateParticipantMutation.isPending}>
@@ -1385,10 +1422,13 @@ function VivaahSammelanManager() {
                             </div>
                           ) : (
                             <div className="flex justify-between items-start">
-                              <div className="text-sm">
-                                <p className="font-medium">{idx + 1}. {groom.nameEn} / {groom.nameHi}</p>
-                                <p className="text-muted-foreground">{t("Father", "पिता")}: {groom.fatherNameEn || "-"}</p>
-                                <p className="text-muted-foreground">{t("Location", "स्थान")}: {groom.locationEn || "-"}</p>
+                              <div className="flex items-center gap-2">
+                                {groom.photoUrl && <img src={groom.photoUrl} alt="" className="w-10 h-10 rounded-full object-cover" />}
+                                <div className="text-sm">
+                                  <p className="font-medium">{idx + 1}. {groom.nameEn} / {groom.nameHi}</p>
+                                  <p className="text-muted-foreground">{t("Father", "पिता")}: {groom.fatherNameEn || "-"}</p>
+                                  <p className="text-muted-foreground">{t("Location", "स्थान")}: {groom.locationEn || "-"}</p>
+                                </div>
                               </div>
                               <div className="flex gap-1">
                                 <Button size="icon" variant="ghost" onClick={() => startEditingParticipant(groom)} data-testid={`button-edit-groom-${groom.id}`}><Pencil className="w-4 h-4" /></Button>

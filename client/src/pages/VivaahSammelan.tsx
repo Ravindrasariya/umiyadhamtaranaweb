@@ -45,29 +45,45 @@ export default function VivaahSammelan() {
 
     return (
       <Card className={`flex-1 basis-0 min-w-0 overflow-hidden ${type === "bride" ? "border-pink-300 bg-pink-50/50" : "border-blue-300 bg-blue-50/50"}`} data-testid={`${type}-${participant.id}`}>
-        <CardContent className="p-2 md:p-4">
-          <h4 className={`font-semibold mb-1 text-sm md:text-base truncate ${type === "bride" ? "text-pink-700" : "text-blue-700"}`}>
-            {language === "hi" ? participant.nameHi : participant.nameEn}
-          </h4>
-          <div className="text-xs md:text-sm text-muted-foreground space-y-0.5">
-            {(participant.fatherNameEn || participant.fatherNameHi) && (
-              <p className="truncate">{t("Father", "पिता")}: {language === "hi" ? participant.fatherNameHi : participant.fatherNameEn}</p>
-            )}
-            {(participant.motherNameEn || participant.motherNameHi) && (
-              <p className="truncate">{t("Mother", "माता")}: {language === "hi" ? participant.motherNameHi : participant.motherNameEn}</p>
-            )}
-            {(participant.grandfatherNameEn || participant.grandfatherNameHi) && (
-              <p className="truncate hidden md:block">{t("Grandfather", "दादा")}: {language === "hi" ? participant.grandfatherNameHi : participant.grandfatherNameEn}</p>
-            )}
-            {(participant.grandmotherNameEn || participant.grandmotherNameHi) && (
-              <p className="truncate hidden md:block">{t("Grandmother", "दादी")}: {language === "hi" ? participant.grandmotherNameHi : participant.grandmotherNameEn}</p>
-            )}
-            {(participant.locationEn || participant.locationHi) && (
-              <p className="flex items-center gap-1 truncate">
-                <MapPin className="w-3 h-3 flex-shrink-0" />
-                <span className="truncate">{language === "hi" ? participant.locationHi : participant.locationEn}</span>
-              </p>
-            )}
+        <CardContent className="p-2 md:p-3">
+          <div className="flex items-start gap-2 md:gap-3">
+            <div className="flex-shrink-0">
+              {participant.photoUrl ? (
+                <img 
+                  src={participant.photoUrl} 
+                  alt={participant.nameEn} 
+                  className="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover border-2 border-white shadow-sm"
+                />
+              ) : (
+                <div className={`w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center ${type === "bride" ? "bg-pink-200" : "bg-blue-200"}`}>
+                  <span className={`text-lg md:text-xl font-bold ${type === "bride" ? "text-pink-600" : "text-blue-600"}`}>
+                    {(participant.nameEn || participant.nameHi || "?").charAt(0).toUpperCase()}
+                  </span>
+                </div>
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <h4 className={`font-semibold text-sm md:text-base ${type === "bride" ? "text-pink-700" : "text-blue-700"}`}>
+                {language === "hi" ? participant.nameHi : participant.nameEn}
+              </h4>
+              <div className="text-xs text-muted-foreground space-y-0.5 mt-1">
+                {(participant.fatherNameEn || participant.fatherNameHi) && (
+                  <p className="truncate">{t("Father", "पिता")}: {language === "hi" ? participant.fatherNameHi : participant.fatherNameEn}</p>
+                )}
+                {(participant.motherNameEn || participant.motherNameHi) && (
+                  <p className="truncate hidden md:block">{t("Mother", "माता")}: {language === "hi" ? participant.motherNameHi : participant.motherNameEn}</p>
+                )}
+                {(participant.grandfatherNameEn || participant.grandfatherNameHi) && (
+                  <p className="truncate hidden md:block">{t("Grandfather", "दादा")}: {language === "hi" ? participant.grandfatherNameHi : participant.grandfatherNameEn}</p>
+                )}
+                {(participant.locationEn || participant.locationHi) && (
+                  <p className="flex items-center gap-1 truncate">
+                    <MapPin className="w-3 h-3 flex-shrink-0" />
+                    <span className="truncate">{language === "hi" ? participant.locationHi : participant.locationEn}</span>
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -162,19 +178,37 @@ export default function VivaahSammelan() {
                     <Skeleton className="h-32" />
                   </div>
                 ) : maxCouples > 0 ? (
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {Array.from({ length: maxCouples }).map((_, index) => (
-                      <div key={index} className="flex items-stretch gap-1" data-testid={`couple-row-${index}`}>
-                        {renderParticipantCard(brides[index], "bride", index)}
-                        <div className="flex-shrink-0 w-10 md:w-14 flex flex-col items-center justify-center gap-1">
-                          <span className="text-xs md:text-sm font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full border-2 border-primary">
-                            {index + 1}
-                          </span>
-                          <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                            <Handshake className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+                      <div 
+                        key={index} 
+                        className="border-2 border-primary rounded-xl p-3 md:p-4 bg-primary/5"
+                        data-testid={`couple-row-${index}`}
+                      >
+                        <div className="hidden md:flex items-stretch gap-2">
+                          {renderParticipantCard(brides[index], "bride", index)}
+                          <div className="flex-shrink-0 w-14 flex flex-col items-center justify-center gap-1">
+                            <span className="text-sm font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full border-2 border-primary">
+                              {index + 1}
+                            </span>
+                            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                              <Handshake className="w-5 h-5 text-primary" />
+                            </div>
                           </div>
+                          {renderParticipantCard(grooms[index], "groom", index)}
                         </div>
-                        {renderParticipantCard(grooms[index], "groom", index)}
+                        <div className="md:hidden flex flex-col gap-3">
+                          {renderParticipantCard(brides[index], "bride", index)}
+                          <div className="flex items-center justify-center gap-2 py-1">
+                            <span className="text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full border-2 border-primary">
+                              {index + 1}
+                            </span>
+                            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                              <Handshake className="w-5 h-5 text-primary" />
+                            </div>
+                          </div>
+                          {renderParticipantCard(grooms[index], "groom", index)}
+                        </div>
                       </div>
                     ))}
                   </div>
