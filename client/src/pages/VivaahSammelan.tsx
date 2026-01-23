@@ -35,12 +35,12 @@ export default function VivaahSammelan() {
   const renderParticipantCard = (participant: VivaahParticipant | undefined, type: "bride" | "groom", index: number) => {
     if (!participant) {
       return (
-        <div className={`flex-1 min-w-0 p-3 rounded-lg border-2 border-dashed flex flex-col items-center justify-center ${type === "bride" ? "border-pink-200 bg-pink-50/30" : "border-blue-200 bg-blue-50/30"}`}>
-          <div className={`w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center mb-2 ${type === "bride" ? "bg-pink-100" : "bg-blue-100"}`}>
-            <span className={`text-xl md:text-2xl ${type === "bride" ? "text-pink-300" : "text-blue-300"}`}>?</span>
+        <div className={`flex-1 min-w-0 p-4 rounded-lg border-2 border-dashed flex flex-row items-center gap-4 ${type === "bride" ? "border-pink-200 bg-pink-50/30" : "border-blue-200 bg-blue-50/30"}`}>
+          <div className={`w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center flex-shrink-0 ${type === "bride" ? "bg-pink-100" : "bg-blue-100"}`}>
+            <span className={`text-2xl md:text-3xl ${type === "bride" ? "text-pink-300" : "text-blue-300"}`}>?</span>
           </div>
-          <p className="text-muted-foreground text-center text-xs">
-            {type === "bride" ? t("Awaiting", "प्रतीक्षा") : t("Awaiting", "प्रतीक्षा")}
+          <p className="text-muted-foreground text-sm">
+            {type === "bride" ? t("Awaiting Bride", "वधू की प्रतीक्षा") : t("Awaiting Groom", "वर की प्रतीक्षा")}
           </p>
         </div>
       );
@@ -50,11 +50,11 @@ export default function VivaahSammelan() {
       <img 
         src={participant.photoUrl} 
         alt={participant.nameEn} 
-        className="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover border-2 border-white shadow-md"
+        className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border-3 border-white shadow-lg"
       />
     ) : (
-      <div className={`w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center ${type === "bride" ? "bg-pink-200" : "bg-blue-200"}`}>
-        <span className={`text-lg md:text-xl font-bold ${type === "bride" ? "text-pink-600" : "text-blue-600"}`}>
+      <div className={`w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center ${type === "bride" ? "bg-pink-200" : "bg-blue-200"}`}>
+        <span className={`text-2xl md:text-3xl font-bold ${type === "bride" ? "text-pink-600" : "text-blue-600"}`}>
           {(participant.nameEn || participant.nameHi || "?").charAt(0).toUpperCase()}
         </span>
       </div>
@@ -62,10 +62,10 @@ export default function VivaahSammelan() {
 
     const textElement = (
       <div className="min-w-0">
-        <h4 className={`font-semibold text-sm md:text-base ${type === "bride" ? "text-pink-700" : "text-blue-700"}`}>
+        <h4 className={`font-bold text-base md:text-lg ${type === "bride" ? "text-pink-700" : "text-blue-700"}`}>
           {language === "hi" ? participant.nameHi : participant.nameEn}
         </h4>
-        <div className="text-xs text-muted-foreground space-y-0.5 mt-1">
+        <div className="text-sm text-muted-foreground space-y-0.5 mt-1">
           {(participant.fatherNameEn || participant.fatherNameHi) && (
             <p className="truncate">{t("Father", "पिता")}: {language === "hi" ? participant.fatherNameHi : participant.fatherNameEn}</p>
           )}
@@ -77,7 +77,7 @@ export default function VivaahSammelan() {
           )}
           {(participant.locationEn || participant.locationHi) && (
             <p className="flex items-center gap-1">
-              <MapPin className="w-3 h-3 flex-shrink-0" />
+              <MapPin className="w-4 h-4 flex-shrink-0" />
               <span className="truncate">{language === "hi" ? participant.locationHi : participant.locationEn}</span>
             </p>
           )}
@@ -87,12 +87,12 @@ export default function VivaahSammelan() {
 
     return (
       <Card className={`flex-1 min-w-0 ${type === "bride" ? "border-pink-300 bg-pink-50/50" : "border-blue-300 bg-blue-50/50"}`} data-testid={`${type}-${participant.id}`}>
-        <CardContent className="p-3">
-          <div className="flex flex-col items-center text-center md:flex-row md:items-start md:text-left md:gap-3">
-            <div className="mb-2 md:mb-0 flex-shrink-0">
+        <CardContent className="p-4">
+          <div className="flex flex-row items-center gap-4">
+            <div className="flex-shrink-0">
               {photoElement}
             </div>
-            <div className="w-full md:flex-1">
+            <div className="flex-1 min-w-0">
               {textElement}
             </div>
           </div>
