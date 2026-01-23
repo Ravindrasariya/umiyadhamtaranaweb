@@ -497,7 +497,8 @@ export async function registerRoutes(
       const participants = await storage.getVivaahParticipants(req.params.sammelanId);
       res.json(participants);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch participants" });
+      console.error("Error fetching participants:", error);
+      res.status(500).json({ error: "Failed to fetch participants", details: String(error) });
     }
   });
 
@@ -507,7 +508,8 @@ export async function registerRoutes(
       const participant = await storage.createVivaahParticipant(data);
       res.json(participant);
     } catch (error) {
-      res.status(400).json({ error: "Invalid data" });
+      console.error("Error creating participant:", error);
+      res.status(400).json({ error: "Invalid data", details: String(error) });
     }
   });
 

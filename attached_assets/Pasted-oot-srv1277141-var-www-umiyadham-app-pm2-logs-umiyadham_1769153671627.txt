@@ -1,0 +1,28 @@
+oot@srv1277141:/var/www/umiyadham-app# pm2 logs umiyadham-app
+[TAILING] Tailing last 15 lines for [umiyadham-app] process (change the value with --lines option)
+/root/.pm2/logs/umiyadham-app-error-16.log last 15 lines:
+16|umiyadh |     at cjsLoader (node:internal/modules/esm/translators:298:15)
+16|umiyadh |     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)
+16|umiyadh |     at ModuleJob.run (node:internal/modules/esm/module_job:325:25)
+16|umiyadh | You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+16|umiyadh | TypeError: e.get is not a function
+16|umiyadh |     at o_ (/var/www/umiyadham-app/dist/index.cjs:70:110701)
+16|umiyadh |     at /var/www/umiyadham-app/dist/index.cjs:70:120360
+16|umiyadh |     at Object.<anonymous> (/var/www/umiyadham-app/dist/index.cjs:70:120570)
+16|umiyadh |     at Module._compile (node:internal/modules/cjs/loader:1521:14)
+16|umiyadh |     at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+16|umiyadh |     at Module.load (node:internal/modules/cjs/loader:1266:32)
+16|umiyadh |     at Module._load (node:internal/modules/cjs/loader:1091:12)
+16|umiyadh |     at cjsLoader (node:internal/modules/esm/translators:298:15)
+16|umiyadh |     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)
+16|umiyadh |     at ModuleJob.run (node:internal/modules/esm/module_job:325:25)
+
+/root/.pm2/logs/umiyadham-app-out-16.log last 15 lines:
+16|umiyadh | i":"उमिया धाम तराना में आपका स्वागत है","order":1,"isActive":true},{"id":"03c09ee7-75ad-46db-be0d-2453da53c5d6","imageUrl":"/uploads/1769007908044-84919181.jpg","titleEn":"Experience Divine Blessings","titleHi":"दिव्य आशीर्वाद का अनुभव करें","order":2,"isActive":true},{"id":"7871b698-0cc2-46f9-99cd-e580badbfdcb","imageUrl":"/uploads/1769007920002-683261135.jpeg","titleEn":"A Sacred Pilgrimage Destination","titleHi":"एक पवित्र तीर्थ स्थल","order":3,"isActive":true}]
+16|umiyadh | 7:33:32 AM [express] GET /api/contact 304 in 2ms :: {"id":"07e66a3c-819d-4344-b83a-d7c0af59622f","phone1":"9893397397","phone2":"","email1":"","email2":"","addressEn":"Umiya Dham Tarana, Ujjain, Madhya Pradesh, India","addressHi":"उमिया धाम तराना, उज्जैन, मध्य प्रदेश, भारत"}
+16|umiyadh | 7:33:34 AM [express] GET /api/vivaah/active-sammelan 304 in 3ms :: {"id":"26ba5935-c4b5-40e5-aca6-eae9bca4fd30","titleEn":"Basant Panchmi - 6th February 2026 🌼","titleHi":"बसंत पंचमी – 6 फ़रवरी 2026 🌼","overallIncome":"0","overallExpense":"0","asOfDate":"","isActive":true}
+16|umiyadh | 7:33:34 AM [express] GET /api/vivaah/page-info 304 in 12ms :: {"id":"aee2ff3c-d6cb-4867-867c-6abd597a1c43","titleEn":"About Samuhik Vivaah Sammelan","titleHi":"सामूहिक विवाह सम्मेलन के बारे में","descriptionEn":"Every year, the Patidar Samaj comes together to organize a Samuhik Vivah Sammelan, where multiple brides and grooms tie the knot together on the auspicious occasions of Basant Panchami and Akshay Tritiya. Thousands of members of the Patidar community unite to make this event successful.","descriptionHi":"हर वर्ष पटेल/पाटीदार समाज एकजुट होकर सामूहिक विवाह सम्मेलन का आयोजन करता है, जिसमें अनेक वर-वधु बसंत पंचमी और अक्षय तृतीया जैसे शुभ अवसरों पर एक साथ विवाह सूत्र में बंधते हैं। इस भव्य आयोजन को सफल बनाने के लिए हजारों पाटीदार समाजजन मिलकर सहभागिता करते हैं।"}
+16|umiyadh | 7:33:34 AM [express] GET /api/vivaah/participants/26ba5935-c4b5-40e5-aca6-eae9bca4fd30 500 in 2ms :: {"error":"Failed to fetch participants"}
+16|umiyadh | 7:33:40 AM [express] POST /api/uploads 200 in 5ms :: {"success":true,"filePath":"/uploads/fe8fb5b0-062b-40c5-aa93-6597b44a87d3.png","filename":"fe8fb5b0-062b-40c5-aa93-6597b44a87d3.png","originalName":"Screenshot 2026-01-23 at 12.30.05 PM.png","size":82258}
+16|umiyadh | 7:33:48 AM [express] POST /api/vivaah/participants 400 in 10ms :: {"error":"Invalid data"}
+
