@@ -1,0 +1,24 @@
+root@srv1277141:/var/www/umiyadham-app# pm2 logs umiyadham-app[TAILING] Tailing last 15 lines for [umiyadham-app] process (change the value with --lines option)
+/root/.pm2/logs/umiyadham-app-error-16.log last 15 lines:
+16|umiyadh |   detail: undefined,
+16|umiyadh |   hint: undefined,
+16|umiyadh |   position: '253',
+16|umiyadh |   internalPosition: undefined,
+16|umiyadh |   internalQuery: undefined,
+16|umiyadh |   where: undefined,
+16|umiyadh |   schema: undefined,
+16|umiyadh |   table: undefined,
+16|umiyadh |   column: undefined,
+16|umiyadh |   dataType: undefined,
+16|umiyadh |   constraint: undefined,
+16|umiyadh |   file: 'parse_relation.c',
+16|umiyadh |   line: '3722',
+16|umiyadh |   routine: 'errorMissingColumn'
+16|umiyadh | }
+
+/root/.pm2/logs/umiyadham-app-out-16.log last 15 lines:
+16|umiyadh | dmotherNameEn":"","grandmotherNameHi":"","locationEn":"Chhadawad","locationHi":"छड़ावद","photoUrl":null,"order":1},{"id":"2dd67e69-452e-4855-beb1-fff4cd61214e","sammelanId":"26ba5935-c4b5-40e5-aca6-eae9bca4fd30","type":"groom","nameEn":"Aditya","nameHi":"आदित्य","fatherNameEn":"Shri Laxmichand ji Patidar","fatherNameHi":"श्री लक्ष्मीचंद जी पाटीदार","motherNameEn":"","motherNameHi":"","grandfatherNameEn":"Shri Dariyavsingh ji Patel","grandfatherNameHi":"श्री दरियावसिंह जी पटेल","grandmotherNameEn":"","grandmotherNameHi":"","locationEn":"Golana","locationHi":"गोलाना","photoUrl":null,"order":2},{"id":"1824a010-c796-4ec6-93a5-7b5558de14bc","sammelanId":"26ba5935-c4b5-40e5-aca6-eae9bca4fd30","type":"bride","nameEn":"a","nameHi":"","fatherNameEn":"a","fatherNameHi":"","motherNameEn":"a","motherNameHi":"","grandfatherNameEn":"a","grandfatherNameHi":"","grandmotherNameEn":"a","grandmotherNameHi":"","locationEn":"a","locationHi":"","photoUrl":"/uploads/0becd30a-a835-4091-94ac-aa813c05e37e.png","order":3}]
+16|umiyadh | 7:51:28 AM [express] DELETE /api/vivaah/participants/53bf5dba-bc02-49a7-96cc-701d615aa7e5 200 in 2ms :: {"success":true}
+16|umiyadh | 7:51:28 AM [express] GET /api/vivaah/participants/26ba5935-c4b5-40e5-aca6-eae9bca4fd30 200 in 2ms :: [{"id":"2dd67e69-452e-4855-beb1-fff4cd61214e","sammelanId":"26ba5935-c4b5-40e5-aca6-eae9bca4fd30","type":"groom","nameEn":"Aditya","nameHi":"आदित्य","fatherNameEn":"Shri Laxmichand ji Patidar","fatherNameHi":"श्री लक्ष्मीचंद जी पाटीदार","motherNameEn":"","motherNameHi":"","grandfatherNameEn":"Shri Dariyavsingh ji Patel","grandfatherNameHi":"श्री दरियावसिंह जी पटेल","grandmotherNameEn":"","grandmotherNameHi":"","locationEn":"Golana","locationHi":"गोलाना","photoUrl":null,"order":2},{"id":"1824a010-c796-4ec6-93a5-7b5558de14bc","sammelanId":"26ba5935-c4b5-40e5-aca6-eae9bca4fd30","type":"bride","nameEn":"a","nameHi":"","fatherNameEn":"a","fatherNameHi":"","motherNameEn":"a","motherNameHi":"","grandfatherNameEn":"a","grandfatherNameHi":"","grandmotherNameEn":"a","grandmotherNameHi":"","locationEn":"a","locationHi":"","photoUrl":"/uploads/0becd30a-a835-4091-94ac-aa813c05e37e.png","order":3}]
+16|umiyadh | 7:51:30 AM [express] DELETE /api/vivaah/participants/2dd67e69-452e-4855-beb1-fff4cd61214e 200 in 2ms :: {"success":true}
+16|umiyadh | 7:51:30 AM [express] GET /api/vivaah/participants/26ba5935-c4b5-40e5-aca6-eae9bca4fd30 200 in 1ms :: [{"id":"1824a010-c796-4ec6-93a5-7b5558de14bc","sammelanId":"26ba5935-c4b5-40e5-aca6-eae9bca4fd30","type":"bride","nameEn":"a","nameHi":"","fatherNameEn":"a","fatherNameHi":"","motherNameEn":"a","motherNameHi":"","grandfatherNameEn":"a","grandfatherNameHi":"","grandmotherNameEn":"a","grandmotherNameHi":"","locationEn":"a","locationHi":"","photoUrl":"/uploads/0becd30a-a835-4091-94ac-aa813c05e37e.png","order":3}]
