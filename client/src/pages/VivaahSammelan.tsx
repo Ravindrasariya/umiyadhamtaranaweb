@@ -67,13 +67,13 @@ export default function VivaahSammelan() {
         </h4>
         <div className="text-sm text-muted-foreground space-y-0.5 mt-1">
           {(participant.fatherNameEn || participant.fatherNameHi) && (
-            <p className="truncate">{t("Father", "पिता")}: {language === "hi" ? participant.fatherNameHi : participant.fatherNameEn}</p>
+            <p className="truncate">{language === "hi" ? participant.fatherNameHi : participant.fatherNameEn}</p>
           )}
           {(participant.motherNameEn || participant.motherNameHi) && (
-            <p className="truncate">{t("Mother", "माता")}: {language === "hi" ? participant.motherNameHi : participant.motherNameEn}</p>
+            <p className="truncate">{language === "hi" ? participant.motherNameHi : participant.motherNameEn}</p>
           )}
           {(participant.grandfatherNameEn || participant.grandfatherNameHi) && (
-            <p className="truncate hidden md:block">{t("Grandfather", "दादा")}: {language === "hi" ? participant.grandfatherNameHi : participant.grandfatherNameEn}</p>
+            <p className="truncate">{language === "hi" ? participant.grandfatherNameHi : participant.grandfatherNameEn}</p>
           )}
           {(participant.locationEn || participant.locationHi) && (
             <p className="flex items-center gap-1">
