@@ -202,9 +202,9 @@ export default function VivaahSammelan() {
                             <span className="text-sm font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full border-2 border-primary">
                               {index + 1}
                             </span>
-                            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary">
                               <Handshake className="w-5 h-5 text-primary" />
-                            </div>
+                            </span>
                           </div>
                           {renderParticipantCard(grooms[index], "groom", index)}
                         </div>
@@ -214,9 +214,9 @@ export default function VivaahSammelan() {
                             <span className="text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full border-2 border-primary">
                               {index + 1}
                             </span>
-                            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary">
                               <Handshake className="w-5 h-5 text-primary" />
-                            </div>
+                            </span>
                           </div>
                           {renderParticipantCard(grooms[index], "groom", index)}
                         </div>
