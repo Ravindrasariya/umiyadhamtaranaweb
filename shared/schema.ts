@@ -234,6 +234,7 @@ export const vivaahParticipants = pgTable("vivaah_participants", {
   grandmotherNameHi: text("grandmother_name_hi"),
   locationEn: text("location_en"),
   locationHi: text("location_hi"),
+  photoUrl: text("photo_url"),
   order: integer("order").notNull().default(0),
 });
 
