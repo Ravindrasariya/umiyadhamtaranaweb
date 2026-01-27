@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Trash2, Plus, Save, Image, FileText, Clock, Camera, Building, Phone, Lock, Heart, ScrollText, Home, Users, Upload, Pencil, X, Archive, ArchiveRestore } from "lucide-react";
@@ -1121,7 +1122,7 @@ function VivaahSammelanManager() {
   });
 
   const [pageFormData, setPageFormData] = useState<Partial<VivaahPageInfo>>({});
-  const [sammelanFormData, setSammelanFormData] = useState({ titleEn: "", titleHi: "", overallIncome: "0", overallExpense: "0", asOfDate: "", totalPairs: 0 });
+  const [sammelanFormData, setSammelanFormData] = useState<Partial<VivaahSammelan>>({});
   const [newParticipant, setNewParticipant] = useState({ type: "bride" as "bride" | "groom", nameEn: "", nameHi: "", fatherNameEn: "", fatherNameHi: "", motherNameEn: "", motherNameHi: "", grandfatherNameEn: "", grandfatherNameHi: "", grandmotherNameEn: "", grandmotherNameHi: "", locationEn: "", locationHi: "", photoUrl: "" });
   const [editingParticipantId, setEditingParticipantId] = useState<string | null>(null);
   const [editParticipantData, setEditParticipantData] = useState<Partial<VivaahParticipant>>({});
@@ -1322,6 +1323,14 @@ function VivaahSammelanManager() {
               <label className="text-sm font-medium text-primary">{t("Total Pairs #", "कुल जोड़े #")}</label>
               <Input type="number" min="0" placeholder="0" value={currentSammelanData.totalPairs || ""} onChange={(e) => setSammelanFormData({ ...sammelanFormData, totalPairs: parseInt(e.target.value) || 0 })} data-testid="input-sammelan-total-pairs" />
             </div>
+          </div>
+          <div className="flex items-center gap-3 pt-2">
+            <Switch
+              checked={currentSammelanData.showCarousel !== false}
+              onCheckedChange={(checked) => setSammelanFormData({ ...sammelanFormData, showCarousel: checked })}
+              data-testid="switch-show-carousel"
+            />
+            <label className="text-sm font-medium">{t("Show Marketing Carousel on Public Page", "सार्वजनिक पेज पर मार्केटिंग कैरोसेल दिखाएं")}</label>
           </div>
           <Button onClick={() => saveSammelanMutation.mutate(sammelanFormData)} disabled={saveSammelanMutation.isPending} data-testid="button-save-sammelan">
             <Save className="w-4 h-4 mr-2" />

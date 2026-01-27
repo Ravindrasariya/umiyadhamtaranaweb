@@ -179,7 +179,7 @@ export default function VivaahSammelan() {
               </Card>
             )}
 
-            {carouselImages && carouselImages.length > 0 && (
+            {activeSammelan?.showCarousel !== false && carouselImages && carouselImages.length > 0 && (
               <div className="mb-8">
                 <VivaahCarousel images={carouselImages} />
               </div>
