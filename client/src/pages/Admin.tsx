@@ -1305,15 +1305,20 @@ function VivaahSammelanManager() {
                 <Input placeholder={t("Location (Hindi)", "स्थान (हिंदी)")} value={newParticipant.locationHi} onChange={(e) => setNewParticipant({ ...newParticipant, locationHi: e.target.value })} />
                 </div>
               </div>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <label className="text-sm font-medium text-primary">{t("Pair #", "जोड़ी #")}</label>
-                  <Input type="number" min="1" className="w-20" placeholder="Auto" value={newParticipant.order || ""} onChange={(e) => setNewParticipant({ ...newParticipant, order: parseInt(e.target.value) || 0 })} data-testid="input-new-participant-pair" />
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <label className="text-sm font-medium text-primary">{t("Pair #", "जोड़ी #")}</label>
+                    <Input type="number" min="1" className="w-20" placeholder="Auto" value={newParticipant.order || ""} onChange={(e) => setNewParticipant({ ...newParticipant, order: parseInt(e.target.value) || 0 })} data-testid="input-new-participant-pair" />
+                  </div>
+                  <Button onClick={() => { const nextOrder = newParticipant.order > 0 ? newParticipant.order : Math.max(...(participants?.map(p => p.order) || [0]), 0) + 1; createParticipantMutation.mutate({ ...newParticipant, sammelanId: activeSammelan.id, order: nextOrder }); }} disabled={!newParticipant.nameEn || createParticipantMutation.isPending} data-testid="button-add-participant">
+                    <Plus className="w-4 h-4 mr-2" />
+                    {t("Add Participant", "प्रतिभागी जोड़ें")}
+                  </Button>
                 </div>
-                <Button onClick={() => { const nextOrder = newParticipant.order > 0 ? newParticipant.order : Math.max(...(participants?.map(p => p.order) || [0]), 0) + 1; createParticipantMutation.mutate({ ...newParticipant, sammelanId: activeSammelan.id, order: nextOrder }); }} disabled={!newParticipant.nameEn || createParticipantMutation.isPending} data-testid="button-add-participant">
-                  <Plus className="w-4 h-4 mr-2" />
-                  {t("Add Participant", "प्रतिभागी जोड़ें")}
-                </Button>
+                <p className="text-xs text-muted-foreground">
+                  {t("Tip: Use the same Pair # for bride and groom to form a couple. Different Pair # = different couples.", "युक्ति: जोड़ी बनाने के लिए वधू और वर दोनों के लिए एक ही जोड़ी # का उपयोग करें।")}
+                </p>
               </div>
             </CardContent>
           </Card>
