@@ -30,11 +30,19 @@ export default function VivaahSammelan() {
   const bridesByOrder = new Map(brides.map(b => [b.order, b]));
   const groomsByOrder = new Map(grooms.map(g => [g.order, g]));
   
-  // Get all unique pair numbers and use totalPairs from sammelan if available
-  const allOrderNumbers = brides.map(b => b.order).concat(grooms.map(g => g.order)).filter(n => n > 0);
-  const uniquePairNumbers = Array.from(new Set(allOrderNumbers)).sort((a, b) => a - b);
-  const maxPairNumber = activeSammelan?.totalPairs || Math.max(...allOrderNumbers, 0);
-  const pairNumbers = maxPairNumber > 0 ? Array.from({ length: maxPairNumber }, (_, i) => i + 1) : uniquePairNumbers;
+  // Get max order number from participants to support sparse pair numbers
+  const allOrderNumbers = [...brides.map(b => b.order), ...grooms.map(g => g.order)].filter(n => n > 0);
+  const maxOrderFromParticipants = allOrderNumbers.length > 0 ? Math.max(...allOrderNumbers) : 0;
+  
+  // Use totalPairs from sammelan if set and > 0, otherwise use max order number
+  const displayPairCount = (activeSammelan?.totalPairs && activeSammelan.totalPairs > 0) 
+    ? activeSammelan.totalPairs 
+    : maxOrderFromParticipants;
+  
+  // Generate pair numbers array
+  const pairNumbers = displayPairCount > 0 
+    ? Array.from({ length: displayPairCount }, (_, i) => i + 1) 
+    : [];
 
   const formatCurrency = (value: string) => {
     const num = parseFloat(value) || 0;
@@ -177,7 +185,7 @@ export default function VivaahSammelan() {
                 <div className="flex items-center justify-center gap-2 mb-4">
                   <Handshake className="w-5 h-5 text-primary" />
                   <span className="font-bold text-primary text-lg">
-                    {t(`Total Pairs # ${activeSammelan?.totalPairs || pairNumbers.length}`, `कुल जोड़े # ${activeSammelan?.totalPairs || pairNumbers.length}`)}
+                    {t(`Total Pairs # ${displayPairCount}`, `कुल जोड़े # ${displayPairCount}`)}
                   </span>
                 </div>
                 <div className="flex items-center justify-center gap-4 mb-8">
