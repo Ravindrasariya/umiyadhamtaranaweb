@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Trash2, Plus, Save, Image, FileText, Clock, Camera, Building, Phone, Lock, Heart, ScrollText, Home, Users, Upload, Pencil, X } from "lucide-react";
+import { Trash2, Plus, Save, Image, FileText, Clock, Camera, Building, Phone, Lock, Heart, ScrollText, Home, Users, Upload, Pencil, X, Archive, ArchiveRestore } from "lucide-react";
 import { ImageUploader } from "@/components/ImageUploader";
 import type { SliderImage, AboutContent, PoojaTiming, Service, GalleryItem, TrustContent, ContactInfo, TermsContent, Donation, TeamMember, VivaahPageInfo, VivaahSammelan, VivaahParticipant } from "@shared/schema";
 import { HeartHandshake } from "lucide-react";
@@ -1116,7 +1116,7 @@ function VivaahSammelanManager() {
   });
 
   const [pageFormData, setPageFormData] = useState<Partial<VivaahPageInfo>>({});
-  const [sammelanFormData, setSammelanFormData] = useState({ titleEn: "", titleHi: "", overallIncome: "0", overallExpense: "0", asOfDate: "" });
+  const [sammelanFormData, setSammelanFormData] = useState({ titleEn: "", titleHi: "", overallIncome: "0", overallExpense: "0", asOfDate: "", totalPairs: 0 });
   const [newParticipant, setNewParticipant] = useState({ type: "bride" as "bride" | "groom", nameEn: "", nameHi: "", fatherNameEn: "", fatherNameHi: "", motherNameEn: "", motherNameHi: "", grandfatherNameEn: "", grandfatherNameHi: "", grandmotherNameEn: "", grandmotherNameHi: "", locationEn: "", locationHi: "", photoUrl: "" });
   const [editingParticipantId, setEditingParticipantId] = useState<string | null>(null);
   const [editParticipantData, setEditParticipantData] = useState<Partial<VivaahParticipant>>({});
@@ -1170,9 +1170,20 @@ function VivaahSammelanManager() {
     mutationFn: async (id: string) => apiRequest("DELETE", `/api/vivaah/participants/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/vivaah/participants", activeSammelan?.id] });
+      setDeleteConfirmId(null);
       toast({ title: t("Participant deleted", "प्रतिभागी हटाया गया") });
     },
   });
+
+  const archiveParticipantMutation = useMutation({
+    mutationFn: async ({ id, archived }: { id: string; archived: boolean }) => apiRequest("PATCH", `/api/vivaah/participants/${id}`, { archived }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/vivaah/participants", activeSammelan?.id] });
+      toast({ title: t("Participant updated", "प्रतिभागी अपडेट हुआ") });
+    },
+  });
+
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const startEditingParticipant = (participant: VivaahParticipant) => {
     setEditingParticipantId(participant.id);
@@ -1249,6 +1260,10 @@ function VivaahSammelanManager() {
               <label className="text-sm font-medium">{t("As of Date", "दिनांक")}</label>
               <Input type="date" value={currentSammelanData.asOfDate || ""} onChange={(e) => setSammelanFormData({ ...sammelanFormData, asOfDate: e.target.value })} data-testid="input-sammelan-date" />
             </div>
+            <div>
+              <label className="text-sm font-medium text-primary">{t("Total Pairs #", "कुल जोड़े #")}</label>
+              <Input type="number" min="0" placeholder="0" value={currentSammelanData.totalPairs || ""} onChange={(e) => setSammelanFormData({ ...sammelanFormData, totalPairs: parseInt(e.target.value) || 0 })} data-testid="input-sammelan-total-pairs" />
+            </div>
           </div>
           <Button onClick={() => saveSammelanMutation.mutate(sammelanFormData)} disabled={saveSammelanMutation.isPending} data-testid="button-save-sammelan">
             <Save className="w-4 h-4 mr-2" />
@@ -1318,8 +1333,9 @@ function VivaahSammelanManager() {
                   <h5 className="font-medium text-pink-600 mb-3">{t("Brides", "वधू")} ({brides.length})</h5>
                   <div className="max-h-96 overflow-y-auto space-y-2">
                     {brides.map((bride, idx) => (
-                      <Card key={bride.id} className="border-pink-200" data-testid={`participant-bride-${bride.id}`}>
+                      <Card key={bride.id} className={`border-pink-200 ${bride.archived ? "opacity-50 blur-[1px]" : ""}`} data-testid={`participant-bride-${bride.id}`}>
                         <CardContent className="p-3">
+                          {bride.archived && <span className="text-xs bg-muted px-2 py-0.5 rounded mb-1 inline-block">{t("Archived", "संग्रहीत")}</span>}
                           {editingParticipantId === bride.id ? (
                             <div className="space-y-2">
                               <div className="flex items-start gap-3">
@@ -1368,7 +1384,18 @@ function VivaahSammelanManager() {
                               </div>
                               <div className="flex gap-1">
                                 <Button size="icon" variant="ghost" onClick={() => startEditingParticipant(bride)} data-testid={`button-edit-bride-${bride.id}`}><Pencil className="w-4 h-4" /></Button>
-                                <Button size="icon" variant="destructive" onClick={() => deleteParticipantMutation.mutate(bride.id)}><Trash2 className="w-4 h-4" /></Button>
+                                <Button size="icon" variant="ghost" onClick={() => archiveParticipantMutation.mutate({ id: bride.id, archived: !bride.archived })} title={bride.archived ? t("Unarchive", "पुनर्स्थापित") : t("Archive", "संग्रहित करें")}>
+                                  {bride.archived ? <ArchiveRestore className="w-4 h-4" /> : <Archive className="w-4 h-4" />}
+                                </Button>
+                                {deleteConfirmId === bride.id ? (
+                                  <div className="flex items-center gap-1 bg-destructive/10 px-2 py-1 rounded">
+                                    <span className="text-xs text-destructive">{t("Sure?", "पक्का?")}</span>
+                                    <Button size="sm" variant="destructive" className="h-6 px-2" onClick={() => deleteParticipantMutation.mutate(bride.id)}>{t("Yes", "हाँ")}</Button>
+                                    <Button size="sm" variant="outline" className="h-6 px-2" onClick={() => setDeleteConfirmId(null)}>{t("No", "नहीं")}</Button>
+                                  </div>
+                                ) : (
+                                  <Button size="icon" variant="destructive" onClick={() => setDeleteConfirmId(bride.id)}><Trash2 className="w-4 h-4" /></Button>
+                                )}
                               </div>
                             </div>
                           )}
@@ -1382,8 +1409,9 @@ function VivaahSammelanManager() {
                   <h5 className="font-medium text-blue-600 mb-3">{t("Grooms", "वर")} ({grooms.length})</h5>
                   <div className="max-h-96 overflow-y-auto space-y-2">
                     {grooms.map((groom, idx) => (
-                      <Card key={groom.id} className="border-blue-200" data-testid={`participant-groom-${groom.id}`}>
+                      <Card key={groom.id} className={`border-blue-200 ${groom.archived ? "opacity-50 blur-[1px]" : ""}`} data-testid={`participant-groom-${groom.id}`}>
                         <CardContent className="p-3">
+                          {groom.archived && <span className="text-xs bg-muted px-2 py-0.5 rounded mb-1 inline-block">{t("Archived", "संग्रहीत")}</span>}
                           {editingParticipantId === groom.id ? (
                             <div className="space-y-2">
                               <div className="flex items-start gap-3">
@@ -1432,7 +1460,18 @@ function VivaahSammelanManager() {
                               </div>
                               <div className="flex gap-1">
                                 <Button size="icon" variant="ghost" onClick={() => startEditingParticipant(groom)} data-testid={`button-edit-groom-${groom.id}`}><Pencil className="w-4 h-4" /></Button>
-                                <Button size="icon" variant="destructive" onClick={() => deleteParticipantMutation.mutate(groom.id)}><Trash2 className="w-4 h-4" /></Button>
+                                <Button size="icon" variant="ghost" onClick={() => archiveParticipantMutation.mutate({ id: groom.id, archived: !groom.archived })} title={groom.archived ? t("Unarchive", "पुनर्स्थापित") : t("Archive", "संग्रहित करें")}>
+                                  {groom.archived ? <ArchiveRestore className="w-4 h-4" /> : <Archive className="w-4 h-4" />}
+                                </Button>
+                                {deleteConfirmId === groom.id ? (
+                                  <div className="flex items-center gap-1 bg-destructive/10 px-2 py-1 rounded">
+                                    <span className="text-xs text-destructive">{t("Sure?", "पक्का?")}</span>
+                                    <Button size="sm" variant="destructive" className="h-6 px-2" onClick={() => deleteParticipantMutation.mutate(groom.id)}>{t("Yes", "हाँ")}</Button>
+                                    <Button size="sm" variant="outline" className="h-6 px-2" onClick={() => setDeleteConfirmId(null)}>{t("No", "नहीं")}</Button>
+                                  </div>
+                                ) : (
+                                  <Button size="icon" variant="destructive" onClick={() => setDeleteConfirmId(groom.id)}><Trash2 className="w-4 h-4" /></Button>
+                                )}
                               </div>
                             </div>
                           )}

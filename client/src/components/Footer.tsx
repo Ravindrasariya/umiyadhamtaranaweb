@@ -15,7 +15,7 @@ const quickLinks = [
 const additionalLinks = [
   { path: "/#gallery", labelEn: "Gallery", labelHi: "गैलरी" },
   { path: "/terms", labelEn: "Terms & Conditions", labelHi: "नियम और शर्तें" },
-  { path: "/terms", labelEn: "Privacy Policy", labelHi: "गोपनीयता नीति" },
+  { path: "/privacy", labelEn: "Privacy Policy", labelHi: "गोपनीयता नीति" },
 ];
 
 function FooterLink({ path, children }: { path: string; children: React.ReactNode }) {

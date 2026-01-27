@@ -211,6 +211,7 @@ export const vivaahSammelan = pgTable("vivaah_sammelan", {
   overallExpense: text("overall_expense").notNull().default("0"),
   asOfDate: text("as_of_date").notNull(),
   isActive: boolean("is_active").notNull().default(true),
+  totalPairs: integer("total_pairs").notNull().default(0),
 });
 
 export const insertVivaahSammelanSchema = createInsertSchema(vivaahSammelan).omit({ id: true });
@@ -236,6 +237,7 @@ export const vivaahParticipants = pgTable("vivaah_participants", {
   locationHi: text("location_hi"),
   photoUrl: text("photo_url"),
   order: integer("order").notNull().default(0),
+  archived: boolean("archived").notNull().default(false),
 });
 
 export const insertVivaahParticipantSchema = createInsertSchema(vivaahParticipants).omit({ id: true });
