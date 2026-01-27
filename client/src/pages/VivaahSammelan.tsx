@@ -25,25 +25,7 @@ export default function VivaahSammelan() {
 
   const brides = participants?.filter(p => p.type === "bride") || [];
   const grooms = participants?.filter(p => p.type === "groom") || [];
-  
-  // Create maps of pair number (order) to participant for quick lookup
-  const bridesByOrder = new Map(brides.map(b => [b.order, b]));
-  const groomsByOrder = new Map(grooms.map(g => [g.order, g]));
-  
-  // Get all unique order numbers that have at least one participant
-  const allOrderNumbers = Array.from(new Set([...brides.map(b => b.order), ...grooms.map(g => g.order)])).filter(n => n > 0);
-  
-  // Count complete pairs (order numbers that have BOTH bride AND groom)
-  const completePairOrders = allOrderNumbers.filter(order => bridesByOrder.has(order) && groomsByOrder.has(order));
-  const completePairCount = completePairOrders.length;
-  
-  // Use totalPairs from admin if set and > 0, otherwise use actual complete pair count
-  const displayPairCount = (activeSammelan?.totalPairs && activeSammelan.totalPairs > 0) 
-    ? activeSammelan.totalPairs 
-    : completePairCount;
-  
-  // Generate pair numbers array - only include order numbers that have at least one participant
-  const pairNumbers = allOrderNumbers.sort((a, b) => a - b);
+  const maxCouples = Math.max(brides.length, grooms.length);
 
   const formatCurrency = (value: string) => {
     const num = parseFloat(value) || 0;
@@ -185,8 +167,8 @@ export default function VivaahSammelan() {
               <div className="mb-12">
                 <div className="flex items-center justify-center gap-2 mb-4">
                   <Handshake className="w-5 h-5 text-primary" />
-                  <span className="font-bold text-primary text-lg" data-testid="text-total-pairs">
-                    {t(`Total Pairs # ${displayPairCount}`, `कुल जोड़े # ${displayPairCount}`)}
+                  <span className="font-bold text-primary text-lg">
+                    {t(`Total Pairs # ${maxCouples}`, `कुल जोड़े # ${maxCouples}`)}
                   </span>
                 </div>
                 <div className="flex items-center justify-center gap-4 mb-8">
@@ -206,37 +188,37 @@ export default function VivaahSammelan() {
                     <Skeleton className="h-32" />
                     <Skeleton className="h-32" />
                   </div>
-                ) : pairNumbers.length > 0 ? (
+                ) : maxCouples > 0 ? (
                   <div className="space-y-4">
-                    {pairNumbers.map((pairNumber) => (
+                    {Array.from({ length: maxCouples }).map((_, index) => (
                       <div 
-                        key={pairNumber} 
+                        key={index} 
                         className="border-2 border-primary rounded-xl p-3 md:p-4 bg-primary/5"
-                        data-testid={`couple-row-${pairNumber}`}
+                        data-testid={`couple-row-${index}`}
                       >
                         <div className="hidden md:flex items-stretch gap-2">
-                          {renderParticipantCard(bridesByOrder.get(pairNumber), "bride", pairNumber)}
+                          {renderParticipantCard(brides[index], "bride", index)}
                           <div className="flex-shrink-0 w-14 flex flex-col items-center justify-center gap-1">
                             <span className="text-sm font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full border-2 border-primary">
-                              {pairNumber}
+                              {index + 1}
                             </span>
                             <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary">
                               <Handshake className="w-5 h-5 text-primary" />
                             </span>
                           </div>
-                          {renderParticipantCard(groomsByOrder.get(pairNumber), "groom", pairNumber)}
+                          {renderParticipantCard(grooms[index], "groom", index)}
                         </div>
                         <div className="md:hidden flex flex-col gap-3">
-                          {renderParticipantCard(bridesByOrder.get(pairNumber), "bride", pairNumber)}
+                          {renderParticipantCard(brides[index], "bride", index)}
                           <div className="flex items-center justify-center gap-2 py-1">
                             <span className="text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full border-2 border-primary">
-                              {pairNumber}
+                              {index + 1}
                             </span>
                             <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary">
                               <Handshake className="w-5 h-5 text-primary" />
                             </span>
                           </div>
-                          {renderParticipantCard(groomsByOrder.get(pairNumber), "groom", pairNumber)}
+                          {renderParticipantCard(grooms[index], "groom", index)}
                         </div>
                       </div>
                     ))}

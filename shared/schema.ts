@@ -211,7 +211,6 @@ export const vivaahSammelan = pgTable("vivaah_sammelan", {
   overallExpense: text("overall_expense").notNull().default("0"),
   asOfDate: text("as_of_date").notNull(),
   isActive: boolean("is_active").notNull().default(true),
-  totalPairs: integer("total_pairs").notNull().default(0),
 });
 
 export const insertVivaahSammelanSchema = createInsertSchema(vivaahSammelan).omit({ id: true });
