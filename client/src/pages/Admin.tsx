@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Trash2, Plus, Save, Image, FileText, Clock, Camera, Building, Phone, Lock, Heart, ScrollText, Home, Users, Upload, Pencil, X, Archive, ArchiveRestore } from "lucide-react";
 import { ImageUploader } from "@/components/ImageUploader";
-import type { SliderImage, AboutContent, PoojaTiming, Service, GalleryItem, TrustContent, ContactInfo, TermsContent, Donation, TeamMember, VivaahPageInfo, VivaahSammelan, VivaahParticipant } from "@shared/schema";
+import type { SliderImage, AboutContent, PoojaTiming, Service, GalleryItem, TrustContent, ContactInfo, TermsContent, Donation, TeamMember, VivaahPageInfo, VivaahSammelan, VivaahParticipant, VivaahCarouselImage } from "@shared/schema";
 import { HeartHandshake } from "lucide-react";
 
 function LoginForm({ onLogin }: { onLogin: () => void }) {
@@ -1115,6 +1115,11 @@ function VivaahSammelanManager() {
     enabled: !!activeSammelan?.id,
   });
 
+  const { data: carouselImages } = useQuery<VivaahCarouselImage[]>({
+    queryKey: ["/api/vivaah/carousel", activeSammelan?.id],
+    enabled: !!activeSammelan?.id,
+  });
+
   const [pageFormData, setPageFormData] = useState<Partial<VivaahPageInfo>>({});
   const [sammelanFormData, setSammelanFormData] = useState({ titleEn: "", titleHi: "", overallIncome: "0", overallExpense: "0", asOfDate: "", totalPairs: 0 });
   const [newParticipant, setNewParticipant] = useState({ type: "bride" as "bride" | "groom", nameEn: "", nameHi: "", fatherNameEn: "", fatherNameHi: "", motherNameEn: "", motherNameHi: "", grandfatherNameEn: "", grandfatherNameHi: "", grandmotherNameEn: "", grandmotherNameHi: "", locationEn: "", locationHi: "", photoUrl: "" });
@@ -1184,6 +1189,59 @@ function VivaahSammelanManager() {
   });
 
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [uploadingCarousel, setUploadingCarousel] = useState(false);
+
+  const addCarouselImageMutation = useMutation({
+    mutationFn: async (imageUrl: string) => {
+      if (!activeSammelan?.id) throw new Error("No active sammelan");
+      return apiRequest("POST", "/api/vivaah/carousel", { 
+        sammelanId: activeSammelan.id, 
+        imageUrl, 
+        order: (carouselImages?.length || 0) + 1 
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/vivaah/carousel", activeSammelan?.id] });
+      toast({ title: t("Image added to carousel", "कैरोसेल में छवि जोड़ी गई") });
+    },
+  });
+
+  const deleteCarouselImageMutation = useMutation({
+    mutationFn: async (id: string) => apiRequest("DELETE", `/api/vivaah/carousel/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/vivaah/carousel", activeSammelan?.id] });
+      toast({ title: t("Image removed from carousel", "कैरोसेल से छवि हटाई गई") });
+    },
+  });
+
+  const handleCarouselUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    
+    setUploadingCarousel(true);
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        const response = await fetch('/api/uploads', {
+          method: 'POST',
+          body: formData,
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          await addCarouselImageMutation.mutateAsync(data.filePath);
+        }
+      }
+    } catch (error) {
+      toast({ title: t("Upload failed", "अपलोड विफल"), variant: "destructive" });
+    } finally {
+      setUploadingCarousel(false);
+      e.target.value = '';
+    }
+  };
 
   const startEditingParticipant = (participant: VivaahParticipant) => {
     setEditingParticipantId(participant.id);
@@ -1274,6 +1332,67 @@ function VivaahSammelanManager() {
 
       {activeSammelan && (
         <>
+          <Card>
+            <CardHeader className="pb-2">
+              <h4 className="font-medium">{t("Marketing Carousel Images", "मार्केटिंग कैरोसेल छवियाँ")}</h4>
+              <p className="text-sm text-muted-foreground">{t("Upload A5 size images for the swipeable carousel (max 20 images)", "स्वाइप करने योग्य कैरोसेल के लिए A5 आकार की छवियाँ अपलोड करें (अधिकतम 20 छवियाँ)")}</p>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center gap-4">
+                <label className="cursor-pointer">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleCarouselUpload}
+                    className="hidden"
+                    disabled={uploadingCarousel || (carouselImages?.length || 0) >= 20}
+                    data-testid="input-carousel-upload"
+                  />
+                  <Button asChild disabled={uploadingCarousel || (carouselImages?.length || 0) >= 20}>
+                    <span>
+                      <Upload className="w-4 h-4 mr-2" />
+                      {uploadingCarousel ? t("Uploading...", "अपलोड हो रहा है...") : t("Upload Images", "छवियाँ अपलोड करें")}
+                    </span>
+                  </Button>
+                </label>
+                <span className="text-sm text-muted-foreground">
+                  {carouselImages?.length || 0} / 20 {t("images", "छवियाँ")}
+                </span>
+              </div>
+              
+              {carouselImages && carouselImages.length > 0 && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                  {carouselImages.map((img, idx) => (
+                    <div key={img.id} className="relative group aspect-[3/4] rounded-lg overflow-hidden border-2 border-border bg-muted" data-testid={`carousel-image-${img.id}`}>
+                      <img src={img.imageUrl} alt={`Carousel ${idx + 1}`} className="w-full h-full object-cover" />
+                      <div className="absolute top-1 left-1 bg-black/70 text-white text-xs px-2 py-0.5 rounded">
+                        {idx + 1}
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        className="absolute top-1 right-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => deleteCarouselImageMutation.mutate(img.id)}
+                        disabled={deleteCarouselImageMutation.isPending}
+                        data-testid={`button-delete-carousel-${img.id}`}
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {(!carouselImages || carouselImages.length === 0) && (
+                <div className="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg">
+                  <Image className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                  <p>{t("No carousel images uploaded yet", "अभी तक कोई कैरोसेल छवियाँ अपलोड नहीं की गई हैं")}</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader className="pb-2">
               <h4 className="font-medium">{t("Add New Participant", "नया प्रतिभागी जोड़ें")}</h4>

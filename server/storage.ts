@@ -29,6 +29,8 @@ import {
   type InsertVivaahSammelan,
   type VivaahParticipant,
   type InsertVivaahParticipant,
+  type VivaahCarouselImage,
+  type InsertVivaahCarouselImage,
   users,
   sliderImages,
   aboutContent,
@@ -44,6 +46,7 @@ import {
   vivaahPageInfo,
   vivaahSammelan,
   vivaahParticipants,
+  vivaahCarouselImages,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, asc, desc } from "drizzle-orm";
@@ -132,6 +135,11 @@ export interface IStorage {
   createVivaahParticipant(data: InsertVivaahParticipant): Promise<VivaahParticipant>;
   updateVivaahParticipant(id: string, data: Partial<InsertVivaahParticipant>): Promise<VivaahParticipant | undefined>;
   deleteVivaahParticipant(id: string): Promise<boolean>;
+
+  // Vivaah Carousel Images
+  getVivaahCarouselImages(sammelanId: string): Promise<VivaahCarouselImage[]>;
+  createVivaahCarouselImage(data: InsertVivaahCarouselImage): Promise<VivaahCarouselImage>;
+  deleteVivaahCarouselImage(id: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -413,6 +421,21 @@ export class DatabaseStorage implements IStorage {
 
   async deleteVivaahParticipant(id: string): Promise<boolean> {
     await db.delete(vivaahParticipants).where(eq(vivaahParticipants.id, id));
+    return true;
+  }
+
+  // Vivaah Carousel Images
+  async getVivaahCarouselImages(sammelanId: string): Promise<VivaahCarouselImage[]> {
+    return db.select().from(vivaahCarouselImages).where(eq(vivaahCarouselImages.sammelanId, sammelanId)).orderBy(asc(vivaahCarouselImages.order));
+  }
+
+  async createVivaahCarouselImage(data: InsertVivaahCarouselImage): Promise<VivaahCarouselImage> {
+    const [image] = await db.insert(vivaahCarouselImages).values(data).returning();
+    return image;
+  }
+
+  async deleteVivaahCarouselImage(id: string): Promise<boolean> {
+    await db.delete(vivaahCarouselImages).where(eq(vivaahCarouselImages.id, id));
     return true;
   }
 }

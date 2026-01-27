@@ -18,6 +18,7 @@ import {
   insertVivaahPageInfoSchema,
   insertVivaahSammelanSchema,
   insertVivaahParticipantSchema,
+  insertVivaahCarouselImageSchema,
 } from "@shared/schema";
 
 export async function registerRoutes(
@@ -531,6 +532,36 @@ export async function registerRoutes(
       res.json({ success: true });
     } catch (error) {
       res.status(400).json({ error: "Failed to delete participant" });
+    }
+  });
+
+  // Vivaah Carousel Images
+  app.get("/api/vivaah/carousel/:sammelanId", async (req, res) => {
+    try {
+      const images = await storage.getVivaahCarouselImages(req.params.sammelanId);
+      res.json(images);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch carousel images" });
+    }
+  });
+
+  app.post("/api/vivaah/carousel", async (req, res) => {
+    try {
+      const data = insertVivaahCarouselImageSchema.parse(req.body);
+      const image = await storage.createVivaahCarouselImage(data);
+      res.json(image);
+    } catch (error) {
+      console.error("Error creating carousel image:", error);
+      res.status(400).json({ error: "Invalid data" });
+    }
+  });
+
+  app.delete("/api/vivaah/carousel/:id", async (req, res) => {
+    try {
+      await storage.deleteVivaahCarouselImage(req.params.id);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(400).json({ error: "Failed to delete carousel image" });
     }
   });
 

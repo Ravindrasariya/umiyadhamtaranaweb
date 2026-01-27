@@ -5,7 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Heart, MapPin, IndianRupee, Handshake } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import type { VivaahPageInfo, VivaahSammelan as VivaahSammelanType, VivaahParticipant } from "@shared/schema";
+import type { VivaahPageInfo, VivaahSammelan as VivaahSammelanType, VivaahParticipant, VivaahCarouselImage } from "@shared/schema";
+import { VivaahCarousel } from "@/components/VivaahCarousel";
 
 export default function VivaahSammelan() {
   const { t, language } = useLanguage();
@@ -20,6 +21,11 @@ export default function VivaahSammelan() {
 
   const { data: participants, isLoading: participantsLoading } = useQuery<VivaahParticipant[]>({
     queryKey: ["/api/vivaah/participants", activeSammelan?.id],
+    enabled: !!activeSammelan?.id,
+  });
+
+  const { data: carouselImages } = useQuery<VivaahCarouselImage[]>({
+    queryKey: ["/api/vivaah/carousel", activeSammelan?.id],
     enabled: !!activeSammelan?.id,
   });
 
@@ -171,6 +177,12 @@ export default function VivaahSammelan() {
                   </div>
                 </CardContent>
               </Card>
+            )}
+
+            {carouselImages && carouselImages.length > 0 && (
+              <div className="mb-8">
+                <VivaahCarousel images={carouselImages} />
+              </div>
             )}
 
             {activeSammelan && (

@@ -243,3 +243,15 @@ export const vivaahParticipants = pgTable("vivaah_participants", {
 export const insertVivaahParticipantSchema = createInsertSchema(vivaahParticipants).omit({ id: true });
 export type InsertVivaahParticipant = z.infer<typeof insertVivaahParticipantSchema>;
 export type VivaahParticipant = typeof vivaahParticipants.$inferSelect;
+
+// Vivaah Carousel Images (Marketing/promotional images for sammelan)
+export const vivaahCarouselImages = pgTable("vivaah_carousel_images", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sammelanId: varchar("sammelan_id").notNull(),
+  imageUrl: text("image_url").notNull(),
+  order: integer("order").notNull().default(0),
+});
+
+export const insertVivaahCarouselImageSchema = createInsertSchema(vivaahCarouselImages).omit({ id: true });
+export type InsertVivaahCarouselImage = z.infer<typeof insertVivaahCarouselImageSchema>;
+export type VivaahCarouselImage = typeof vivaahCarouselImages.$inferSelect;

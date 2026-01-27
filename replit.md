@@ -57,6 +57,19 @@ Key database tables:
 - `services` - Temple service offerings
 - `gallery_items` - Photos and videos
 - `site_settings` - Configurable site options
+- `vivaah_sammelan` - Matrimonial event details (finances, totalPairs)
+- `vivaah_participants` - Bride/groom entries with archive support
+- `vivaah_carousel_images` - Marketing carousel images for Vivaah Sammelan
+
+### Vivaah Sammelan Feature
+- **Pairing Logic**: Brides and grooms are paired by POSITION (sorted by order field), NOT by order value
+- **Stable Numbering**: Archived participants remain in sorted arrays to maintain pair positions
+- **Archive Behavior**: Archived participants show as "Awaiting Bride/Groom" placeholders; fully archived pairs are hidden
+- **Marketing Carousel**: Mobile-friendly swipeable carousel for A5-sized promotional images
+  - Random start position on page load for equal exposure
+  - Admin can upload up to 20 images
+  - 3:4 aspect ratio (A5 portrait orientation)
+  - Uses Embla Carousel for touch-swipe support
 
 ### Internationalization
 - Language context (`LanguageContext.tsx`) manages EN/HI switching
