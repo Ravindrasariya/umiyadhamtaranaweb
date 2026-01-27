@@ -23,24 +23,40 @@ export default function VivaahSammelan() {
     enabled: !!activeSammelan?.id,
   });
 
-  // Filter out archived participants for public display
-  const brides = participants?.filter(p => p.type === "bride" && !p.archived) || [];
-  const grooms = participants?.filter(p => p.type === "groom" && !p.archived) || [];
+  // Get ALL participants (including archived for stable pair numbering)
+  const allBrides = participants?.filter(p => p.type === "bride") || [];
+  const allGrooms = participants?.filter(p => p.type === "groom") || [];
   
-  // Get unique pair numbers (orders) from both brides and grooms, sorted
-  const allOrders = Array.from(new Set([
-    ...brides.map(b => b.order),
-    ...grooms.map(g => g.order)
+  // Get unique pair numbers (order values) from ALL participants - this ensures stable numbering
+  const allPairNumbers = Array.from(new Set([
+    ...allBrides.map(b => b.order),
+    ...allGrooms.map(g => g.order)
   ])).sort((a, b) => a - b);
   
-  // Use totalPairs from admin setting if available, otherwise use actual count
+  // Helper to find participant by order (returns undefined if archived or not found)
+  const getBrideByOrder = (order: number) => {
+    const bride = allBrides.find(b => b.order === order);
+    return bride?.archived ? undefined : bride;
+  };
+  const getGroomByOrder = (order: number) => {
+    const groom = allGrooms.find(g => g.order === order);
+    return groom?.archived ? undefined : groom;
+  };
+  
+  // Check if a pair is completely archived (both bride and groom)
+  const isPairFullyArchived = (order: number) => {
+    const bride = allBrides.find(b => b.order === order);
+    const groom = allGrooms.find(g => g.order === order);
+    const brideArchived = !bride || bride.archived;
+    const groomArchived = !groom || groom.archived;
+    return brideArchived && groomArchived;
+  };
+  
+  // Use totalPairs from admin setting if available, otherwise use count of non-fully-archived pairs
+  const visiblePairs = allPairNumbers.filter(order => !isPairFullyArchived(order));
   const displayTotalPairs = (activeSammelan?.totalPairs && activeSammelan.totalPairs > 0) 
     ? activeSammelan.totalPairs 
-    : allOrders.length;
-  
-  // Helper to find participant by order number
-  const getBrideByOrder = (order: number) => brides.find(b => b.order === order);
-  const getGroomByOrder = (order: number) => grooms.find(g => g.order === order);
+    : visiblePairs.length;
 
   const formatCurrency = (value: string) => {
     const num = parseFloat(value) || 0;
@@ -189,12 +205,12 @@ export default function VivaahSammelan() {
                 <div className="flex items-center justify-center gap-4 mb-8">
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 rounded-full bg-pink-500"></div>
-                    <span className="text-pink-600 font-semibold">{t("Brides", "वधू")} ({brides.length})</span>
+                    <span className="text-pink-600 font-semibold">{t("Brides", "वधू")} ({allBrides.filter(b => !b.archived).length})</span>
                   </div>
                   <Handshake className="w-8 h-8 text-primary" />
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 rounded-full bg-blue-500"></div>
-                    <span className="text-blue-600 font-semibold">{t("Grooms", "वर")} ({grooms.length})</span>
+                    <span className="text-blue-600 font-semibold">{t("Grooms", "वर")} ({allGrooms.filter(g => !g.archived).length})</span>
                   </div>
                 </div>
 
@@ -203,40 +219,49 @@ export default function VivaahSammelan() {
                     <Skeleton className="h-32" />
                     <Skeleton className="h-32" />
                   </div>
-                ) : allOrders.length > 0 ? (
+                ) : allPairNumbers.length > 0 ? (
                   <div className="space-y-4">
-                    {allOrders.map((pairNumber) => (
-                      <div 
-                        key={pairNumber} 
-                        className="border-2 border-primary rounded-xl p-3 md:p-4 bg-primary/5"
-                        data-testid={`couple-row-${pairNumber}`}
-                      >
-                        <div className="hidden md:flex items-stretch gap-2">
-                          {renderParticipantCard(getBrideByOrder(pairNumber), "bride", pairNumber)}
-                          <div className="flex-shrink-0 w-14 flex flex-col items-center justify-center gap-1">
-                            <span className="text-sm font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full border-2 border-primary">
-                              {pairNumber}
-                            </span>
-                            <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary">
-                              <Handshake className="w-5 h-5 text-primary" />
-                            </span>
+                    {allPairNumbers.map((pairNumber) => {
+                      // Skip if BOTH bride and groom are archived/missing for this pair number
+                      if (isPairFullyArchived(pairNumber)) return null;
+                      
+                      // Get bride and groom by their order (returns undefined if archived)
+                      const displayBride = getBrideByOrder(pairNumber);
+                      const displayGroom = getGroomByOrder(pairNumber);
+                      
+                      return (
+                        <div 
+                          key={pairNumber} 
+                          className="border-2 border-primary rounded-xl p-3 md:p-4 bg-primary/5"
+                          data-testid={`couple-row-${pairNumber}`}
+                        >
+                          <div className="hidden md:flex items-stretch gap-2">
+                            {renderParticipantCard(displayBride, "bride", pairNumber)}
+                            <div className="flex-shrink-0 w-14 flex flex-col items-center justify-center gap-1">
+                              <span className="text-sm font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full border-2 border-primary">
+                                {pairNumber}
+                              </span>
+                              <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary">
+                                <Handshake className="w-5 h-5 text-primary" />
+                              </span>
+                            </div>
+                            {renderParticipantCard(displayGroom, "groom", pairNumber)}
                           </div>
-                          {renderParticipantCard(getGroomByOrder(pairNumber), "groom", pairNumber)}
-                        </div>
-                        <div className="md:hidden flex flex-col gap-3">
-                          {renderParticipantCard(getBrideByOrder(pairNumber), "bride", pairNumber)}
-                          <div className="flex items-center justify-center gap-2 py-1">
-                            <span className="text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full border-2 border-primary">
-                              {pairNumber}
-                            </span>
-                            <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary">
-                              <Handshake className="w-5 h-5 text-primary" />
-                            </span>
+                          <div className="md:hidden flex flex-col gap-3">
+                            {renderParticipantCard(displayBride, "bride", pairNumber)}
+                            <div className="flex items-center justify-center gap-2 py-1">
+                              <span className="text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full border-2 border-primary">
+                                {pairNumber}
+                              </span>
+                              <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary">
+                                <Handshake className="w-5 h-5 text-primary" />
+                              </span>
+                            </div>
+                            {renderParticipantCard(displayGroom, "groom", pairNumber)}
                           </div>
-                          {renderParticipantCard(getGroomByOrder(pairNumber), "groom", pairNumber)}
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 ) : (
                   <Card className="overflow-visible">
