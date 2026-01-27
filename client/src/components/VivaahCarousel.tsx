@@ -106,16 +106,16 @@ export function VivaahCarousel({ images }: VivaahCarouselProps) {
             {images.map((image, index) => (
               <div
                 key={image.id}
-                className="flex-none w-full sm:w-[60%] md:w-[45%] lg:w-[35%] min-w-0 pl-3 first:pl-0"
+                className="flex-none w-full min-w-0 flex justify-center"
               >
                 <div 
-                  className="relative aspect-[3/4] rounded-xl overflow-hidden border-2 border-primary/20 shadow-lg bg-muted"
+                  className="relative aspect-[3/4] w-full max-w-md rounded-xl overflow-hidden border-2 border-primary/20 shadow-lg bg-muted"
                   data-testid={`carousel-slide-${index}`}
                 >
                   <img
                     src={image.imageUrl}
                     alt={`Page ${index + 1}`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                     loading="lazy"
                   />
                   <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
