@@ -30,19 +30,20 @@ export default function VivaahSammelan() {
   const bridesByOrder = new Map(brides.map(b => [b.order, b]));
   const groomsByOrder = new Map(grooms.map(g => [g.order, g]));
   
-  // Get max order number from participants to support sparse pair numbers
-  const allOrderNumbers = [...brides.map(b => b.order), ...grooms.map(g => g.order)].filter(n => n > 0);
-  const maxOrderFromParticipants = allOrderNumbers.length > 0 ? Math.max(...allOrderNumbers) : 0;
+  // Get all unique order numbers that have at least one participant
+  const allOrderNumbers = Array.from(new Set([...brides.map(b => b.order), ...grooms.map(g => g.order)])).filter(n => n > 0);
   
-  // Use totalPairs from sammelan if set and > 0, otherwise use max order number
+  // Count complete pairs (order numbers that have BOTH bride AND groom)
+  const completePairOrders = allOrderNumbers.filter(order => bridesByOrder.has(order) && groomsByOrder.has(order));
+  const completePairCount = completePairOrders.length;
+  
+  // Use totalPairs from admin if set and > 0, otherwise use actual complete pair count
   const displayPairCount = (activeSammelan?.totalPairs && activeSammelan.totalPairs > 0) 
     ? activeSammelan.totalPairs 
-    : maxOrderFromParticipants;
+    : completePairCount;
   
-  // Generate pair numbers array
-  const pairNumbers = displayPairCount > 0 
-    ? Array.from({ length: displayPairCount }, (_, i) => i + 1) 
-    : [];
+  // Generate pair numbers array - only include order numbers that have at least one participant
+  const pairNumbers = allOrderNumbers.sort((a, b) => a - b);
 
   const formatCurrency = (value: string) => {
     const num = parseFloat(value) || 0;
