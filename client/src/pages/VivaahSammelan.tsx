@@ -26,12 +26,21 @@ export default function VivaahSammelan() {
   // Filter out archived participants for public display
   const brides = participants?.filter(p => p.type === "bride" && !p.archived) || [];
   const grooms = participants?.filter(p => p.type === "groom" && !p.archived) || [];
-  const maxCouples = Math.max(brides.length, grooms.length);
+  
+  // Get unique pair numbers (orders) from both brides and grooms, sorted
+  const allOrders = Array.from(new Set([
+    ...brides.map(b => b.order),
+    ...grooms.map(g => g.order)
+  ])).sort((a, b) => a - b);
   
   // Use totalPairs from admin setting if available, otherwise use actual count
   const displayTotalPairs = (activeSammelan?.totalPairs && activeSammelan.totalPairs > 0) 
     ? activeSammelan.totalPairs 
-    : maxCouples;
+    : allOrders.length;
+  
+  // Helper to find participant by order number
+  const getBrideByOrder = (order: number) => brides.find(b => b.order === order);
+  const getGroomByOrder = (order: number) => grooms.find(g => g.order === order);
 
   const formatCurrency = (value: string) => {
     const num = parseFloat(value) || 0;
@@ -194,37 +203,37 @@ export default function VivaahSammelan() {
                     <Skeleton className="h-32" />
                     <Skeleton className="h-32" />
                   </div>
-                ) : maxCouples > 0 ? (
+                ) : allOrders.length > 0 ? (
                   <div className="space-y-4">
-                    {Array.from({ length: maxCouples }).map((_, index) => (
+                    {allOrders.map((pairNumber) => (
                       <div 
-                        key={index} 
+                        key={pairNumber} 
                         className="border-2 border-primary rounded-xl p-3 md:p-4 bg-primary/5"
-                        data-testid={`couple-row-${index}`}
+                        data-testid={`couple-row-${pairNumber}`}
                       >
                         <div className="hidden md:flex items-stretch gap-2">
-                          {renderParticipantCard(brides[index], "bride", index)}
+                          {renderParticipantCard(getBrideByOrder(pairNumber), "bride", pairNumber)}
                           <div className="flex-shrink-0 w-14 flex flex-col items-center justify-center gap-1">
                             <span className="text-sm font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full border-2 border-primary">
-                              {index + 1}
+                              {pairNumber}
                             </span>
                             <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary">
                               <Handshake className="w-5 h-5 text-primary" />
                             </span>
                           </div>
-                          {renderParticipantCard(grooms[index], "groom", index)}
+                          {renderParticipantCard(getGroomByOrder(pairNumber), "groom", pairNumber)}
                         </div>
                         <div className="md:hidden flex flex-col gap-3">
-                          {renderParticipantCard(brides[index], "bride", index)}
+                          {renderParticipantCard(getBrideByOrder(pairNumber), "bride", pairNumber)}
                           <div className="flex items-center justify-center gap-2 py-1">
                             <span className="text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full border-2 border-primary">
-                              {index + 1}
+                              {pairNumber}
                             </span>
                             <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary">
                               <Handshake className="w-5 h-5 text-primary" />
                             </span>
                           </div>
-                          {renderParticipantCard(grooms[index], "groom", index)}
+                          {renderParticipantCard(getGroomByOrder(pairNumber), "groom", pairNumber)}
                         </div>
                       </div>
                     ))}
