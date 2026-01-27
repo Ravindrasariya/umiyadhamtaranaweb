@@ -1379,14 +1379,14 @@ function VivaahSammelanManager() {
                         {idx + 1}
                       </div>
                       <Button
-                        size="sm"
+                        size="icon"
                         variant="destructive"
-                        className="absolute top-1 right-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute top-1 right-1"
                         onClick={() => deleteCarouselImageMutation.mutate(img.id)}
                         disabled={deleteCarouselImageMutation.isPending}
                         data-testid={`button-delete-carousel-${img.id}`}
                       >
-                        <Trash2 className="w-3 h-3" />
+                        <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
                   ))}
