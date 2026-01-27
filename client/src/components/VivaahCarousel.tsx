@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,9 @@ export function VivaahCarousel({ images }: VivaahCarouselProps) {
   const [selectedIndex, setSelectedIndex] = useState(randomStartIndex);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const autoplayRef = useRef<NodeJS.Timeout | null>(null);
+  const touchResumeRef = useRef<NodeJS.Timeout | null>(null);
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -54,10 +57,49 @@ export function VivaahCarousel({ images }: VivaahCarouselProps) {
     };
   }, [emblaApi, onSelect]);
 
+  // Auto-play: advance every 3 seconds, pause on hover/touch
+  useEffect(() => {
+    if (!emblaApi || isHovered) {
+      if (autoplayRef.current) {
+        clearInterval(autoplayRef.current);
+        autoplayRef.current = null;
+      }
+      return;
+    }
+
+    autoplayRef.current = setInterval(() => {
+      emblaApi.scrollNext();
+    }, 3000);
+
+    return () => {
+      if (autoplayRef.current) {
+        clearInterval(autoplayRef.current);
+        autoplayRef.current = null;
+      }
+      if (touchResumeRef.current) {
+        clearTimeout(touchResumeRef.current);
+        touchResumeRef.current = null;
+      }
+    };
+  }, [emblaApi, isHovered]);
+
   if (!images || images.length === 0) return null;
 
   return (
-    <div className="w-full" data-testid="vivaah-carousel">
+    <div 
+      className="w-full max-w-4xl mx-auto" 
+      data-testid="vivaah-carousel"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onTouchStart={() => {
+        if (touchResumeRef.current) clearTimeout(touchResumeRef.current);
+        setIsHovered(true);
+      }}
+      onTouchEnd={() => {
+        if (touchResumeRef.current) clearTimeout(touchResumeRef.current);
+        touchResumeRef.current = setTimeout(() => setIsHovered(false), 3000);
+      }}
+    >
       <div className="relative">
         <div className="overflow-hidden rounded-xl" ref={emblaRef}>
           <div className="flex touch-pan-y">
