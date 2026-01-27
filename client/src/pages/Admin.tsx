@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Trash2, Plus, Save, Image, FileText, Clock, Camera, Building, Phone, Lock, Heart, ScrollText, Home, Users, Upload, Pencil, X } from "lucide-react";
@@ -1117,12 +1116,10 @@ function VivaahSammelanManager() {
   });
 
   const [pageFormData, setPageFormData] = useState<Partial<VivaahPageInfo>>({});
-  const [sammelanFormData, setSammelanFormData] = useState({ titleEn: "", titleHi: "", overallIncome: "0", overallExpense: "0", asOfDate: "", totalPairs: 0 });
-  const [newParticipant, setNewParticipant] = useState({ type: "bride" as "bride" | "groom", nameEn: "", nameHi: "", fatherNameEn: "", fatherNameHi: "", motherNameEn: "", motherNameHi: "", grandfatherNameEn: "", grandfatherNameHi: "", grandmotherNameEn: "", grandmotherNameHi: "", locationEn: "", locationHi: "", photoUrl: "", order: 0 });
+  const [sammelanFormData, setSammelanFormData] = useState({ titleEn: "", titleHi: "", overallIncome: "0", overallExpense: "0", asOfDate: "" });
+  const [newParticipant, setNewParticipant] = useState({ type: "bride" as "bride" | "groom", nameEn: "", nameHi: "", fatherNameEn: "", fatherNameHi: "", motherNameEn: "", motherNameHi: "", grandfatherNameEn: "", grandfatherNameHi: "", grandmotherNameEn: "", grandmotherNameHi: "", locationEn: "", locationHi: "", photoUrl: "" });
   const [editingParticipantId, setEditingParticipantId] = useState<string | null>(null);
   const [editParticipantData, setEditParticipantData] = useState<Partial<VivaahParticipant>>({});
-  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
-  const [deleteConfirmName, setDeleteConfirmName] = useState<string>("");
 
   const updatePageInfoMutation = useMutation({
     mutationFn: async (data: Partial<VivaahPageInfo>) => {
@@ -1154,7 +1151,7 @@ function VivaahSammelanManager() {
     mutationFn: async (data: Partial<VivaahParticipant>) => apiRequest("POST", "/api/vivaah/participants", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/vivaah/participants", activeSammelan?.id] });
-      setNewParticipant({ type: "bride", nameEn: "", nameHi: "", fatherNameEn: "", fatherNameHi: "", motherNameEn: "", motherNameHi: "", grandfatherNameEn: "", grandfatherNameHi: "", grandmotherNameEn: "", grandmotherNameHi: "", locationEn: "", locationHi: "", photoUrl: "", order: 0 });
+      setNewParticipant({ type: "bride", nameEn: "", nameHi: "", fatherNameEn: "", fatherNameHi: "", motherNameEn: "", motherNameHi: "", grandfatherNameEn: "", grandfatherNameHi: "", grandmotherNameEn: "", grandmotherNameHi: "", locationEn: "", locationHi: "", photoUrl: "" });
       toast({ title: t("Participant added", "प्रतिभागी जोड़ा गया") });
     },
   });
@@ -1173,27 +1170,9 @@ function VivaahSammelanManager() {
     mutationFn: async (id: string) => apiRequest("DELETE", `/api/vivaah/participants/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/vivaah/participants", activeSammelan?.id] });
-      setDeleteConfirmId(null);
-      setDeleteConfirmName("");
       toast({ title: t("Participant deleted", "प्रतिभागी हटाया गया") });
     },
   });
-
-  const handleDeleteClick = (participant: VivaahParticipant) => {
-    setDeleteConfirmId(participant.id);
-    setDeleteConfirmName(participant.nameEn || participant.nameHi || "Unknown");
-  };
-
-  const confirmDelete = () => {
-    if (deleteConfirmId) {
-      deleteParticipantMutation.mutate(deleteConfirmId);
-    }
-  };
-
-  const cancelDelete = () => {
-    setDeleteConfirmId(null);
-    setDeleteConfirmName("");
-  };
 
   const startEditingParticipant = (participant: VivaahParticipant) => {
     setEditingParticipantId(participant.id);
@@ -1211,8 +1190,6 @@ function VivaahSammelanManager() {
       grandmotherNameHi: participant.grandmotherNameHi || "",
       locationEn: participant.locationEn || "",
       locationHi: participant.locationHi || "",
-      photoUrl: participant.photoUrl || "",
-      order: participant.order || 0,
     });
   };
 
@@ -1259,7 +1236,7 @@ function VivaahSammelanManager() {
             <Input placeholder={t("Event Title (English)", "कार्यक्रम शीर्षक (अंग्रेज़ी)")} value={currentSammelanData.titleEn || ""} onChange={(e) => setSammelanFormData({ ...sammelanFormData, titleEn: e.target.value })} data-testid="input-sammelan-title-en" />
             <Input placeholder={t("Event Title (Hindi)", "कार्यक्रम शीर्षक (हिंदी)")} value={currentSammelanData.titleHi || ""} onChange={(e) => setSammelanFormData({ ...sammelanFormData, titleHi: e.target.value })} data-testid="input-sammelan-title-hi" />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
               <label className="text-sm font-medium text-green-600">{t("Overall Income (₹)", "कुल आय (₹)")}</label>
               <Input placeholder="0" value={currentSammelanData.overallIncome || ""} onChange={(e) => setSammelanFormData({ ...sammelanFormData, overallIncome: e.target.value })} data-testid="input-sammelan-income" />
@@ -1271,10 +1248,6 @@ function VivaahSammelanManager() {
             <div>
               <label className="text-sm font-medium">{t("As of Date", "दिनांक")}</label>
               <Input type="date" value={currentSammelanData.asOfDate || ""} onChange={(e) => setSammelanFormData({ ...sammelanFormData, asOfDate: e.target.value })} data-testid="input-sammelan-date" />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-primary">{t("Total Pairs", "कुल जोड़े")}</label>
-              <Input type="number" placeholder="0" value={currentSammelanData.totalPairs || ""} onChange={(e) => setSammelanFormData({ ...sammelanFormData, totalPairs: parseInt(e.target.value) || 0 })} data-testid="input-sammelan-total-pairs" />
             </div>
           </div>
           <Button onClick={() => saveSammelanMutation.mutate(sammelanFormData)} disabled={saveSammelanMutation.isPending} data-testid="button-save-sammelan">
@@ -1292,7 +1265,7 @@ function VivaahSammelanManager() {
               <p className="text-sm text-muted-foreground">{t("Total", "कुल")}: {brides.length} {t("Brides", "वधू")} | {grooms.length} {t("Grooms", "वर")}</p>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex flex-wrap items-center gap-6 mb-3">
+              <div className="flex gap-6 mb-3">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="radio" name="participantType" checked={newParticipant.type === "bride"} onChange={() => setNewParticipant({ ...newParticipant, type: "bride" })} className="w-4 h-4" />
                   <span className="text-pink-600 font-medium">{t("Bride", "वधू")}</span>
@@ -1301,10 +1274,6 @@ function VivaahSammelanManager() {
                   <input type="radio" name="participantType" checked={newParticipant.type === "groom"} onChange={() => setNewParticipant({ ...newParticipant, type: "groom" })} className="w-4 h-4" />
                   <span className="text-blue-600 font-medium">{t("Groom", "वर")}</span>
                 </label>
-                <div className="flex items-center gap-2">
-                  <label className="text-sm font-medium text-primary">{t("Pair #", "जोड़ा #")}</label>
-                  <Input type="number" min="1" className="w-20" value={newParticipant.order || ""} onChange={(e) => setNewParticipant({ ...newParticipant, order: parseInt(e.target.value) || 0 })} data-testid="input-participant-order" />
-                </div>
               </div>
               <div className="flex items-start gap-4">
                 <div className="w-24 flex-shrink-0">
@@ -1332,7 +1301,7 @@ function VivaahSammelanManager() {
                 <Input placeholder={t("Location (Hindi)", "स्थान (हिंदी)")} value={newParticipant.locationHi} onChange={(e) => setNewParticipant({ ...newParticipant, locationHi: e.target.value })} />
                 </div>
               </div>
-              <Button onClick={() => createParticipantMutation.mutate({ ...newParticipant, sammelanId: activeSammelan.id })} disabled={!newParticipant.nameEn || !newParticipant.order || createParticipantMutation.isPending} data-testid="button-add-participant">
+              <Button onClick={() => createParticipantMutation.mutate({ ...newParticipant, sammelanId: activeSammelan.id, order: (participants?.length || 0) + 1 })} disabled={!newParticipant.nameEn || createParticipantMutation.isPending} data-testid="button-add-participant">
                 <Plus className="w-4 h-4 mr-2" />
                 {t("Add Participant", "प्रतिभागी जोड़ें")}
               </Button>
@@ -1378,11 +1347,7 @@ function VivaahSammelanManager() {
                                   <Input placeholder={t("Location (Hindi)", "स्थान (हिंदी)")} value={editParticipantData.locationHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, locationHi: e.target.value })} />
                                 </div>
                               </div>
-                              <div className="flex items-center gap-2">
-                                <div className="flex items-center gap-1">
-                                  <label className="text-sm font-medium text-primary">{t("Pair #", "जोड़ा #")}</label>
-                                  <Input type="number" min="1" className="w-16" value={editParticipantData.order || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, order: parseInt(e.target.value) || 0 })} />
-                                </div>
+                              <div className="flex gap-2">
                                 <Button size="sm" onClick={() => updateParticipantMutation.mutate({ id: bride.id, data: editParticipantData })} disabled={updateParticipantMutation.isPending}>
                                   <Save className="w-3 h-3 mr-1" />{t("Save", "सहेजें")}
                                 </Button>
@@ -1396,14 +1361,14 @@ function VivaahSammelanManager() {
                               <div className="flex items-center gap-2">
                                 {bride.photoUrl && <img src={bride.photoUrl} alt="" className="w-10 h-10 rounded-full object-cover" />}
                                 <div className="text-sm">
-                                  <p className="font-medium"><span className="text-primary font-bold">#{bride.order || "?"}</span> {bride.nameEn} / {bride.nameHi}</p>
+                                  <p className="font-medium">{idx + 1}. {bride.nameEn} / {bride.nameHi}</p>
                                   <p className="text-muted-foreground">{t("Father", "पिता")}: {bride.fatherNameEn || "-"}</p>
                                   <p className="text-muted-foreground">{t("Location", "स्थान")}: {bride.locationEn || "-"}</p>
                                 </div>
                               </div>
                               <div className="flex gap-1">
                                 <Button size="icon" variant="ghost" onClick={() => startEditingParticipant(bride)} data-testid={`button-edit-bride-${bride.id}`}><Pencil className="w-4 h-4" /></Button>
-                                <Button size="icon" variant="destructive" onClick={() => handleDeleteClick(bride)} data-testid={`button-delete-bride-${bride.id}`}><Trash2 className="w-4 h-4" /></Button>
+                                <Button size="icon" variant="destructive" onClick={() => deleteParticipantMutation.mutate(bride.id)}><Trash2 className="w-4 h-4" /></Button>
                               </div>
                             </div>
                           )}
@@ -1446,11 +1411,7 @@ function VivaahSammelanManager() {
                                   <Input placeholder={t("Location (Hindi)", "स्थान (हिंदी)")} value={editParticipantData.locationHi || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, locationHi: e.target.value })} />
                                 </div>
                               </div>
-                              <div className="flex items-center gap-2">
-                                <div className="flex items-center gap-1">
-                                  <label className="text-sm font-medium text-primary">{t("Pair #", "जोड़ा #")}</label>
-                                  <Input type="number" min="1" className="w-16" value={editParticipantData.order || ""} onChange={(e) => setEditParticipantData({ ...editParticipantData, order: parseInt(e.target.value) || 0 })} />
-                                </div>
+                              <div className="flex gap-2">
                                 <Button size="sm" onClick={() => updateParticipantMutation.mutate({ id: groom.id, data: editParticipantData })} disabled={updateParticipantMutation.isPending}>
                                   <Save className="w-3 h-3 mr-1" />{t("Save", "सहेजें")}
                                 </Button>
@@ -1464,14 +1425,14 @@ function VivaahSammelanManager() {
                               <div className="flex items-center gap-2">
                                 {groom.photoUrl && <img src={groom.photoUrl} alt="" className="w-10 h-10 rounded-full object-cover" />}
                                 <div className="text-sm">
-                                  <p className="font-medium"><span className="text-primary font-bold">#{groom.order || "?"}</span> {groom.nameEn} / {groom.nameHi}</p>
+                                  <p className="font-medium">{idx + 1}. {groom.nameEn} / {groom.nameHi}</p>
                                   <p className="text-muted-foreground">{t("Father", "पिता")}: {groom.fatherNameEn || "-"}</p>
                                   <p className="text-muted-foreground">{t("Location", "स्थान")}: {groom.locationEn || "-"}</p>
                                 </div>
                               </div>
                               <div className="flex gap-1">
                                 <Button size="icon" variant="ghost" onClick={() => startEditingParticipant(groom)} data-testid={`button-edit-groom-${groom.id}`}><Pencil className="w-4 h-4" /></Button>
-                                <Button size="icon" variant="destructive" onClick={() => handleDeleteClick(groom)} data-testid={`button-delete-groom-${groom.id}`}><Trash2 className="w-4 h-4" /></Button>
+                                <Button size="icon" variant="destructive" onClick={() => deleteParticipantMutation.mutate(groom.id)}><Trash2 className="w-4 h-4" /></Button>
                               </div>
                             </div>
                           )}
@@ -1486,23 +1447,6 @@ function VivaahSammelanManager() {
           </Card>
         </>
       )}
-
-      <AlertDialog open={!!deleteConfirmId} onOpenChange={(open) => !open && cancelDelete()}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t("Delete Participant", "प्रतिभागी हटाएं")}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t(`Are you sure you want to delete "${deleteConfirmName}"? This action cannot be undone.`, `क्या आप वाकई "${deleteConfirmName}" को हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।`)}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={cancelDelete}>{t("Cancel", "रद्द करें")}</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              {t("Delete", "हटाएं")}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 }
