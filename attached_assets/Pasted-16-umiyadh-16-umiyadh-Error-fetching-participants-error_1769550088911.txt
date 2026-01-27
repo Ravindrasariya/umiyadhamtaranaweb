@@ -1,0 +1,48 @@
+16|umiyadh | }
+16|umiyadh | Error fetching participants: error: column "archived" does not exist
+16|umiyadh |     at /var/www/umiyadham-app/dist/index.cjs:64:13326
+16|umiyadh |     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+16|umiyadh |     at async /var/www/umiyadham-app/dist/index.cjs:72:101492
+16|umiyadh |     at async /var/www/umiyadham-app/dist/index.cjs:72:117716 {
+16|umiyadh |   length: 109,
+16|umiyadh |   severity: 'ERROR',
+16|umiyadh |   code: '42703',
+16|umiyadh |   detail: undefined,
+16|umiyadh |   hint: undefined,
+16|umiyadh |   position: '275',
+16|umiyadh |   internalPosition: undefined,
+16|umiyadh |   internalQuery: undefined,
+16|umiyadh |   where: undefined,
+16|umiyadh |   schema: undefined,
+16|umiyadh |   table: undefined,
+16|umiyadh |   column: undefined,
+16|umiyadh |   dataType: undefined,
+16|umiyadh |   constraint: undefined,
+16|umiyadh |   file: 'parse_relation.c',
+16|umiyadh |   line: '3722',
+16|umiyadh |   routine: 'errorMissingColumn'
+16|umiyadh | }
+16|umiyadh | Error fetching participants: error: column "archived" does not exist
+16|umiyadh |     at /var/www/umiyadham-app/dist/index.cjs:64:13326
+16|umiyadh |     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+16|umiyadh |     at async /var/www/umiyadham-app/dist/index.cjs:72:101492
+16|umiyadh |     at async /var/www/umiyadham-app/dist/index.cjs:72:117716 {
+16|umiyadh |   length: 109,
+16|umiyadh |   severity: 'ERROR',
+16|umiyadh |   code: '42703',
+16|umiyadh |   detail: undefined,
+16|umiyadh |   hint: undefined,
+16|umiyadh |   position: '275',
+16|umiyadh |   internalPosition: undefined,
+16|umiyadh |   internalQuery: undefined,
+16|umiyadh |   where: undefined,
+16|umiyadh |   schema: undefined,
+16|umiyadh |   table: undefined,
+16|umiyadh |   column: undefined,
+16|umiyadh |   dataType: undefined,
+16|umiyadh |   constraint: undefined,
+16|umiyadh |   file: 'parse_relation.c',
+16|umiyadh |   line: '3722',
+16|umiyadh |   routine: 'errorMissingColumn'
+16|umiyadh | }
+
