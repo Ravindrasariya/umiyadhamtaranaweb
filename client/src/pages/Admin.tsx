@@ -1373,15 +1373,15 @@ function VivaahSammelanManager() {
               {carouselImages && carouselImages.length > 0 && (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                   {carouselImages.map((img, idx) => (
-                    <div key={img.id} className="relative group aspect-[3/4] rounded-lg overflow-hidden border-2 border-border bg-muted" data-testid={`carousel-image-${img.id}`}>
-                      <img src={img.imageUrl} alt={`Carousel ${idx + 1}`} className="w-full h-full object-cover" />
-                      <div className="absolute top-1 left-1 bg-black/70 text-white text-xs px-2 py-0.5 rounded">
+                    <div key={img.id} className="relative aspect-[3/4] rounded-lg border-2 border-border bg-muted" data-testid={`carousel-image-${img.id}`}>
+                      <img src={img.imageUrl} alt={`Carousel ${idx + 1}`} className="w-full h-full object-cover rounded-lg" />
+                      <div className="absolute top-1 left-1 bg-black/70 text-white text-xs px-2 py-0.5 rounded z-10">
                         {idx + 1}
                       </div>
                       <Button
                         size="icon"
                         variant="destructive"
-                        className="absolute top-1 right-1"
+                        className="absolute top-1 right-1 z-10"
                         onClick={() => deleteCarouselImageMutation.mutate(img.id)}
                         disabled={deleteCarouselImageMutation.isPending}
                         data-testid={`button-delete-carousel-${img.id}`}
