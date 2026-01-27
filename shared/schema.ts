@@ -210,6 +210,7 @@ export const vivaahSammelan = pgTable("vivaah_sammelan", {
   overallIncome: text("overall_income").notNull().default("0"),
   overallExpense: text("overall_expense").notNull().default("0"),
   asOfDate: text("as_of_date").notNull(),
+  totalPairs: integer("total_pairs").notNull().default(0),
   isActive: boolean("is_active").notNull().default(true),
 });
 

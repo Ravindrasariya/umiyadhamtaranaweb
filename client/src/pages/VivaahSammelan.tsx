@@ -25,7 +25,16 @@ export default function VivaahSammelan() {
 
   const brides = participants?.filter(p => p.type === "bride") || [];
   const grooms = participants?.filter(p => p.type === "groom") || [];
-  const maxCouples = Math.max(brides.length, grooms.length);
+  
+  // Create maps of pair number (order) to participant for quick lookup
+  const bridesByOrder = new Map(brides.map(b => [b.order, b]));
+  const groomsByOrder = new Map(grooms.map(g => [g.order, g]));
+  
+  // Get all unique pair numbers and use totalPairs from sammelan if available
+  const allOrderNumbers = brides.map(b => b.order).concat(grooms.map(g => g.order)).filter(n => n > 0);
+  const uniquePairNumbers = Array.from(new Set(allOrderNumbers)).sort((a, b) => a - b);
+  const maxPairNumber = activeSammelan?.totalPairs || Math.max(...allOrderNumbers, 0);
+  const pairNumbers = maxPairNumber > 0 ? Array.from({ length: maxPairNumber }, (_, i) => i + 1) : uniquePairNumbers;
 
   const formatCurrency = (value: string) => {
     const num = parseFloat(value) || 0;
@@ -168,7 +177,7 @@ export default function VivaahSammelan() {
                 <div className="flex items-center justify-center gap-2 mb-4">
                   <Handshake className="w-5 h-5 text-primary" />
                   <span className="font-bold text-primary text-lg">
-                    {t(`Total Pairs # ${maxCouples}`, `कुल जोड़े # ${maxCouples}`)}
+                    {t(`Total Pairs # ${activeSammelan?.totalPairs || pairNumbers.length}`, `कुल जोड़े # ${activeSammelan?.totalPairs || pairNumbers.length}`)}
                   </span>
                 </div>
                 <div className="flex items-center justify-center gap-4 mb-8">
@@ -188,37 +197,37 @@ export default function VivaahSammelan() {
                     <Skeleton className="h-32" />
                     <Skeleton className="h-32" />
                   </div>
-                ) : maxCouples > 0 ? (
+                ) : pairNumbers.length > 0 ? (
                   <div className="space-y-4">
-                    {Array.from({ length: maxCouples }).map((_, index) => (
+                    {pairNumbers.map((pairNumber) => (
                       <div 
-                        key={index} 
+                        key={pairNumber} 
                         className="border-2 border-primary rounded-xl p-3 md:p-4 bg-primary/5"
-                        data-testid={`couple-row-${index}`}
+                        data-testid={`couple-row-${pairNumber}`}
                       >
                         <div className="hidden md:flex items-stretch gap-2">
-                          {renderParticipantCard(brides[index], "bride", index)}
+                          {renderParticipantCard(bridesByOrder.get(pairNumber), "bride", pairNumber)}
                           <div className="flex-shrink-0 w-14 flex flex-col items-center justify-center gap-1">
                             <span className="text-sm font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full border-2 border-primary">
-                              {index + 1}
+                              {pairNumber}
                             </span>
                             <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary">
                               <Handshake className="w-5 h-5 text-primary" />
                             </span>
                           </div>
-                          {renderParticipantCard(grooms[index], "groom", index)}
+                          {renderParticipantCard(groomsByOrder.get(pairNumber), "groom", pairNumber)}
                         </div>
                         <div className="md:hidden flex flex-col gap-3">
-                          {renderParticipantCard(brides[index], "bride", index)}
+                          {renderParticipantCard(bridesByOrder.get(pairNumber), "bride", pairNumber)}
                           <div className="flex items-center justify-center gap-2 py-1">
                             <span className="text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full border-2 border-primary">
-                              {index + 1}
+                              {pairNumber}
                             </span>
                             <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary">
                               <Handshake className="w-5 h-5 text-primary" />
                             </span>
                           </div>
-                          {renderParticipantCard(grooms[index], "groom", index)}
+                          {renderParticipantCard(groomsByOrder.get(pairNumber), "groom", pairNumber)}
                         </div>
                       </div>
                     ))}
