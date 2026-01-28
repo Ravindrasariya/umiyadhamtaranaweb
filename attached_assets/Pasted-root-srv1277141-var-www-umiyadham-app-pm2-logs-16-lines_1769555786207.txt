@@ -1,0 +1,30 @@
+root@srv1277141:/var/www/umiyadham-app# pm2 logs 16 --lines 20
+[TAILING] Tailing last 20 lines for [16] process (change the value with --lines option)
+/root/.pm2/logs/umiyadham-app-error-16.log last 20 lines:
+16|umiyadh |     at async Lm.createVivaahCarouselImage (/var/www/umiyadham-app/dist/index.cjs:72:109813)
+16|umiyadh |     at async /var/www/umiyadham-app/dist/index.cjs:72:119435 {
+16|umiyadh |   length: 110,
+16|umiyadh |   severity: 'ERROR',
+16|umiyadh |   code: '42501',
+16|umiyadh |   detail: undefined,
+16|umiyadh |   hint: undefined,
+16|umiyadh |   position: undefined,
+16|umiyadh |   internalPosition: undefined,
+16|umiyadh |   internalQuery: undefined,
+16|umiyadh |   where: undefined,
+16|umiyadh |   schema: undefined,
+16|umiyadh |   table: undefined,
+16|umiyadh |   column: undefined,
+16|umiyadh |   dataType: undefined,
+16|umiyadh |   constraint: undefined,
+16|umiyadh |   file: 'aclchk.c',
+16|umiyadh |   line: '2812',
+16|umiyadh |   routine: 'aclcheck_error'
+16|umiyadh | }
+
+/root/.pm2/logs/umiyadham-app-out-16.log last 20 lines:
+16|umiyadh | f-4013-8918-ae23a295f7a2","sammelanId":"26ba5935-c4b5-40e5-aca6-eae9bca4fd30","type":"bride","nameEn":"सौ.कां. पायल","nameHi":"सौ.कां. पायल","fatherNameEn":"सुपौत्री: श्री छगनलाल जी","fatherNameHi":"सुपौत्री: श्री छगनलाल जी","motherNameEn":"","motherNameHi":"","grandfatherNameEn":"सुपुत्री: श्री गोविंदभाई जी","grandfatherNameHi":"सुपुत्री: श्री गोविंदभाई जी","grandmotherNameEn":"","grandmotherNameHi":"","locationEn":"निवासी: ग्राम बारेजड़ी गुज.","locationHi":"निवासी: ग्राम बारेजड़ी गुज.","photoUrl":"/uploads/78c76d98-0395-439c-967e-0a4c1c7f03ec.png","order":55,"archived":false},{"id":"d5d73088-fced-4435-8d59-323056565004","sammelanId":"26ba5935-c4b5-40e5-aca6-eae9bca4fd30","type":"groom","nameEn":"चि. कपिल","nameHi":"चि. कपिल","fatherNameEn":"सुपौत्र: श्री प्रतापसिंह जी","fatherNameHi":"सुपौत्र: श्री प्रतापसिंह जी","motherNameEn":"","motherNameHi":"","grandfatherNameEn":"सुपुत्र: श्री सत्यनारायण जी","grandfatherNameHi":"सुपुत्र: श्री सत्यनारायण जी","grandmotherNameEn":"","grandmotherNameHi":"","locationEn":"निवासी: ग्राम तराना","locationHi":"निवासी: ग्राम तराना","photoUrl":"/uploads/e63109be-f5a4-445f-b027-f06bd2564506.png","order":56,"archived":false},{"id":"5a6eb05a-4743-4f85-a9a0-6db564ebff58","sammelanId":"26ba5935-c4b5-40e5-aca6-eae9bca4fd30","type":"bride","nameEn":"सौ.कां. दीपिका   (M.Com).","nameHi":"सौ.कां. दीपिका   (M.Com).","fatherNameEn":"भानेज: श्री रामप्रसाद जी","fatherNameHi":"भानेज: श्री रामप्रसाद जी","motherNameEn":"","motherNameHi":"","grandfatherNameEn":"सुपौत्री: श्री नारायण जी नायक","grandfatherNameHi":"सुपौत्री: श्री नारायण जी नायक","grandmotherNameEn":"","grandmotherNameHi":"","locationEn":"निवासी: ग्राम इटावा","locationHi":"निवासी: ग्राम इटावा","photoUrl":"/uploads/5cb313e7-39a2-4c97-9c5e-b0bf3651327c.png","order":57,"archived":false},{"id":"b2bc3c3d-e9ad-48a0-87fd-0fda1d1c9c88","sammelanId":"26ba5935-c4b5-40e5-aca6-eae9bca4fd30","type":"groom","nameEn":"चि. चेतन (रेंजर ऑफिसर)","nameHi":"चि. चेतन (रेंजर ऑफिसर)","fatherNameEn":"सुपौत्र: श्री अर्जुनसिंह जी","fatherNameHi":"सुपौत्र: श्री अर्जुनसिंह जी","motherNameEn":"","motherNameHi":"","grandfatherNameEn":"सुपुत्र: श्री सुभाषचंद्र जी","grandfatherNameHi":"सुपुत्र: श्री सुभाषचंद्र जी","grandmotherNameEn":"","grandmotherNameHi":"","locationEn":"निवासी: ग्राम सिरोलिया","locationHi":"निवासी: ग्राम सिरोलिया","photoUrl":"/uploads/5b2812f3-6ed7-4c1e-a581-3642d6a37b91.png","order":58,"archived":false}]
+16|umiyadh | 11:16:03 PM [express] POST /api/uploads 200 in 7ms :: {"success":true,"filePath":"/uploads/15121660-c6dd-4f22-86cc-86dfcbaed444.png","filename":"15121660-c6dd-4f22-86cc-86dfcbaed444.png","originalName":"Screenshot 2026-01-28 at 4.04.41 AM.png","size":503663}
+16|umiyadh | 11:16:03 PM [express] POST /api/vivaah/carousel 400 in 13ms :: {"error":"Invalid data"}
+16|umiyadh | Database already seeded
+16|umiyadh | 11:16:12 PM [express] serving on port 3001
