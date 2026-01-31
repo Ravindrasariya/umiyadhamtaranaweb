@@ -49,7 +49,7 @@
   --chart-3: 15 85% 55%;
   --chart-4: 30 90% 40%;
   --chart-5: 10 80% 50%;
-  --font-sans: Open Sans, sans-serif;
+  --font-sans: 'Open Sans', 'Noto Sans Devanagari', sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Menlo, monospace;
   --radius: .5rem;
