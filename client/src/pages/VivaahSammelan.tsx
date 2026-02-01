@@ -51,67 +51,59 @@ export default function VivaahSammelan() {
   const renderParticipantCard = (participant: VivaahParticipant | undefined, type: "bride" | "groom", index: number) => {
     if (!participant) {
       return (
-        <div className={`flex-1 min-w-0 p-4 rounded-lg border-2 border-dashed overflow-hidden ${type === "bride" ? "border-pink-200 bg-pink-50/30" : "border-blue-200 bg-blue-50/30"}`}>
-          <div className="vivaah-card-content">
-            <div className={`w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center flex-shrink-0 ${type === "bride" ? "bg-pink-100" : "bg-blue-100"}`}>
+        <div className={`p-4 rounded-lg border-2 border-dashed overflow-hidden ${type === "bride" ? "border-pink-200 bg-pink-50/30" : "border-blue-200 bg-blue-50/30"}`}>
+          <div className="vivaah-card-wrapper">
+            <div className={`vivaah-card-photo w-20 h-20 md:w-24 md:h-24 rounded-full ${type === "bride" ? "bg-pink-100" : "bg-blue-100"}`} style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
               <span className={`text-2xl md:text-3xl ${type === "bride" ? "text-pink-300" : "text-blue-300"}`}>?</span>
             </div>
-            <p className="text-muted-foreground text-sm flex items-center">
-              {type === "bride" ? t("Awaiting Bride", "वधू की प्रतीक्षा") : t("Awaiting Groom", "वर की प्रतीक्षा")}
-            </p>
+            <div className="vivaah-card-text">
+              <p className="text-muted-foreground text-sm">
+                {type === "bride" ? t("Awaiting Bride", "वधू की प्रतीक्षा") : t("Awaiting Groom", "वर की प्रतीक्षा")}
+              </p>
+            </div>
           </div>
         </div>
       );
     }
 
-    const photoElement = participant.photoUrl ? (
-      <img 
-        src={participant.photoUrl} 
-        alt={participant.nameEn} 
-        className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border-3 border-white shadow-lg"
-      />
-    ) : (
-      <div className={`w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center ${type === "bride" ? "bg-pink-200" : "bg-blue-200"}`}>
-        <span className={`text-2xl md:text-3xl font-bold ${type === "bride" ? "text-pink-600" : "text-blue-600"}`}>
-          {(participant.nameEn || participant.nameHi || "?").charAt(0).toUpperCase()}
-        </span>
-      </div>
-    );
-
-    const textElement = (
-      <div className="min-w-0 overflow-hidden text-wrap-safe">
-        <h4 className={`font-bold text-base md:text-lg ${type === "bride" ? "text-pink-700" : "text-blue-700"}`}>
-          {language === "hi" ? participant.nameHi : participant.nameEn}
-        </h4>
-        <div className="text-sm text-muted-foreground space-y-0.5 mt-1">
-          {(participant.fatherNameEn || participant.fatherNameHi) && (
-            <p>{language === "hi" ? participant.fatherNameHi : participant.fatherNameEn}</p>
-          )}
-          {(participant.motherNameEn || participant.motherNameHi) && (
-            <p>{language === "hi" ? participant.motherNameHi : participant.motherNameEn}</p>
-          )}
-          {(participant.grandfatherNameEn || participant.grandfatherNameHi) && (
-            <p>{language === "hi" ? participant.grandfatherNameHi : participant.grandfatherNameEn}</p>
-          )}
-          {(participant.locationEn || participant.locationHi) && (
-            <p className="flex items-start">
-              <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5 mr-1" />
-              <span>{language === "hi" ? participant.locationHi : participant.locationEn}</span>
-            </p>
-          )}
-        </div>
-      </div>
-    );
-
     return (
-      <Card className={`flex-1 min-w-0 overflow-hidden ${type === "bride" ? "border-pink-300 bg-pink-50/50" : "border-blue-300 bg-blue-50/50"}`} data-testid={`${type}-${participant.id}`}>
+      <Card className={`overflow-hidden ${type === "bride" ? "border-pink-300 bg-pink-50/50" : "border-blue-300 bg-blue-50/50"}`} data-testid={`${type}-${participant.id}`}>
         <CardContent className="p-4 overflow-hidden">
-          <div className="vivaah-card-content">
-            <div className="flex-shrink-0">
-              {photoElement}
-            </div>
-            <div className="flex-1 min-w-0 overflow-hidden">
-              {textElement}
+          <div className="vivaah-card-wrapper">
+            {participant.photoUrl ? (
+              <img 
+                src={participant.photoUrl} 
+                alt={participant.nameEn} 
+                className="vivaah-card-photo w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border-2 border-white shadow-lg"
+              />
+            ) : (
+              <div className={`vivaah-card-photo w-20 h-20 md:w-24 md:h-24 rounded-full ${type === "bride" ? "bg-pink-200" : "bg-blue-200"}`} style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                <span className={`text-2xl md:text-3xl font-bold ${type === "bride" ? "text-pink-600" : "text-blue-600"}`}>
+                  {(participant.nameEn || participant.nameHi || "?").charAt(0).toUpperCase()}
+                </span>
+              </div>
+            )}
+            <div className="vivaah-card-text">
+              <h4 className={`font-bold text-base md:text-lg ${type === "bride" ? "text-pink-700" : "text-blue-700"}`}>
+                {language === "hi" ? participant.nameHi : participant.nameEn}
+              </h4>
+              <div className="text-sm text-muted-foreground mt-1">
+                {(participant.fatherNameEn || participant.fatherNameHi) && (
+                  <p style={{marginBottom: '2px'}}>{language === "hi" ? participant.fatherNameHi : participant.fatherNameEn}</p>
+                )}
+                {(participant.motherNameEn || participant.motherNameHi) && (
+                  <p style={{marginBottom: '2px'}}>{language === "hi" ? participant.motherNameHi : participant.motherNameEn}</p>
+                )}
+                {(participant.grandfatherNameEn || participant.grandfatherNameHi) && (
+                  <p style={{marginBottom: '2px'}}>{language === "hi" ? participant.grandfatherNameHi : participant.grandfatherNameEn}</p>
+                )}
+                {(participant.locationEn || participant.locationHi) && (
+                  <p style={{marginBottom: '2px'}}>
+                    <MapPin className="w-4 h-4" style={{display: 'inline-block', verticalAlign: 'middle', marginRight: '4px'}} />
+                    <span>{language === "hi" ? participant.locationHi : participant.locationEn}</span>
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </CardContent>
@@ -251,17 +243,17 @@ export default function VivaahSammelan() {
                               {renderParticipantCard(displayGroom, "groom", pairNumber)}
                             </div>
                           </div>
-                          {/* Mobile layout - no gap, use margins */}
+                          {/* Mobile layout - no flexbox, use text-align center and inline-block */}
                           <div className="md:hidden">
-                            <div className="mb-3">
+                            <div style={{marginBottom: '12px'}}>
                               {renderParticipantCard(displayBride, "bride", pairNumber)}
                             </div>
-                            <div className="flex items-center justify-center py-1 mb-3">
-                              <span className="text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full border-2 border-primary mr-2">
+                            <div style={{textAlign: 'center', padding: '4px 0', marginBottom: '12px'}}>
+                              <span style={{display: 'inline-block', fontSize: '14px', fontWeight: 'bold', color: 'hsl(var(--primary))', backgroundColor: 'hsl(var(--primary) / 0.1)', padding: '4px 12px', borderRadius: '9999px', border: '2px solid hsl(var(--primary))', marginRight: '8px', verticalAlign: 'middle'}}>
                                 {pairNumber}
                               </span>
-                              <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary">
-                                <Handshake className="w-5 h-5 text-primary" />
+                              <span style={{display: 'inline-block', width: '32px', height: '32px', borderRadius: '9999px', backgroundColor: 'hsl(var(--primary) / 0.1)', border: '2px solid hsl(var(--primary))', verticalAlign: 'middle', textAlign: 'center', lineHeight: '28px'}}>
+                                <Handshake className="w-5 h-5 text-primary" style={{display: 'inline-block', verticalAlign: 'middle'}} />
                               </span>
                             </div>
                             <div>

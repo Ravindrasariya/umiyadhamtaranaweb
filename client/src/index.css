@@ -17,22 +17,29 @@
   hyphens: none;
 }
 
-/* Stable card layout for older Android WebViews */
-.vivaah-card-content {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
+/* Float-based card layout for maximum compatibility with older Android WebViews */
+/* Avoids flexbox which is buggy in Android 5.x and below */
+.vivaah-card-photo {
+  float: left;
+  margin-right: 12px;
+  margin-bottom: 8px;
+}
+
+.vivaah-card-text {
   overflow: hidden;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
 }
 
-.vivaah-card-content > * + * {
-  margin-left: 0.75rem;
+/* Clearfix for float containers */
+.vivaah-card-wrapper::after {
+  content: "";
+  display: table;
+  clear: both;
 }
 
-@media (min-width: 768px) {
-  .vivaah-card-content > * + * {
-    margin-left: 1rem;
-  }
+.vivaah-card-wrapper {
+  overflow: hidden;
 }
 
 /* LIGHT MODE */
