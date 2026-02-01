@@ -51,13 +51,15 @@ export default function VivaahSammelan() {
   const renderParticipantCard = (participant: VivaahParticipant | undefined, type: "bride" | "groom", index: number) => {
     if (!participant) {
       return (
-        <div className={`flex-1 min-w-0 p-4 rounded-lg border-2 border-dashed flex flex-row items-center gap-4 ${type === "bride" ? "border-pink-200 bg-pink-50/30" : "border-blue-200 bg-blue-50/30"}`}>
-          <div className={`w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center flex-shrink-0 ${type === "bride" ? "bg-pink-100" : "bg-blue-100"}`}>
-            <span className={`text-2xl md:text-3xl ${type === "bride" ? "text-pink-300" : "text-blue-300"}`}>?</span>
+        <div className={`flex-1 min-w-0 p-4 rounded-lg border-2 border-dashed overflow-hidden ${type === "bride" ? "border-pink-200 bg-pink-50/30" : "border-blue-200 bg-blue-50/30"}`}>
+          <div className="vivaah-card-content">
+            <div className={`w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center flex-shrink-0 ${type === "bride" ? "bg-pink-100" : "bg-blue-100"}`}>
+              <span className={`text-2xl md:text-3xl ${type === "bride" ? "text-pink-300" : "text-blue-300"}`}>?</span>
+            </div>
+            <p className="text-muted-foreground text-sm flex items-center">
+              {type === "bride" ? t("Awaiting Bride", "वधू की प्रतीक्षा") : t("Awaiting Groom", "वर की प्रतीक्षा")}
+            </p>
           </div>
-          <p className="text-muted-foreground text-sm">
-            {type === "bride" ? t("Awaiting Bride", "वधू की प्रतीक्षा") : t("Awaiting Groom", "वर की प्रतीक्षा")}
-          </p>
         </div>
       );
     }
@@ -77,24 +79,24 @@ export default function VivaahSammelan() {
     );
 
     const textElement = (
-      <div className="min-w-0">
+      <div className="min-w-0 overflow-hidden text-wrap-safe">
         <h4 className={`font-bold text-base md:text-lg ${type === "bride" ? "text-pink-700" : "text-blue-700"}`}>
           {language === "hi" ? participant.nameHi : participant.nameEn}
         </h4>
         <div className="text-sm text-muted-foreground space-y-0.5 mt-1">
           {(participant.fatherNameEn || participant.fatherNameHi) && (
-            <p className="truncate">{language === "hi" ? participant.fatherNameHi : participant.fatherNameEn}</p>
+            <p>{language === "hi" ? participant.fatherNameHi : participant.fatherNameEn}</p>
           )}
           {(participant.motherNameEn || participant.motherNameHi) && (
-            <p className="truncate">{language === "hi" ? participant.motherNameHi : participant.motherNameEn}</p>
+            <p>{language === "hi" ? participant.motherNameHi : participant.motherNameEn}</p>
           )}
           {(participant.grandfatherNameEn || participant.grandfatherNameHi) && (
-            <p className="truncate">{language === "hi" ? participant.grandfatherNameHi : participant.grandfatherNameEn}</p>
+            <p>{language === "hi" ? participant.grandfatherNameHi : participant.grandfatherNameEn}</p>
           )}
           {(participant.locationEn || participant.locationHi) && (
-            <p className="flex items-center gap-1">
-              <MapPin className="w-4 h-4 flex-shrink-0" />
-              <span className="truncate">{language === "hi" ? participant.locationHi : participant.locationEn}</span>
+            <p className="flex items-start">
+              <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5 mr-1" />
+              <span>{language === "hi" ? participant.locationHi : participant.locationEn}</span>
             </p>
           )}
         </div>
@@ -102,13 +104,13 @@ export default function VivaahSammelan() {
     );
 
     return (
-      <Card className={`flex-1 min-w-0 ${type === "bride" ? "border-pink-300 bg-pink-50/50" : "border-blue-300 bg-blue-50/50"}`} data-testid={`${type}-${participant.id}`}>
-        <CardContent className="p-4">
-          <div className="flex flex-row items-center gap-4">
+      <Card className={`flex-1 min-w-0 overflow-hidden ${type === "bride" ? "border-pink-300 bg-pink-50/50" : "border-blue-300 bg-blue-50/50"}`} data-testid={`${type}-${participant.id}`}>
+        <CardContent className="p-4 overflow-hidden">
+          <div className="vivaah-card-content">
             <div className="flex-shrink-0">
               {photoElement}
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 overflow-hidden">
               {textElement}
             </div>
           </div>
@@ -229,32 +231,42 @@ export default function VivaahSammelan() {
                       return (
                         <div 
                           key={pairNumber} 
-                          className="border-2 border-primary rounded-xl p-3 md:p-4 bg-primary/5"
+                          className="border-2 border-primary rounded-xl p-3 md:p-4 bg-primary/5 overflow-hidden"
                           data-testid={`couple-row-${pairNumber}`}
                         >
-                          <div className="hidden md:flex items-stretch gap-2">
-                            {renderParticipantCard(displayBride, "bride", pairNumber)}
-                            <div className="flex-shrink-0 w-14 flex flex-col items-center justify-center gap-1">
-                              <span className="text-sm font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full border-2 border-primary">
+                          {/* Desktop layout */}
+                          <div className="hidden md:flex items-stretch">
+                            <div className="flex-1 min-w-0">
+                              {renderParticipantCard(displayBride, "bride", pairNumber)}
+                            </div>
+                            <div className="flex-shrink-0 w-14 flex flex-col items-center justify-center mx-2">
+                              <span className="text-sm font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full border-2 border-primary mb-1">
                                 {pairNumber}
                               </span>
                               <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary">
                                 <Handshake className="w-5 h-5 text-primary" />
                               </span>
                             </div>
-                            {renderParticipantCard(displayGroom, "groom", pairNumber)}
+                            <div className="flex-1 min-w-0">
+                              {renderParticipantCard(displayGroom, "groom", pairNumber)}
+                            </div>
                           </div>
-                          <div className="md:hidden flex flex-col gap-3">
-                            {renderParticipantCard(displayBride, "bride", pairNumber)}
-                            <div className="flex items-center justify-center gap-2 py-1">
-                              <span className="text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full border-2 border-primary">
+                          {/* Mobile layout - no gap, use margins */}
+                          <div className="md:hidden">
+                            <div className="mb-3">
+                              {renderParticipantCard(displayBride, "bride", pairNumber)}
+                            </div>
+                            <div className="flex items-center justify-center py-1 mb-3">
+                              <span className="text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full border-2 border-primary mr-2">
                                 {pairNumber}
                               </span>
                               <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary">
                                 <Handshake className="w-5 h-5 text-primary" />
                               </span>
                             </div>
-                            {renderParticipantCard(displayGroom, "groom", pairNumber)}
+                            <div>
+                              {renderParticipantCard(displayGroom, "groom", pairNumber)}
+                            </div>
                           </div>
                         </div>
                       );

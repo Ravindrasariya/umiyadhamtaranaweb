@@ -8,6 +8,33 @@
   font-family: 'Noto Sans Devanagari', sans-serif;
 }
 
+/* Cross-browser text wrapping for Hindi and long text */
+.text-wrap-safe {
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  -webkit-hyphens: none;
+  hyphens: none;
+}
+
+/* Stable card layout for older Android WebViews */
+.vivaah-card-content {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+.vivaah-card-content > * + * {
+  margin-left: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .vivaah-card-content > * + * {
+    margin-left: 1rem;
+  }
+}
+
 /* LIGHT MODE */
 :root {
   --button-outline: rgba(0,0,0, .10);
